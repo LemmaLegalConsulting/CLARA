@@ -32,6 +32,10 @@ IDENTITY_NAME="${AZURE_IDENTITY:-agentic-housing-identity}"
 FILES_ACCOUNT="${AZURE_FILES_ACCOUNT:-ahfiles1786114234}"
 POSTGRES_SERVER="${AZURE_POSTGRES_SERVER:-agentic-housing-db}"
 ENV_FILE="${AZURE_ENV_FILE:-.env.containerapps}"
+# Whether the caller named an image. Without one a fresh build is tagged with
+# the time, and BUILD_IMAGE=false would point the app at a tag that never
+# existed.
+IMAGE_TAG_GIVEN="${IMAGE_TAG:+true}"
 IMAGE_TAG="${IMAGE_TAG:-$(date -u +%Y%m%dT%H%M%SZ)}"
 IMAGE_REPO="agentic-housing-drafting"
 
@@ -40,6 +44,7 @@ IMAGE_REPO="agentic-housing-drafting"
 # minimum replica count with no traffic bills at Azure's reduced idle rate, so
 # MIN_REPLICAS=1 costs a small fraction of an actively serving replica.
 MIN_REPLICAS="${MIN_REPLICAS:-0}"
+BUILD_IMAGE="${BUILD_IMAGE:-true}"
 
 # Both default off: side-loaded documents change far less often than code, and
 # uploading thousands of small files makes an ordinary deploy much slower.
@@ -104,7 +109,9 @@ if [[ "$SYNC_PRIVATE_CONTENT" == "true" ]]; then
   echo "Uploading private content into raw/private-content/..."
   PRIVATE_STAGE="$WORKDIR/private-content"
   mkdir -p "$PRIVATE_STAGE"
-  rsync -a --exclude 'caselaw-artifacts/' --exclude '.git' "$PRIVATE_CONTENT_DIR/" "$PRIVATE_STAGE/"
+  # storage/ is a local checkout's document-storage area -- filled documents
+  # from template-fill sessions among it -- and is never organization content.
+  rsync -a --exclude 'caselaw-artifacts/' --exclude 'storage/' --exclude '.git' "$PRIVATE_CONTENT_DIR/" "$PRIVATE_STAGE/"
   az storage file upload-batch --account-name "$FILES_ACCOUNT" --account-key "$FILES_KEY" \
     --destination raw --destination-path private-content --source "$PRIVATE_STAGE" --no-progress -o none
 fi
@@ -122,10 +129,24 @@ fi
 # --- Image -------------------------------------------------------------------
 # Built in ACR rather than locally, so the deploy does not depend on a working
 # local Docker daemon or on the machine's architecture.
-echo "Building $IMAGE in ACR..."
-az acr build --registry "$REGISTRY" --image "${IMAGE_REPO}:${IMAGE_TAG}" \
-  --image "${IMAGE_REPO}:latest" --file Dockerfile . -o none
-echo "Image built: $IMAGE"
+if [[ "$BUILD_IMAGE" != "true" ]]; then
+  [[ "$IMAGE_TAG_GIVEN" == "true" ]] || {
+    echo "BUILD_IMAGE=false needs IMAGE_TAG naming an image already in $REGISTRY." >&2
+    exit 1
+  }
+  az acr repository show-tags -n "$REGISTRY" --repository "$IMAGE_REPO" -o tsv | grep -qx "$IMAGE_TAG" || {
+    echo "No image ${IMAGE_REPO}:${IMAGE_TAG} in $REGISTRY." >&2
+    exit 1
+  }
+fi
+if [[ "$BUILD_IMAGE" == "true" ]]; then
+  echo "Building $IMAGE in ACR..."
+  az acr build --registry "$REGISTRY" --image "${IMAGE_REPO}:${IMAGE_TAG}" \
+    --image "${IMAGE_REPO}:latest" --file Dockerfile . -o none
+  echo "Image built: $IMAGE"
+else
+  echo "Using existing image: $IMAGE"
+fi
 
 # --- Configuration -----------------------------------------------------------
 # Every key in the env file becomes a Container Apps secret, and every container
