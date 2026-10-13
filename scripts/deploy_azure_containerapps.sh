@@ -134,8 +134,10 @@ if [[ "$BUILD_IMAGE" != "true" ]]; then
     echo "BUILD_IMAGE=false needs IMAGE_TAG naming an image already in $REGISTRY." >&2
     exit 1
   }
-  az acr repository show-tags -n "$REGISTRY" --repository "$IMAGE_REPO" -o tsv | grep -qx "$IMAGE_TAG" || {
-    echo "No image ${IMAGE_REPO}:${IMAGE_TAG} in $REGISTRY." >&2
+  # An exact lookup: grepping the tag list read "release.1" as a pattern that
+  # matches "release-1", and under pipefail could reject a tag that exists.
+  az acr repository show -n "$REGISTRY" --image "${IMAGE_REPO}:${IMAGE_TAG}" -o none || {
+    echo "Cannot find image ${IMAGE_REPO}:${IMAGE_TAG} in $REGISTRY." >&2
     exit 1
   }
 fi
