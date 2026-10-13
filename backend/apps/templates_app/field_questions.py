@@ -232,7 +232,8 @@ def field_applies(template, key, template_data=None):
     """
     from apps.templates_app.template_variables import template_choice_values
 
-    schema = ((getattr(template, "metadata", None) or {}).get("fieldSchema") or {}).get(key) or {}
+    schemas = (getattr(template, "metadata", None) or {}).get("fieldSchema") or {}
+    schema = next((schemas[name] for name in field_keys_for_answer(key) if schemas.get(name)), {})
     conditions = schema.get("when") or {}
     if not conditions:
         return True
@@ -270,7 +271,9 @@ def template_field_requests(template):
 
     requests = []
     for key, raw_keys in declared.items():
-        reviewed = schema.get(key) or {}
+        # A reviewer may have written up the field under any name the template
+        # binds it to.
+        reviewed = next((schema[name] for name in (key, *raw_keys) if schema.get(name)), {})
         label = reviewed.get("label") or template_field_label(key)
         using_blocks = [
             block

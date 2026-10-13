@@ -289,6 +289,7 @@ def _plan_missing_information(session, template):
                 # blank is a choice to let the draft write it, not an omission.
                 "ai_completable": request.kind == KIND_NARRATIVE,
                 "optional": request.optional,
+                "has_default": bool(defaults.get(request.key)),
                 "required_for_generation": False,
             }
         )
@@ -467,6 +468,12 @@ def _template_data_with_missing_information_answers(template_data, missing_infor
     for item in missing_information or []:
         answer = str(item.get("answer") or "").strip()
         field_key = _field_key_for_missing_information(item)
+        if field_key and item.get("has_default") and (not answer or item.get("not_needed")):
+            # The reviewer cleared or skipped a pre-filled default -- a judge
+            # no longer sitting. Record the blank, or the default comes back.
+            for key in field_keys_for_answer(field_key):
+                merged.setdefault(key, "")
+            continue
         if not answer or not field_key or item.get("not_needed"):
             continue
         # One answer fills every binding of the same fact, so a template that

@@ -668,6 +668,12 @@ def apply_block_overrides(blocks: list[BlockDefinition], refinements: Refinement
             block.key = slugify(override["label"])[:100] or block.key
         block.block_type = override.get("type", block.block_type)
         block.latitude = override.get("ai_latitude", block.latitude)
+    keys = [block.key for block in blocks]
+    duplicates = sorted({key for key in keys if keys.count(key) > 1})
+    if duplicates:
+        # Two blocks under one key would share a snippet file and make a
+        # manifest that will not load.
+        raise RefinementError(f"{refinements.path}: block override(s) give more than one block the key {duplicates}")
     if overrides:
         found = ", ".join(block.key for block in blocks)
         raise RefinementError(
@@ -836,6 +842,10 @@ def ingest_docx(source: Path, prepared_root: Path, snippets_root: Path, *, force
     return manifest_path
 
 
+def _option_value(option):
+    return option["value"] if isinstance(option, dict) else option
+
+
 def _apply_refinement_metadata(manifest: dict, refinements: Refinements, content_root: Path):
     """Carry a reviewer's decisions about the template into its manifest."""
     manifest.update(refinements.manifest_overrides())
@@ -845,7 +855,9 @@ def _apply_refinement_metadata(manifest: dict, refinements: Refinements, content
     declared = {choice["name"] for choice in refinements.choices}
     manifest["choices"] = [
         *[choice for choice in manifest["choices"] if choice["name"] not in declared],
-        *refinements.choices,
+        # A choice written without a default takes its first option, stored so
+        # rendering never sees an empty choice and drops the whole clause.
+        *[{**choice, "default": choice.get("default", _option_value(choice["options"][0]))} for choice in refinements.choices],
     ]
     choice_names = {choice["name"] for choice in manifest["choices"]}
     for name, schema in refinements.field_schema.items():

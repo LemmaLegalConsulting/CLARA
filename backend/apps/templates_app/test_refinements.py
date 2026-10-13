@@ -184,6 +184,22 @@ class RefinedIngestionTests(SimpleTestCase):
         with self.assertRaisesRegex(RefinementError, "unknown choice"):
             self.ingest(force=True)
 
+    def test_a_choice_without_a_default_takes_its_first_option(self):
+        no_default = {**REFINEMENTS, "choices": [{"name": "lease_form", "options": ["written", "oral"]}]}
+        self.write_refinements(no_default)
+
+        manifest, _template = self.ingest(force=True)
+
+        lease = next(choice for choice in manifest["choices"] if choice["name"] == "lease_form")
+        self.assertEqual(lease["default"], "written")
+
+    def test_two_blocks_relabelled_to_one_key_fail_before_anything_is_written(self):
+        colliding = {**REFINEMENTS, "blocks": {"document-body": {"label": "Certificate of Service"}}}
+        self.write_refinements(colliding)
+
+        with self.assertRaisesRegex(RefinementError, "more than one block"):
+            self.ingest(force=True)
+
     def test_the_slug_must_name_the_template(self):
         self.write_refinements({**REFINEMENTS, "slug": "another-template"})
 
@@ -275,6 +291,17 @@ class ReviewedFieldQuestionsTests(SimpleTestCase):
         self.assertEqual(requests["discovery_days"].question, "How many days does discovery need?")
         self.assertEqual(requests["discovery_days"].label, "Days needed for discovery")
         self.assertEqual(requests["how_when"].kind, KIND_NARRATIVE)
+
+    def test_a_field_written_up_under_an_alias_keeps_its_review(self):
+        block = SimpleNamespace(key="facts", label="Facts", body="Rent is owed to {{ fields.landlord_name }}.", ai_instructions=[], ai_fill_mode="revision_on_request")
+        template = SimpleNamespace(
+            metadata={"fields": ["fields.landlord_name"], "fieldSchema": {"landlord_name": {"question": "Who is the landlord?", "optional": True}}, "choices": []},
+            blocks=SimpleNamespace(all=lambda: [block]),
+        )
+        request = template_field_requests(template)[0]
+        self.assertEqual(request.key, "plaintiff_name")
+        self.assertEqual(request.question, "Who is the landlord?")
+        self.assertTrue(request.optional)
 
     def test_a_field_for_a_choice_not_taken_is_not_asked(self):
         template = self.template(
@@ -374,3 +401,16 @@ class RefinedOrganizationTemplatesTests(TestCase):
                 self.assertEqual(EDITORIAL.findall(text), [])
                 checked += 1
         self.assertTrue(checked, "refinement files exist but no package was prepared from them")
+
+
+class DefaultAnswersTests(SimpleTestCase):
+    def test_a_cleared_default_stays_cleared(self):
+        from apps.drafting.services import _template_data_with_missing_information_answers
+
+        cleared = _template_data_with_missing_information_answers({}, [
+            {"field": "fields.judge", "answer": "", "has_default": True},
+            {"field": "fields.magistrate", "answer": "", "not_needed": True},
+        ])
+        self.assertEqual(cleared, {"judge": ""})
+        kept = _template_data_with_missing_information_answers({}, [{"field": "fields.judge", "answer": "W. Moná Scott", "has_default": True}])
+        self.assertEqual(kept["judge"], "W. Moná Scott")

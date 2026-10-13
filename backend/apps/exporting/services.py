@@ -270,6 +270,38 @@ def _block_revision(body, maintained_body, template_body=None):
     return body
 
 
+def _current_template_bodies(draft, template):
+    """A lookup confirming a section's recorded template text is still what the
+    template renders.
+
+    The formatted Word original is rendered at export from the current case
+    data. That is only the text the reviewer approved while it still renders
+    to the same words; once an answer or the template has changed since the
+    draft was composed, the draft's own text is what gets exported.
+    """
+    rendered = {}
+
+    def lookup(key, template_body):
+        if template is None or template_body is None:
+            return None
+        if key not in rendered:
+            from apps.ai.services import drafting_ai
+            from apps.drafting.services import regeneration_context
+
+            block = template.blocks.filter(key=key).first()
+            if block is None:
+                rendered[key] = None
+            else:
+                context = rendered.setdefault("__context__", regeneration_context(draft.session, template=template))
+                rendered[key] = drafting_ai.normalize_generated_text(drafting_ai.render_template_body(block.body, context))
+        current = rendered[key]
+        if current is None or _normalized_body(current) != _normalized_body(template_body):
+            return None
+        return template_body
+
+    return lookup
+
+
 def _selected_facts(session):
     from apps.matters.models import MatterFact
 
@@ -310,6 +342,7 @@ def _docx_render_context(draft, section):
             for block in template.blocks.all()
         }
         maintained_bodies = {block.key: block.body or "" for block in template.blocks.all()}
+    current_template_body = _current_template_bodies(draft, template)
     for draft_section in sections:
         section_format = draft_section.get("format") or {}
         body = draft_section.get("body", "")
@@ -324,7 +357,9 @@ def _docx_render_context(draft, section):
             "numbered": numbered,
             "format": section_format,
             "numbered_items": [f"{index}. {item}" for index, item in enumerate(items, start=1)] if numbered else items,
-            "revision": _block_revision(body, maintained_bodies.get(key, ""), draft_section.get("templateBody")),
+            "revision": _block_revision(
+                body, maintained_bodies.get(key, ""), current_template_body(key, draft_section.get("templateBody"))
+            ),
         }
     from apps.matters.client_letter_context import letter_template_fields
 
