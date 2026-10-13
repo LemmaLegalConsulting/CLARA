@@ -146,6 +146,14 @@ Keep changes aligned with the existing workflow boundaries:
 - AI prompt execution and model-facing logic belong under `backend/apps/ai/`.
 - Template and reusable block behavior belongs under
   `backend/apps/templates_app/`.
+- Say what a maintained original's editorial passages mean in its private
+  `template-refinements/<template-slug>.yaml`, not in the converter: an
+  "[OR]", a "[written/oral]", a "Case Caption" marker, or a sample "$X" is a
+  decision about one document. Each edit names the exact wording it changes and
+  fails ingestion when it no longer matches, so a revised original cannot drop
+  a reviewer's decision silently. Check a refined template by rendering it with
+  every field answered; `apps.templates_app.test_refinements` does that for
+  every refined package in the checkout.
 - A prepared template keeps the maintained original's wording. Convert only
   language the author marked as variable (`[...]`, `____`, highlighting) through
   `apps.templates_app.placeholders`; never rebind ordinary prose to a model-written

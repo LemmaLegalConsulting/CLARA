@@ -26,3 +26,28 @@ export function templateChoices(templates, { excludeShells = false } = {}) {
 export function isTemplateChosen(selectedTemplateId) {
   return String(selectedTemplateId ?? "") !== TEMPLATE_PLACEHOLDER_VALUE;
 }
+
+// An either/or clause's options as {value, label}. Manifests write an option
+// either as a bare snake_case value ("email") or, where a reviewer named it,
+// as {value, label}; rendering the object form directly printed
+// "[object Object]" in the select.
+export function alternativeOptions(choice) {
+  return (choice?.options || []).map((option) => {
+    if (option && typeof option === "object") {
+      const value = String(option.value ?? "");
+      return { value, label: option.label || readableValue(value) };
+    }
+    const value = String(option ?? "");
+    return { value, label: readableValue(value) };
+  });
+}
+
+export function alternativeDefaultLabel(choice) {
+  const match = alternativeOptions(choice).find((option) => option.value === String(choice?.default ?? ""));
+  return match ? match.label : readableValue(String(choice?.default ?? ""));
+}
+
+function readableValue(value) {
+  const words = value.replaceAll("_", " ").trim();
+  return words ? words[0].toUpperCase() + words.slice(1) : words;
+}

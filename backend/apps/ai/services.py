@@ -11,6 +11,8 @@ from apps.sources.models import SourceConfiguration
 from apps.templates_app.placeholders import convert_text
 from apps.templates_app.template_variables import (
     normalize_docxtpl_blocks,
+    field_defaults,
+    signature_lines,
     template_choice_values,
     template_field_values,
 )
@@ -113,8 +115,9 @@ class ConstrainedDraftingService:
             ]
             if item
         )
+        advocate = author.get("displayName") or "Advocate"
         case_fields, _field_sources = letter_template_fields(context.matter)
-        template_values = {**case_fields, **(context.template_data or {})}
+        template_values = {**field_defaults(getattr(context, "template", None)), **case_fields, **(context.template_data or {})}
         normalized_body, _conversion = convert_text(body, "template_body")
         template_data = template_field_values(template_values)
         client = {
@@ -151,6 +154,9 @@ class ConstrainedDraftingService:
             "advocate_phone": author.get("phone") or "",
             "advocate_address": author.get("address") or "",
             "advocate_contact": contact,
+            "advocate_signature_block": signature_lines(advocate, author.get("barNumber") or "", contact)[0],
+            "advocate_signature": signature_lines(advocate, author.get("barNumber") or "", contact)[1],
+            "client_name": context.matter.client_name,
             "advocate_signature_image": "[signature image]" if author.get("signatureImage") else "",
             "responding_to": {
                 "description": (getattr(context, "responding_to", None) or {}).get("description")
@@ -292,7 +298,11 @@ class ConstrainedDraftingService:
                     section_kind="facts",
                     block_instructions=getattr(block, "ai_instructions", None) or (),
                 )
-            elif block.block_type == "facts":
+            elif block.block_type == "facts" and not (block.body or "").strip():
+                # A facts section the template leaves empty is filled from the
+                # case's facts. One with the author's own wording keeps it: a
+                # maintained statement of the case was replaced with "No facts
+                # selected for this section." in the exported filing.
                 body = self.generate_curated_facts_section(selected_facts, context.selected_curated_facts)
             elif block.ai_fill_mode == "constrained_generation":
                 fallback = self.render_template_body(block.body, context) if has_template_tokens else block.body
@@ -315,14 +325,19 @@ class ConstrainedDraftingService:
                 section_sources.extend(
                     fact.source_label for fact in selected_facts if fact.source_label
                 )
+            body = self.normalize_generated_text(body)
             sections.append({
                 "key": block.key,
                 "label": block.label,
-                "body": self.normalize_generated_text(body),
+                "body": body,
                 "sources": section_sources,
                 "blockType": block.block_type,
                 "aiFillMode": block.ai_fill_mode,
                 "origin": "ai" if block.ai_fill_mode == "constrained_generation" else "template",
+                # What the template produced, so export can tell a section
+                # nobody touched (render the formatted Word original) from one
+                # a reviewer or the model rewrote (render the new text).
+                **({"templateBody": body} if block.ai_fill_mode != "constrained_generation" else {}),
                 "format": {
                     "style": "numbered" if block.block_type in {"facts", "argument", "optional_clause"} else "plain",
                     "headingNumbering": "none",

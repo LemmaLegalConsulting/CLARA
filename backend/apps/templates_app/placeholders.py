@@ -59,7 +59,7 @@ PLACEHOLDER_ALIASES = {
     "attorney telephone": "advocate_phone",
     "case number": "case_number",
     "case no.": "case_number",
-    "case name": "case_caption",
+    "case name": "fields.case_caption",
     "plaintiff": "fields.plaintiff_name",
     "plaintiff's email": "fields.plaintiff_email",
     "plaintiff's address": "fields.plaintiff_address",
@@ -568,6 +568,11 @@ def _highlight_replacements(paragraph, text, fallback_prefix, conversion, taken,
     return replacements
 
 
+# A refinement file rewrites the original with the same run-preserving
+# substitution the automatic conversion uses.
+Replacement = _Replacement
+
+
 def _record(conversion, expression):
     inner = expression.strip("{} ").strip()
     if inner.startswith("fields."):
@@ -607,6 +612,9 @@ def _apply_replacements(paragraph, replacements):
         if dropped_highlight and _is_highlighted(run):
             _clear_highlight(run)
     return True
+
+
+apply_replacements = _apply_replacements
 
 
 def convert_paragraph(paragraph, fallback_prefix, nearby=""):

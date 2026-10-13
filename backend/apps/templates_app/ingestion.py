@@ -43,8 +43,16 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from django.utils.text import slugify
 
+from apps.templates_app.refinements import (
+    RefinementError,
+    Refinements,
+    apply_caption,
+    apply_edits,
+    load_refinements,
+)
 from apps.templates_app.placeholders import (
     BRACKET_RE,
+    JINJA_TOKEN_RE,
     PLACEHOLDER_ALIASES,
     convert_paragraph,
     convert_text,
@@ -55,7 +63,7 @@ from apps.templates_app.placeholders import (
 MANIFEST_VERSION = 2
 # Bump when conversion semantics change without changing the maintained source
 # file, so startup can refresh already-prepared packages safely.
-CONVERTER_VERSION = "2026-09-25-fill-in-names-v1"
+CONVERTER_VERSION = "2026-10-13-template-refinements-v1"
 
 LATITUDE_LOCKED = "locked"
 LATITUDE_GUIDED = "guided"
@@ -110,6 +118,9 @@ class BlockDefinition:
     end: int
     heading_index: int | None
     expects_list: bool = False
+    # A reviewer's decision from the template's refinement file, which wins
+    # over the heuristics below.
+    latitude: str | None = None
 
     @property
     def body_start(self):
@@ -156,6 +167,10 @@ def is_heading(paragraph) -> bool:
         return False
     if BRACKET_RE.fullmatch(text) or text.strip("[] ").casefold() in PLACEHOLDER_ALIASES:
         return False
+    if "{{" in text and not re.search(r"[A-Za-z]{3,}", _prose(text)):
+        # A line that is only a binding -- "/s/ {{ advocate_name }}" -- is a
+        # value, like the bracketed fill-in it replaced, not a section title.
+        return False
     style = (paragraph.style.name if paragraph.style else "").lower()
     normalized = ROMAN_HEADING_RE.sub("", text).strip(" -–—:.").lower()
     alpha = "".join(character for character in text if character.isalpha())
@@ -191,6 +206,16 @@ def classify_block(label: str) -> str:
     return "optional_clause"
 
 
+def _prose(text: str) -> str:
+    """A paragraph's wording without the bindings a refinement wrote into it.
+
+    `{{ items|comma_and_list }}` says "list" to the heuristics below, which
+    read it as the author asking for a list and handed the paragraph to the
+    model to write.
+    """
+    return JINJA_TOKEN_RE.sub(" ", text)
+
+
 def discover_blocks(document) -> list[BlockDefinition]:
     paragraphs = document.paragraphs
     nonempty = [index for index, paragraph in enumerate(paragraphs) if paragraph.text.strip()]
@@ -202,7 +227,7 @@ def discover_blocks(document) -> list[BlockDefinition]:
         boundaries.insert(0, nonempty[0])
     list_boundaries = set()
     for index in nonempty:
-        if not LIST_PROMPT_RE.search(paragraphs[index].text):
+        if not LIST_PROMPT_RE.search(_prose(paragraphs[index].text)):
             continue
         previous = max((boundary for boundary in boundaries if boundary < index), default=None)
         previous_type = classify_block(normalize_label(paragraphs[previous].text)) if previous is not None else "optional_clause"
@@ -225,7 +250,7 @@ def discover_blocks(document) -> list[BlockDefinition]:
         keys[base_key] += 1
         key = base_key if keys[base_key] == 1 else f"{base_key}-{keys[base_key]}"
         block_type = "facts" if start in list_boundaries else classify_block(label)
-        sample = "\n".join(paragraph.text for paragraph in paragraphs[start:end])
+        sample = "\n".join(_prose(paragraph.text) for paragraph in paragraphs[start:end])
         expects_list = bool(LIST_PROMPT_RE.search(sample))
         blocks.append(BlockDefinition(key, label, block_type, start, end, start if heading else None, expects_list))
     return blocks
@@ -302,7 +327,33 @@ def _converted_block_body(document, block: BlockDefinition) -> str:
             text, f"{block.key}_{index}", _nearby_text(texts, offset)
         )
         lines.append(converted)
-    return "\n".join(lines)
+    return "\n".join(_bind_text_alternatives(lines, block))
+
+
+def _bind_text_alternatives(lines, block):
+    """The plain-text twin of bind_alternatives, for the block body a reviewer
+    reads: the chosen alternative, not both of them with "[OR]" between."""
+    output, index = [], 0
+    while index < len(lines):
+        is_marker = OR_MARKER_RE.match(" ".join(lines[index].split()))
+        if not is_marker or not output or index + 1 >= len(lines):
+            output.append(lines[index])
+            index += 1
+            continue
+        members = [output.pop()]
+        while index + 1 < len(lines) and OR_MARKER_RE.match(" ".join(lines[index].split())):
+            members.append(lines[index + 1])
+            index += 2
+        variable = _choice_variable(block)
+        keys = []
+        for position, member in enumerate(members, start=1):
+            key = _option_key(member, position)
+            keys.append(key if key not in keys else f"{key}_{position}")
+        output.append('{% if ' + variable + ' == "' + keys[0] + '" or not ' + variable + ' %}' + members[0])
+        for key, member in zip(keys[1:], members[1:]):
+            output.append('{% elif ' + variable + ' == "' + key + '" %}' + member)
+        output[-1] += "{% endif %}"
+    return output
 
 
 def _nearby_text(texts, position) -> str:
@@ -316,7 +367,7 @@ def block_instructions(document, block: BlockDefinition) -> list[str]:
     """Drafting directions the author wrote into a block, e.g. "[describe X]"."""
     instructions = []
     for index in range(block.body_start, block.end):
-        text = document.paragraphs[index].text
+        text = _prose(document.paragraphs[index].text)
         if not text.strip():
             continue
         for match in BRACKET_RE.finditer(text):
@@ -341,6 +392,10 @@ def _has_fill_ins(document, block: BlockDefinition) -> bool:
             continue
         if BRACKET_RE.search(paragraph.text) or "___" in paragraph.text:
             return True
+        # A refinement file has already turned the author's blank into a
+        # binding; the passage is no less case-specific for it.
+        if "{{" in paragraph.text:
+            return True
         if any(run.font.highlight_color is not None for run in paragraph.runs if run.text.strip()):
             return True
     return False
@@ -354,6 +409,8 @@ def classify_latitude(document, block: BlockDefinition) -> str:
     style one. Blocks whose original text is an instruction to the drafter are
     the model's to write.
     """
+    if block.latitude:
+        return block.latitude
     if block.expects_list:
         return LATITUDE_GENERATE
     if block.block_type in LOCKED_BLOCK_TYPES:
@@ -539,7 +596,7 @@ def annotate_document(document, blocks: list[BlockDefinition]) -> dict:
         ]
         if not body_paragraphs:
             continue
-        list_prompt = next((p for p in body_paragraphs if LIST_PROMPT_RE.search(p.text)), None)
+        list_prompt = next((p for p in body_paragraphs if LIST_PROMPT_RE.search(_prose(p.text))), None)
         loop_target = list_prompt or body_paragraphs[0]
         collection = "items" if block.expects_list else "paragraphs"
         _replace_with_loop(loop_target, f'blocks["{block.key}"]["{collection}"]')
@@ -587,8 +644,40 @@ def annotate_document(document, blocks: list[BlockDefinition]) -> dict:
     }
 
 
-def _copy_block_document(source_path: Path, output_path: Path, block: BlockDefinition):
+def load_source(source_path: Path, refinements: Refinements | None = None):
+    """The original as the converter should read it: refined, if a reviewer
+    has said what its editorial passages mean."""
     document = Document(source_path)
+    if refinements:
+        apply_caption(document, refinements)
+        apply_edits(_all_story_paragraphs(document), refinements)
+    return document
+
+
+def apply_block_overrides(blocks: list[BlockDefinition], refinements: Refinements | None):
+    """Relabel or re-type discovered blocks as the refinement file says."""
+    if not refinements:
+        return blocks
+    overrides = dict(refinements.block_overrides)
+    for block in blocks:
+        override = overrides.pop(block.key, None)
+        if override is None:
+            continue
+        if override.get("label"):
+            block.label = override["label"]
+            block.key = slugify(override["label"])[:100] or block.key
+        block.block_type = override.get("type", block.block_type)
+        block.latitude = override.get("ai_latitude", block.latitude)
+    if overrides:
+        found = ", ".join(block.key for block in blocks)
+        raise RefinementError(
+            f"{refinements.path}: block override(s) {sorted(overrides)} match no block; blocks are: {found}"
+        )
+    return blocks
+
+
+def _copy_block_document(source_path: Path, output_path: Path, block: BlockDefinition, refinements=None):
+    document = load_source(source_path, refinements)
     body = document._body._element
     children = list(body)
     paragraphs = document.paragraphs
@@ -620,6 +709,7 @@ def _copy_block_document(source_path: Path, output_path: Path, block: BlockDefin
         end=len(local_paragraphs),
         heading_index=0 if block.heading_index is not None else None,
         expects_list=block.expects_list,
+        latitude=block.latitude,
     )
     annotate_document(document, [local_block])
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -656,19 +746,22 @@ def ingest_docx(source: Path, prepared_root: Path, snippets_root: Path, *, force
     package_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = package_dir / "manifest.yaml"
     source_checksum = sha256_file(source)
+    refinements = load_refinements(prepared_root.parent.resolve(), slug)
+    refinements_checksum = refinements.sha256 if refinements else ""
     if manifest_path.exists() and not force:
         existing = yaml.safe_load(manifest_path.read_text()) or {}
         if (
             existing.get("source", {}).get("sha256") == source_checksum
             and existing.get("source", {}).get("converter_version") == CONVERTER_VERSION
+            and (existing.get("source", {}).get("refinements") or {}).get("sha256", "") == refinements_checksum
         ):
             return manifest_path
 
-    original = Document(source)
-    blocks = discover_blocks(original)
+    original = load_source(source, refinements)
+    blocks = apply_block_overrides(discover_blocks(original), refinements)
     block_bodies = {block.key: _converted_block_body(original, block) for block in blocks}
 
-    annotated = Document(source)
+    annotated = load_source(source, refinements)
     discovery = annotate_document(annotated, blocks)
     template_path = package_dir / "template.docx"
     annotated.save(template_path)
@@ -678,7 +771,7 @@ def ingest_docx(source: Path, prepared_root: Path, snippets_root: Path, *, force
     for order, block in enumerate(blocks, start=1):
         relative_block_path = Path("docx-snippets") / slug / "blocks" / f"{block.key}.docx"
         block_path = snippets_root / slug / "blocks" / f"{block.key}.docx"
-        _copy_block_document(source, block_path, block)
+        _copy_block_document(source, block_path, block, refinements)
         latitude = latitudes.get(block.key, LATITUDE_LOCKED)
         block_rows.append(
             {
@@ -737,8 +830,36 @@ def ingest_docx(source: Path, prepared_root: Path, snippets_root: Path, *, force
         "choices": discovery["choices"],
         "blocks": block_rows,
     }
+    if refinements:
+        _apply_refinement_metadata(manifest, refinements, prepared_root.parent)
     manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True))
     return manifest_path
+
+
+def _apply_refinement_metadata(manifest: dict, refinements: Refinements, content_root: Path):
+    """Carry a reviewer's decisions about the template into its manifest."""
+    manifest.update(refinements.manifest_overrides())
+    fields = set(manifest["fields"]) | refinements.referenced_fields()
+    fields |= {f"fields.{name}" for name in refinements.field_schema}
+    manifest["fields"] = sorted(fields)
+    declared = {choice["name"] for choice in refinements.choices}
+    manifest["choices"] = [
+        *[choice for choice in manifest["choices"] if choice["name"] not in declared],
+        *refinements.choices,
+    ]
+    choice_names = {choice["name"] for choice in manifest["choices"]}
+    for name, schema in refinements.field_schema.items():
+        unknown = set((schema or {}).get("when") or {}) - choice_names
+        if unknown:
+            # A misspelt condition would hide the question for good.
+            raise RefinementError(f"{refinements.path}: field {name} depends on unknown choice(s) {sorted(unknown)}")
+    if refinements.field_schema:
+        manifest["field_schema"] = refinements.field_schema
+    try:
+        path = refinements.path.relative_to(Path(content_root).resolve()).as_posix()
+    except ValueError:
+        path = refinements.path.as_posix()
+    manifest["source"]["refinements"] = {"path": path, "sha256": refinements.sha256}
 
 
 def promote_shared_blocks(manifest_paths: list[Path], snippets_root: Path, *, force=False):

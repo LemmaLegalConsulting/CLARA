@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckCircle2, HelpCircle, Loader2, PenLine, Sparkles } from "lucide-react";
 
-import { planQuestionsForReview, unansweredPlanQuestions } from "./planQuestions.js";
+import { planQuestionsForReview, questionHelp, unansweredPlanQuestions } from "./planQuestions.js";
 import { PanelHeading } from "./PanelHeading.jsx";
 
 function updateDocument(plan, documentId, patch) {
@@ -14,6 +14,7 @@ function updateDocument(plan, documentId, patch) {
 }
 
 function QuestionCard({ question, onChange, onSkip }) {
+  const helpId = `question-help-${question.documentId}-${question.index}`;
   const suggested = question.answer_source === "case_record" && Boolean(question.answer?.trim());
   return (
     <div className="missing-info-item">
@@ -32,20 +33,24 @@ function QuestionCard({ question, onChange, onSkip }) {
           <Sparkles size={13} /> Drafted from the case record{question.basis ? `: ${question.basis}` : ""}. Check it before you continue.
         </small>
       )}
+      {question.answer_source === "template_default" && (
+        <small className="missing-info-basis">{question.basis}</small>
+      )}
       <label className="field missing-info-answer">
         <span>{question.ai_completable ? "Text for the draft" : "Answer"}</span>
         <textarea className="form-control"
-          placeholder={question.ai_completable
-            ? "Leave blank to let the draft write this from the selected facts."
-            : "Add the missing detail here."}
+          aria-describedby={helpId}
           rows={4}
           value={question.answer || ""}
           onChange={(event) => onChange({ answer: event.target.value, not_needed: false, answer_source: "reviewer" })}
         />
+        <small className="muted" id={helpId}>{questionHelp(question)}</small>
       </label>
       <div className="button-row compact">
         <button className="btn btn-light" type="button" onClick={onSkip}>
-          {question.ai_completable ? "Skip — leave this to the draft" : "Skip — leave as placeholder"}
+          {question.ai_completable
+            ? "Skip — leave this to the draft"
+            : question.optional ? "Skip — not needed" : "Skip — leave as placeholder"}
         </button>
       </div>
     </div>

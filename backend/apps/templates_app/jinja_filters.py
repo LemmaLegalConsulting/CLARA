@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable, Mapping
+from decimal import Decimal, InvalidOperation
 
 from jinja2 import ChainableUndefined, Environment, Undefined
 
@@ -49,6 +50,7 @@ TEMPLATE_HELPERS_GUIDE = """Available Jinja helpers for maintained/custom blocks
 - {{ client | pronoun_subjective }}, pronoun_objective, pronoun_possessive("home"), pronoun_reflexive
 - {{ people | does_verb("live") }}, {{ people | did_verb("be") }}
 - {{ people | as_noun("occupant", "occupants") }} and {{ name | possessive }}
+- {{ amount | currency }} prints "$1,250.00" from "1250" or "$1,250"
 Pronouns must come from client.pronouns/template data; never infer them from a name."""
 
 
@@ -70,6 +72,16 @@ def listify(value):
     return [value]
 
 
+def answered_items(value):
+    """The answered items of a list field, as a list.
+
+    For a list where an empty answer means "none" -- the other occupants, the
+    other witnesses -- so a sentence can join it with fixed items:
+    `{{ (["Plaintiff"] + fields.witnesses|answered_items)|comma_and_list }}`.
+    """
+    return [item for item in listify(value) if answered(item)]
+
+
 def answered(value):
     if value is None or isinstance(value, Undefined):
         return False
@@ -77,6 +89,24 @@ def answered(value):
         stripped = value.strip()
         return bool(stripped and not re.fullmatch(r"\[[^\]]+\]", stripped))
     return bool(value)
+
+
+def currency(value):
+    """A dollar amount as a filing writes it: "$1,250.00".
+
+    An answer typed as "1250", "$1,250", or "1250.00" reads the same, so a
+    template can write `{{ amount|currency }}` without the "$" doubling when an
+    advocate typed one. Anything that is not a plain amount -- "the entirety of
+    the contract rent", an unanswered "[Rent]" -- passes through unchanged.
+    """
+    if value is None or isinstance(value, Undefined):
+        return ""
+    text = str(value).strip()
+    try:
+        amount = Decimal(text.replace("$", "").replace(",", "").strip())
+    except InvalidOperation:
+        return text
+    return f"${amount:,.2f}"
 
 
 def _display(value):
@@ -233,9 +263,11 @@ def as_noun(value, singular, plural=None):
 
 JINJA_FILTERS = {
     "answered": answered,
+    "answered_items": answered_items,
     "as_list": listify,
     "as_noun": as_noun,
     "comma_and_list": comma_and_list,
+    "currency": currency,
     "did_verb": did_verb,
     "does_verb": does_verb,
     "possessive": possessive,

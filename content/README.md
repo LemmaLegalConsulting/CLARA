@@ -42,6 +42,7 @@ private-content/               # organization provider; ignored by git
 ├── original_templates/         # received private source DOCX files
 ├── document-templates/         # generated DOCX/Jinja packages and manifests
 ├── template-overrides/         # private YAML corrections/field schemas by template slug
+├── template-refinements/       # reviewer decisions applied while converting an original
 └── docx-snippets/
     └── <template-slug>/blocks/ # organization/pathway-specific blocks
 ```
@@ -87,6 +88,53 @@ headers, footers, tables, numbering, styles, sections, and embedded media.
 Correct source documents or converter logic and regenerate derived packages;
 do not hand-edit generated manifests or block files.
 
+### Template refinements
+
+Automatic conversion reads what an author marked as variable and names each
+blank from the words around it. It cannot tell an editorial note from a blank:
+the originals carry "[written/oral]" alternatives, "[X] days", "[etc.]",
+"Case Caption" markers, sample values like "$X due on X/X/2023", and
+highlighted sentences that are wording to keep. A private
+`template-refinements/<template-slug>.yaml` records what a reviewer decided
+each of those means, and `ingest_document_templates` applies it to the
+original *before* automatic conversion, run by run, so formatting survives and
+whatever the file does not mention is still converted as usual.
+
+A refinement file has `schema_version: 1` and the template's `slug`, and may
+set:
+
+- `title`, `kind`, `description`, `goal`, `negative_goal`, `aliases`, and
+  `jurisdiction` for the package's manifest;
+- `edits`: each `find` is the original's exact wording and must match `count`
+  times (default 1), or name one `occurrence`; `within` narrows the search to
+  paragraphs containing other text. `replace` may hold Jinja, and
+  `delete_paragraph: true` removes the paragraph. Write conditions inline
+  (`{% if %}` inside the sentence), never as paragraph-level markers, which
+  would straddle the converter's own revision wrappers;
+- `caption`: replaces a "Case Caption -- <title>" marker with a caption table
+  (`court` lines, `left` party lines, `right` case-number lines, and `title`);
+- `choices`: named either/or clauses with `{value, label}` options and a
+  `default`, following the Docassemble/AssemblyLine conventions;
+- `fields`: a reviewed `label`, `question`, `kind` (`value` or `narrative`),
+  `type`, `optional: true` for a blank the document reads well without, and
+  `when: {choice: value}` for a field that only applies under one choice;
+- `blocks`: a discovered block's `label`, `type`, or `ai_latitude`.
+- `extends`: a shared file in the same folder, named with a leading `_`, whose
+  settings the template's own override -- e.g. one court's caption and sitting
+  judge, so a change of judge is one edit.
+
+A field's `default` fills it until someone answers, and the pre-draft questions
+show it as a pre-filled answer the advocate can change, so a value that goes
+out of date -- the judge -- is in front of a reviewer on every draft rather
+than baked into the wording.
+
+An edit that no longer matches fails ingestion rather than being skipped, so a
+revised original cannot silently lose a reviewer's decision. The manifest
+records the refinement file's path and checksum, and a changed file
+regenerates the package. Templates use `currency` for amounts and
+`answered_items` to join an optional list into a sentence. Keep refinement files
+in the private provider beside the originals they describe.
+
 Prepared packages are read from `ORGANIZATION_CONTENT_LIBRARY_DIR` before the
 public `CONTENT_LIBRARY_DIR`. The ingestion command writes only to the private
 organization provider. If a provider is unavailable, existing indexed records
@@ -100,7 +148,7 @@ They are applied after prepared packages and database seeds. A block override
 may use `create: true` for a new block or `delete: true` for an obsolete
 ingestion artifact. Keep these files in the private provider, not this repo.
 
-Maintained DOCX and block-body Jinja supports `comma_and_list`, `as_noun`,
+Maintained DOCX and block-body Jinja supports `comma_and_list`, `answered_items`, `currency`, `as_noun`,
 `does_verb`, `did_verb`, `pronoun_subjective`, `pronoun_objective`,
 `pronoun_possessive`, `pronoun_reflexive`, `possessive`, and `answered`.
 Pronoun filters read an explicit `client_pronouns` value such as

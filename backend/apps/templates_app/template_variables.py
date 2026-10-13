@@ -44,6 +44,7 @@ SYSTEM_ALIASES = {
     "advocate_bar_number",
     "advocate_name_and_bar",
     "advocate_signature_block",
+    "advocate_signature",
     "advocate_address",
     "advocate_contact",
     "advocate_signature_image",
@@ -94,6 +95,20 @@ def is_unusable_field_key(key) -> bool:
     return bool(UNUSABLE_FIELD_KEY_TOKENS.intersection(name.split("_")))
 
 
+def signature_lines(name, bar_number="", contact=""):
+    """The block an advocate signs a filing with, and its first two lines.
+
+    The maintained originals say "[INSERT SIGNATURE BLOCK]" and draw a rule to
+    sign on. Both once rendered the office's contact lines alone, so a filing
+    named no attorney and no bar number -- the two things the block is for.
+    Returns ``(block, signature)``: the whole block, and the "/s/" line with the
+    name and bar number for a certificate of service or a brief's closing.
+    """
+    named = f"{name} ({bar_number})" if bar_number else name
+    signature = "\n".join([f"/s/ {name}", named])
+    return "\n".join(line for line in (signature, contact) if line), signature
+
+
 def template_field_label(key):
     return re.sub(r"\s+", " ", str(key or "").replace("_", " ")).strip().title() or "Required field"
 
@@ -119,6 +134,16 @@ ALIAS_TEMPLATE_DATA_KEYS = {
 }
 
 
+def field_defaults(template):
+    """Values a reviewer gave fields in advance, e.g. the judge now sitting.
+
+    They fill a field nobody answered, and the pre-draft questions show them as
+    answers the advocate can change, so they are never silently out of date.
+    """
+    schema = (getattr(template, "metadata", None) or {}).get("fieldSchema") or {}
+    return {key: entry["default"] for key, entry in schema.items() if (entry or {}).get("default")}
+
+
 def template_choice_values(template, template_data):
     """Resolve a template's either/or clauses to a chosen option.
 
@@ -127,7 +152,8 @@ def template_choice_values(template, template_data):
     disappeared because nobody picked a service method would be worse than one
     naming the wrong method, which review catches.
     """
-    choices = (getattr(template, "metadata", None) or {}).get("choices") or []
+    metadata = getattr(template, "metadata", None) or {}
+    choices = metadata.get("choices") or []
     supplied = template_data or {}
     values = {}
     for choice in choices:
@@ -135,6 +161,12 @@ def template_choice_values(template, template_data):
         if not name:
             continue
         values[name] = supplied.get(name) or choice.get("default", "")
+    # A flag keeps highlighted wording the author may want to delete. Nothing
+    # asked about it, so an unset flag silently dropped the passage -- "Plaintiff
+    # will not be prejudiced as ." -- from every export. Kept unless turned off.
+    for flag in metadata.get("flags") or []:
+        value = supplied.get(flag)
+        values[flag] = True if value in (None, "") else value not in (False, "false", "no", "0", 0)
     return values
 
 
@@ -179,6 +211,17 @@ def normalize_docxtpl_blocks(text):
     text = NUMERIC_FIELD_RE.sub(lambda match: f'{match.group(1)}["{match.group(2)}"]', text)
     text = BARE_DEFENDANT_RE.sub("Defendant {{ defendant }}", text)
     text = BARE_CLIENT_NAME_RE.sub("{{ defendant }}", text)
+    # Word types curly quotes into a tag ("{{ fields[“x”] }}"), which Jinja
+    # cannot parse. Only the tags are straightened: replacing quotes across the
+    # whole document turned every “Premises” and Defendant’s in an exported
+    # filing into typewriter quotes.
+    return JINJA_SPAN_RE.sub(lambda match: _straight_quotes(match.group(0)), text)
+
+
+JINJA_SPAN_RE = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.DOTALL)
+
+
+def _straight_quotes(text):
     return text.replace("“", '"').replace("”", '"').replace("‘", "'").replace("’", "'")
 
 
