@@ -55,7 +55,7 @@ from apps.templates_app.placeholders import (
 MANIFEST_VERSION = 2
 # Bump when conversion semantics change without changing the maintained source
 # file, so startup can refresh already-prepared packages safely.
-CONVERTER_VERSION = "2026-08-08-signature-rule-bindings-v1"
+CONVERTER_VERSION = "2026-09-25-fill-in-names-v1"
 
 LATITUDE_LOCKED = "locked"
 LATITUDE_GUIDED = "guided"
@@ -547,7 +547,11 @@ def annotate_document(document, blocks: list[BlockDefinition]) -> dict:
             if paragraph is loop_target or paragraph._p.getparent() is None:
                 continue
             # Remaining instruction-only lines would otherwise print as prose.
-            if BRACKET_RE.fullmatch(" ".join(paragraph.text.split())):
+            # A bracketed value is not an instruction: an affidavit's facts run
+            # on to the signature rule and "[Defendant Name]" beneath it, which
+            # this once deleted, so the filed affidavit named no affiant.
+            instruction = BRACKET_RE.fullmatch(" ".join(paragraph.text.split()))
+            if instruction and is_instruction(instruction.group(1)):
                 paragraph._p.getparent().remove(paragraph._p)
 
     # Every surviving paragraph keeps its wording; only fill-ins are rebound.

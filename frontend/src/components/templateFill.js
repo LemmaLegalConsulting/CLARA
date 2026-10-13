@@ -69,10 +69,11 @@ export function fillSummary(fields, edits = {}) {
   return summary;
 }
 
-// Converted blanks with no nearby words are named placeholder_6_blank_1; the
-// sentence around the blank says more than that name does.
+// The server labels a blank the converter could not name by where it sits
+// ("text after “Case No.”"). Sessions prepared before that still carry the
+// invented name, which says less than nothing.
 export function fieldLabel(field) {
-  return /(^|\.)placeholder_\d+_blank_\d+$/.test(field.path || "") ? "Unnamed blank" : field.label;
+  return /^placeholder \d+( |$)/.test(field.label || "") ? "Unnamed blank" : field.label;
 }
 
 // The paragraph a field appears in, with this field's blank marked and every

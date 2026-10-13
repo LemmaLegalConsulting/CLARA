@@ -101,6 +101,24 @@ SIGNATURE_CUE_RE = re.compile(
     r"respectfully submitted|attorney for|counsel for|signature of", re.I
 )
 
+# A line a person signs by hand: an affiant, a notary, a witness. The advocate's
+# own signature rule is SIGNATURE_CUE_RE above and becomes the signature block.
+SIGNER_CUE_RE = re.compile(r"notary|affiant|signature|witness|sign here", re.I)
+# A jurat is completed by the notary at the signing -- the day, the month, the
+# year -- so its blanks stay blank lines for ink, not prompts to type ahead.
+JURAT_CUE_RE = re.compile(r"sworn to|subscribed|before me", re.I)
+# The fewest underscores that read as a rule to sign on rather than a gap in a
+# sentence.
+SIGNING_RULE_MIN = 10
+# "this ___ day of ___": two blanks with one sentence, so they need two names.
+DAY_BLANK_FOLLOWS_RE = re.compile(r"^\s*(?:st|nd|rd|th)?\s*day\s+of\b", re.I)
+MONTH_BLANK_PRECEDES_RE = re.compile(r"(_{3,})\s*(?:st|nd|rd|th)?\s*day\s+of\s*$", re.I)
+# A party's role said about someone ("I am the Defendant") is the author's
+# wording, not that party's name.
+PARTY_ROLES = {"defendant", "plaintiff", "tenant", "landlord", "petitioner", "respondent", "appellant", "appellee"}
+ARTICLE_BEFORE_RE = re.compile(r"\b(?:the|a|an)\s*$", re.I)
+AFFIANT_CUE_RE = re.compile(r"sworn|depose|affirm", re.I)
+
 # A highlighted span this long with no fill-in cue is alternative wording the
 # advocate keeps or deletes, not a value to supply.
 OPTIONAL_PROSE_MIN_WORDS = 8
@@ -197,6 +215,21 @@ def context_label(text: str, start: int, fallback: str) -> str:
     return fallback
 
 
+def clause_label(text: str, start: int) -> str:
+    """The words of the blank's own clause, back to the nearest comma, bracket,
+    or sentence end -- what a blank means when its sentence is too long to name
+    it by. Only ever consulted where context_label found nothing, so no field
+    that already has a name is renamed."""
+    prefix = JINJA_TOKEN_RE.sub(",", text[:start])
+    clause = re.split(r"[;!?,:()\[\]]", prefix)[-1]
+    # Abbreviations: "Case No. ___" ends at the full stop the blank follows.
+    parts = [part.strip() for part in re.split(r"\.(?=\s|$)", clause) if part.strip()]
+    words = (parts[-1] if parts else "").split()
+    if len(words) > 6 and len(parts) > 1:
+        words = parts[-2].split()
+    return " ".join(words[-6:]).strip(" -–—")
+
+
 def date_context_label(text: str, start: int, fallback: str) -> str:
     """The words before a date, read so that they can say which date it is.
 
@@ -286,6 +319,10 @@ def placeholder_expression(
             return "{{ defendant }}"
         if "attorney" in context_normalized or "counsel" in context_normalized:
             return "{{ advocate_name }}"
+        if AFFIANT_CUE_RE.search(following) and not _says_something(context if context != fallback else ""):
+            # "I, [NAME], being duly sworn" -- the sentence before the blank is
+            # only "I", which named the field `fields.i`.
+            return "{{ fields.affiant_name }}"
         return "{{ fields." + _field_name(context, fallback) + " }}"
 
     if normalized in {"insert", "fill in", "blank"}:
@@ -427,15 +464,50 @@ def _underscore_replacements(text, fallback_prefix, conversion, taken, nearby=""
             index += 1
             fallback = f"{fallback_prefix}_blank_{index}"
             context = context_label(text, match.start(), fallback)
+            if _completed_in_ink(text, match, context, fallback, nearby):
+                taken.append((match.start(), match.end()))
+                continue
+            if context == fallback:
+                # "…Housing Division, Case No. ___" is too long a sentence to be
+                # named by, but its last clause still says what the blank is.
+                context = clause_label(text, match.start()) or fallback
             label = "" if pattern is UNDERSCORE_RE else "year"
             if label == "year":
                 expression = "{{ fields.filing_year }}"
             else:
-                expression = placeholder_expression("", fallback, context=context, nearby=nearby)
+                expression = _date_part_expression(text, match, fallback) or placeholder_expression(
+                    "", fallback, context=context, nearby=nearby
+                )
             _record(conversion, expression)
             replacements.append(_Replacement(match.start(), match.end(), expression))
             taken.append((match.start(), match.end()))
     return replacements
+
+
+def _completed_in_ink(text, match, context, fallback, nearby):
+    """A blank someone fills by hand at signing, which stays a blank line."""
+    if JURAT_CUE_RE.search(text):
+        return True
+    if match.end() - match.start() < SIGNING_RULE_MIN:
+        return False
+    if context != fallback and _says_something(context):
+        return False
+    if SIGNATURE_CUE_RE.search(context) or SIGNATURE_CUE_RE.search(nearby or ""):
+        # The advocate's own rule becomes their signature block instead.
+        return False
+    return bool(SIGNER_CUE_RE.search(text) or SIGNER_CUE_RE.search(nearby or ""))
+
+
+def _date_part_expression(text, match, fallback):
+    """Name the day and the month of "this ___ day of ___" apart."""
+    if DAY_BLANK_FOLLOWS_RE.match(text[match.end():]):
+        base = _field_name(context_label(text, match.start(), fallback), fallback)
+        return "{{ fields." + base + "_day }}"
+    day = MONTH_BLANK_PRECEDES_RE.search(text[: match.start()])
+    if day:
+        base = _field_name(context_label(text, day.start(1), fallback), fallback)
+        return "{{ fields." + base + "_month }}"
+    return None
 
 
 def _flag_name(text, fallback):
@@ -476,10 +548,20 @@ def _highlight_replacements(paragraph, text, fallback_prefix, conversion, taken,
             continue
         if not looks_like_placeholder(stripped):
             continue
+        if _normalize(stripped).casefold() in PARTY_ROLES and ARTICLE_BEFORE_RE.search(text[:start]):
+            # "I am the Defendant": the role, kept as the author wrote it, like
+            # any other highlighted wording that is not a value to supply.
+            continue
         context = context_label(text, start, fallback)
         if is_instruction(stripped):
             conversion.instructions.append(_normalize(stripped))
-        expression = placeholder_expression(stripped, fallback, context=context, nearby=nearby)
+        clause = clause_label(text, start)
+        if re.search(r"\w", stripped) and not PLACEHOLDER_CUE_RE.search(stripped) and _says_something(clause):
+            # A highlighted sample value ("COUNTY OF CUYAHOGA", "owes Plaintiff
+            # $X") says what goes there by example; its clause says what it is.
+            expression = "{{ fields." + _field_name(clause, fallback) + " }}"
+        else:
+            expression = placeholder_expression(stripped, fallback, context=context, nearby=nearby)
         _record(conversion, expression)
         replacements.append(_Replacement(start, end, expression))
         taken.append((start, end))

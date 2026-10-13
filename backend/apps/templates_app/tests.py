@@ -19,6 +19,7 @@ from apps.templates_app.ingestion import (
     LATITUDE_GENERATE,
     LATITUDE_GUIDED,
     LATITUDE_LOCKED,
+    annotate_document,
     classify_latitude,
     discover_blocks,
     ingest_docx,
@@ -174,6 +175,81 @@ class PlaceholderConversionTests(TestCase):
         self.assertIn('blocks["statement-case"]["items"]', converted)
         self.assertIn("{{ fields.filing_date }}", converted)
         self.assertEqual(sorted(conversion.fields), ["fields.filing_date"])
+
+
+class AffidavitFillInNamingTests(TestCase):
+    """Each fill-in in the library affidavit had a name that said nothing, or
+    shared one with a different blank, and Word showed the name as the prompt:
+    "[Enter placeholder 6 blank 1]", "[Enter i]", one answer for both the day
+    and the month."""
+
+    def convert(self, *parts, nearby=""):
+        paragraph = Document().add_paragraph()
+        for text, highlighted in parts:
+            (highlighted_run(paragraph, text) if highlighted else paragraph.add_run(text))
+        conversion = convert_paragraph(paragraph, "placeholder_6", nearby)
+        return paragraph.text, conversion
+
+    def test_blank_in_a_long_sentence_is_named_by_its_own_clause(self):
+        text, _ = self.convert(("I am the Defendant in [Case Name], Cleveland Municipal Court, Housing DivisionCase No. ___. ", False))
+        self.assertIn("Case No. {{ case_number }}", text)
+
+    def test_a_highlighted_role_is_the_authors_wording_not_the_clients_name(self):
+        text, _ = self.convert(("I am the ", False), ("Defendant", True), (" in this case.", False))
+        self.assertEqual(text, "I am the Defendant in this case.")
+        caption, _ = self.convert(("Now comes ", False), ("[DEFENDANT NAME]", True))
+        self.assertIn("{{ defendant }}", caption)
+
+    def test_the_affiant_is_named_for_what_they_swear(self):
+        text, conversion = self.convert(("I, [NAME], being duly sworn, depose and state:", False))
+        self.assertIn("{{ fields.affiant_name }}", text)
+        self.assertEqual(conversion.fields, {"fields.affiant_name"})
+
+    def test_a_highlighted_sample_value_is_named_by_its_clause(self):
+        text, _ = self.convert(("COUNTY OF ", False), ("CUYAHOGA", True), ("\t:", False))
+        self.assertIn("{{ fields.county }}", text)
+        amounts, _ = self.convert(("Defendant owes Plaintiff ", False), ("$X", True), (" for back rent. (Rent is ", False), ("$X", True), (" per month.)", False))
+        self.assertIn("{{ fields.defendant_owes_plaintiff }}", amounts)
+        self.assertIn("{{ fields.rent }}", amounts)
+
+    def test_a_jurat_and_signing_rules_stay_lines_for_ink(self):
+        jurat = "SWORN TO, BEFORE ME, and subscribed in my presence this _____day of ________________, 202___. "
+        text, conversion = self.convert((jurat, False))
+        self.assertEqual(text, jurat)
+        self.assertFalse(conversion.fields)
+        rule, _ = self.convert(("____________________________", False), nearby="Further affiant sayeth naught.\n[Defendant Name]")
+        self.assertEqual(rule, "____________________________")
+        notary, _ = self.convert(("\t\t_____________________________\t\tNotary Public", False))
+        self.assertIn("_____________________________", notary)
+        # The advocate's own rule is still their signature block.
+        advocate, _ = self.convert(("____________________________", False), nearby="Respectfully submitted,\nAttorney for Defendant")
+        self.assertIn("{{ advocate_signature_block }}", advocate)
+
+    def test_a_bracketed_value_in_a_generated_section_survives(self):
+        # The affidavit's facts section runs on to the signature rule, and the
+        # instruction clean-up deleted "[Defendant Name]" beneath it.
+        document = Document()
+        document.add_heading("FACTS", level=1)
+        document.add_paragraph("[Insert case specific facts]")
+        document.add_paragraph("[Synopsis of situation]")
+        document.add_paragraph("Further affiant sayeth naught.")
+        document.add_paragraph("____________________________")
+        document.add_paragraph("[Defendant Name]")
+        blocks = discover_blocks(document)
+        self.assertEqual(classify_latitude(document, blocks[0]), LATITUDE_GENERATE)
+
+        annotate_document(document, blocks)
+
+        text = [paragraph.text for paragraph in document.paragraphs]
+        self.assertIn("{{ defendant }}", text)
+        self.assertIn("____________________________", text)
+        self.assertFalse(any("Synopsis" in line for line in text), "an instruction is still removed")
+
+    def test_day_and_month_outside_a_jurat_are_two_fields(self):
+        text, conversion = self.convert(("Signed this ___ day of ________, 20__.", False))
+        self.assertIn("{{ fields.signed_day }}", text)
+        self.assertIn("{{ fields.signed_month }}", text)
+        self.assertEqual(conversion.fields, {"fields.signed_day", "fields.signed_month", "fields.filing_year"})
 
 
 class HeadingAndLatitudeTests(TestCase):

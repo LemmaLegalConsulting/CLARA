@@ -164,6 +164,16 @@ class TemplateFillTests(TestCase):
         self.assertEqual(fields["caption"]["context"], [{"text": "I am the "}, {"fields": ["role"]}, {"text": " in "}, {"fields": ["caption"]}, {"text": "."}])
         self.assertEqual(fields["fields['signature']"]["context"], [{"text": "Further affiant sayeth naught."}, {"break": True}, {"fields": ["fields['signature']"]}, {"break": True}, {"text": "NOTARY PUBLIC"}])
 
+    def test_an_unnamed_blank_is_prompted_by_where_it_sits(self):
+        session = self.upload("Case No. {{ fields.placeholder_6_blank_1 }}.")
+        field = next(f for f in session.fill_state["fields"] if f["path"] == "fields.placeholder_6_blank_1")
+        self.assertEqual(field["label"], "text after \u201cMaintained wording: Case No.\u201d")
+        result = self.export(session).json()["job"]
+        content = self.client.get(f"/api/template-fill/jobs/{result['id']}/file/").content
+        text = " ".join(p.text for p in Document(io.BytesIO(content)).paragraphs)
+        self.assertIn("[Enter text after \u201cMaintained wording: Case No.\u201d]", text)
+        self.assertNotIn("placeholder", text)
+
     def test_generation_slot_the_document_never_prints_is_not_offered(self):
         template = DocumentTemplate.objects.create(title="Affidavit", slug="fill-affidavit", kind="affidavit")
         TemplateBlock.objects.create(template=template, key="facts", label="Facts", block_type="facts", body='{{ blocks["facts"]["body"] }}', ai_latitude="generate", ai_instructions=["Insert case specific facts"])

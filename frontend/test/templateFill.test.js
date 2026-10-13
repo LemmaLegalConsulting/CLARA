@@ -49,6 +49,7 @@ test("the context marks this field's blank and shows what the others hold", () =
   ]);
   assert.equal(contextPieces(fields[1], fields, { caption: "Smith v. Jones" })[3].text, "Smith v. Jones");
   assert.equal(fieldLabel(fields[0]), "role");
+  assert.equal(fieldLabel({ path: "fields.placeholder_6_blank_1", label: "text after “Case No.”" }), "text after “Case No.”");
   assert.deepEqual(contextPieces({ key: "old", context: "Saved before contexts were structured" }, []), [{ kind: "text", text: "Saved before contexts were structured" }]);
 });
 
