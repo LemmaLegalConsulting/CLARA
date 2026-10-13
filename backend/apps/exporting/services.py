@@ -23,6 +23,8 @@ from apps.templates_app.content_library import full_template_path, resolve_conte
 from apps.templates_app.spreadsheets import render_workbook
 from apps.templates_app.template_variables import (
     normalize_docxtpl_blocks,
+    field_defaults,
+    signature_lines,
     template_choice_values,
     template_field_values,
 )
@@ -244,19 +246,60 @@ def _normalized_body(text):
     return re.sub(r"\s+", " ", str(text or "")).strip()
 
 
-def _block_revision(body, maintained_body):
+def _block_revision(body, maintained_body, template_body=None):
     """The edited text for a block, or "" when it still matches the template.
 
     A prepared template renders the maintained wording with its original styling
     and inline formatting. Substituting plain text back in would throw that away,
     so a section that nobody changed must render from the DOCX, not from its
     plain-text copy in the draft.
+
+    "Nobody changed" is judged against what the template produced when the
+    draft was composed (``template_body``), not against the block's Jinja
+    source: the draft holds the source *rendered*, which never equals the
+    source, so every section with a fill-in once exported as plain text -- the
+    certificate with both service alternatives and "[OR]" between them, and the
+    brief without its signature.
     """
     if not _normalized_body(body):
         return ""
     if _normalized_body(body) == _normalized_body(maintained_body):
         return ""
+    if template_body is not None and _normalized_body(body) == _normalized_body(template_body):
+        return ""
     return body
+
+
+def _current_template_bodies(draft, template):
+    """A lookup confirming a section's recorded template text is still what the
+    template renders.
+
+    The formatted Word original is rendered at export from the current case
+    data. That is only the text the reviewer approved while it still renders
+    to the same words; once an answer or the template has changed since the
+    draft was composed, the draft's own text is what gets exported.
+    """
+    rendered = {}
+
+    def lookup(key, template_body):
+        if template is None or template_body is None:
+            return None
+        if key not in rendered:
+            from apps.ai.services import drafting_ai
+            from apps.drafting.services import regeneration_context
+
+            block = template.blocks.filter(key=key).first()
+            if block is None:
+                rendered[key] = None
+            else:
+                context = rendered.setdefault("__context__", regeneration_context(draft.session, template=template))
+                rendered[key] = drafting_ai.normalize_generated_text(drafting_ai.render_template_body(block.body, context))
+        current = rendered[key]
+        if current is None or _normalized_body(current) != _normalized_body(template_body):
+            return None
+        return template_body
+
+    return lookup
 
 
 def _selected_facts(session):
@@ -280,6 +323,7 @@ def _docx_render_context(draft, section):
     matter = session.matter
     template = _draft_template(draft)
     author = _author_context(session.author_profile)
+    signature_block, signature = signature_lines(author["display_name"], author["bar_number"], author["contact"])
     matter_data = _matter_context(matter)
     sections = draft.sections or []
     block_context = {}
@@ -298,6 +342,7 @@ def _docx_render_context(draft, section):
             for block in template.blocks.all()
         }
         maintained_bodies = {block.key: block.body or "" for block in template.blocks.all()}
+    current_template_body = _current_template_bodies(draft, template)
     for draft_section in sections:
         section_format = draft_section.get("format") or {}
         body = draft_section.get("body", "")
@@ -312,12 +357,14 @@ def _docx_render_context(draft, section):
             "numbered": numbered,
             "format": section_format,
             "numbered_items": [f"{index}. {item}" for index, item in enumerate(items, start=1)] if numbered else items,
-            "revision": _block_revision(body, maintained_bodies.get(key, "")),
+            "revision": _block_revision(
+                body, maintained_bodies.get(key, ""), current_template_body(key, draft_section.get("templateBody"))
+            ),
         }
     from apps.matters.client_letter_context import letter_template_fields
 
     case_fields, _field_sources = letter_template_fields(matter)
-    template_values = {**case_fields, **(session.template_data or {})}
+    template_values = {**field_defaults(template), **case_fields, **(session.template_data or {})}
     fields = template_field_values(template_values)
     client = {
         "name": matter_data["client_name"],
@@ -345,6 +392,9 @@ def _docx_render_context(draft, section):
         "court": matter_data["jurisdiction"] or getattr(template, "jurisdiction", ""),
         "plaintiff": fields["plaintiff_name"],
         "defendant": matter_data["client_name"],
+        # The client by name where the client is not the defendant: the
+        # appellant in an administrative appeal.
+        "client_name": matter_data["client_name"],
         "case_number": (
             (session.template_data or {}).get("court_case_number")
             or template_values.get("case_number")
@@ -364,7 +414,8 @@ def _docx_render_context(draft, section):
             if author["bar_number"]
             else author["display_name"]
         ),
-        "advocate_signature_block": author["contact"] or author["display_name"],
+        "advocate_signature_block": signature_block,
+        "advocate_signature": signature,
         "advocate_address": author["address"],
         "advocate_contact": author["contact"],
         "advocate_signature_image": author["signature_image"],

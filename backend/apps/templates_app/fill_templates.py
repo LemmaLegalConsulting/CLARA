@@ -214,6 +214,12 @@ def inspect_docx(content):
     lines = [line for line in (context_segments(p.text, parsed) for p in story_paragraphs(Document(io.BytesIO(content)))) if line]
     for field in parsed.values():
         field["context"] = field_context(lines, field["key"])
+    labels = {}
+    for field in parsed.values():
+        if AUTO_NAME.search(field["path"]):
+            label = describe_position(field["context"], field["key"])
+            labels[label] = labels.get(label, 0) + 1
+            field["label"] = label if labels[label] == 1 else f"{label} ({labels[label]})"
     # In document order, so the form reads the way the document does; fields
     # used only in conditions or loops follow.
     def first_use(field):
@@ -223,6 +229,57 @@ def inspect_docx(content):
 
 
 EXPRESSION = re.compile(r"\{\{(.*?)\}\}")
+# Names the converter invents when a blank has no words to be named by. They
+# reach Word as the prompt text, so "[Enter placeholder 6 blank 1]" is replaced
+# by where the blank is.
+AUTO_NAME = re.compile(r"(^|\.)placeholder_\d+(_\w+)?$")
+LABEL_WORDS = 5
+
+
+def _quote(words):
+    return "\u201c" + " ".join(words) + "\u201d"
+
+
+def describe_position(context, key):
+    """Say where a blank sits, from the words of its own line or the line next
+    to it: 'text after "Case No."', 'line above "Notary Public"'."""
+    lines, current = [], []
+    for segment in context:
+        if segment.get("break"):
+            lines.append(current)
+            current = []
+        else:
+            current.append(segment)
+    lines.append(current)
+    index = next((i for i, line in enumerate(lines) if any(key in s.get("fields", ()) for s in line)), None)
+    if index is None:
+        return "text"
+    line = lines[index]
+    position = next(i for i, s in enumerate(line) if key in s.get("fields", ()))
+
+    def words(segments):
+        text = "".join(s.get("text", "") for s in segments)
+        return text.split() if re.search(r"\w", text) else []
+
+    before = []
+    for segment in reversed(line[:position]):
+        if "fields" in segment:
+            break
+        before.insert(0, segment)
+    after = []
+    for segment in line[position + 1:]:
+        if "fields" in segment:
+            break
+        after.append(segment)
+    if words(before):
+        return f"text after {_quote(words(before)[-LABEL_WORDS:])}"
+    if words(after):
+        return f"text before {_quote(words(after)[:LABEL_WORDS])}"
+    if index + 1 < len(lines) and words(lines[index + 1]):
+        return f"line above {_quote(words(lines[index + 1])[:LABEL_WORDS])}"
+    if index > 0 and words(lines[index - 1]):
+        return f"line below {_quote(words(lines[index - 1])[-LABEL_WORDS:])}"
+    return "text"
 
 
 def _slot_keys(expression, fields):

@@ -122,6 +122,9 @@ class TemplateFieldRequest:
     context: str = ""
     block_key: str = ""
     block_label: str = ""
+    # A blank the template reads well without -- no other occupants, no
+    # magistrate assigned yet -- so leaving it empty is an answer.
+    optional: bool = False
 
 
 def canonical_field_key(key):
@@ -219,6 +222,29 @@ def _as_directive(text):
     return cleaned if cleaned.endswith("?") else f"{cleaned}."
 
 
+def field_applies(template, key, template_data=None):
+    """False when a reviewed field only matters under a choice not taken.
+
+    A refinement file can say a fill-in applies `when` a choice has a value --
+    the subsidy amounts only when the tenancy is subsidized, the landlord's
+    email only when the letter goes by email. Asking the rest anyway makes the
+    advocate answer questions whose answers never print.
+    """
+    from apps.templates_app.template_variables import template_choice_values
+
+    schemas = (getattr(template, "metadata", None) or {}).get("fieldSchema") or {}
+    schema = next((schemas[name] for name in field_keys_for_answer(key) if schemas.get(name)), {})
+    conditions = schema.get("when") or {}
+    if not conditions:
+        return True
+    chosen = template_choice_values(template, template_data or {})
+    for choice, allowed in conditions.items():
+        allowed = allowed if isinstance(allowed, list) else [allowed]
+        if chosen.get(choice) not in allowed:
+            return False
+    return True
+
+
 def template_field_requests(template):
     """Classify every blank a template declares.
 
@@ -230,6 +256,9 @@ def template_field_requests(template):
         return []
     blocks = list(template.blocks.all())
     instructions = _instruction_index(blocks)
+    # What a reviewer wrote about a fill-in in the template's refinement file
+    # outranks everything inferred from its name.
+    schema = (getattr(template, "metadata", None) or {}).get("fieldSchema") or {}
 
     # A canonical field can be declared under more than one name, and the
     # template sentence worth showing may sit under either of them.
@@ -242,7 +271,10 @@ def template_field_requests(template):
 
     requests = []
     for key, raw_keys in declared.items():
-        label = template_field_label(key)
+        # A reviewer may have written up the field under any name the template
+        # binds it to.
+        reviewed = next((schema[name] for name in (key, *raw_keys) if schema.get(name)), {})
+        label = reviewed.get("label") or template_field_label(key)
         using_blocks = [
             block
             for block in blocks
@@ -284,6 +316,18 @@ def template_field_requests(template):
                 "What date belongs in this sentence?" if key.endswith("_date") else f"What is the {label.lower()}?"
             )
 
+        if reviewed:
+            # A field a reviewer wrote up is never conversion debris, and their
+            # kind and wording replace whatever its name suggested.
+            if kind == KIND_UNUSABLE:
+                kind, question = KIND_VALUE, f"What is the {label.lower()}?"
+            if reviewed.get("kind") in (KIND_VALUE, KIND_NARRATIVE):
+                kind = reviewed["kind"]
+                if not reviewed.get("question"):
+                    question = _as_directive(label) if kind == KIND_NARRATIVE else f"What is the {label.lower()}?"
+            question = reviewed.get("question") or question
+            block = block or instruction_block
+
         requests.append(
             TemplateFieldRequest(
                 key=key,
@@ -294,6 +338,7 @@ def template_field_requests(template):
                 context=context,
                 block_key=getattr(block, "key", ""),
                 block_label=getattr(block, "label", ""),
+                optional=bool(reviewed.get("optional")),
             )
         )
     return requests

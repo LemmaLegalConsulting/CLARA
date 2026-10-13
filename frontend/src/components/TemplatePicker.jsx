@@ -1,6 +1,6 @@
 import React from "react";
 
-import { templateChoices } from "./templateChoices.js";
+import { alternativeDefaultLabel, alternativeOptions, templateChoices } from "./templateChoices.js";
 
 function fieldLabel(path) {
   const key = path.replace(/^fields\./, "");
@@ -53,9 +53,9 @@ export function TemplatePicker({
                 value={templateData?.[choice.name] ?? ""}
                 onChange={(event) => onTemplateDataChange({ ...templateData, [choice.name]: event.target.value })}
               >
-                <option value="">Use the default ({choice.default})</option>
-                {(choice.options || []).map((option) => (
-                  <option key={option} value={option}>{fieldLabel(option)}</option>
+                <option value="">Use the default ({alternativeDefaultLabel(choice)})</option>
+                {alternativeOptions(choice).map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
             </label>
@@ -98,13 +98,14 @@ export function TemplatePicker({
                   <span>{label}</span>
                   <textarea
                     className="form-control"
+                    aria-describedby={`${key}-help`}
                     value={Array.isArray(value) ? value.join("\n") : value}
-                    placeholder={schema.placeholder || "One item per line"}
                     onChange={(event) => onTemplateDataChange({
                       ...templateData,
                       [key]: event.target.value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean),
                     })}
                   />
+                  <small className="muted" id={`${key}-help`}>{schema.help || "One item per line."}</small>
                 </label>
               );
             }

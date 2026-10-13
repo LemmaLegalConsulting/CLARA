@@ -133,6 +133,12 @@ def _template_metadata(manifest: dict) -> dict:
         "render": manifest.get("render", {}),
         "fields": manifest.get("fields", []),
         "choices": manifest.get("choices", []),
+        # Highlighted wording the converter put behind a toggle. It renders
+        # unless someone turns it off; see template_choice_values.
+        "flags": manifest.get("flags", []),
+        # Labels, questions, and kinds a reviewer wrote for the template's
+        # fill-ins in its refinement file.
+        "fieldSchema": manifest.get("field_schema") or {},
         "source": manifest.get("source", {}),
         # A filing that answers the other side's filing names it; see
         # apps.drafting.responding_to.

@@ -290,6 +290,19 @@ SYNC_PRIVATE_CONTENT=true \
   ./scripts/deploy_azure_containerapps.sh      # → raw/private-content/, then published
 ```
 
+To upload content or change configuration without rebuilding, reuse an image
+already in the registry. `IMAGE_TAG` is required then, and the script checks the
+tag exists before deploying it:
+
+```bash
+BUILD_IMAGE=false IMAGE_TAG=<tag> SYNC_PRIVATE_CONTENT=true \
+  ./scripts/deploy_azure_containerapps.sh
+```
+
+The private-content upload leaves out `caselaw-artifacts/` (it has its own
+area) and `storage/`, a checkout's local document store, which holds filled
+documents from template-fill sessions.
+
 Switching to S3 is configuration, not code: set `DOCUMENT_STORAGE_BACKEND=s3`
 with a bucket and keys, and install `boto3`. See
 [`docs/CASELAW_INGESTION.md`](CASELAW_INGESTION.md) for the one caveat about

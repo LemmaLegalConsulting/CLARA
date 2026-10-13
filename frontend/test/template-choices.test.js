@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  alternativeDefaultLabel,
+  alternativeOptions,
   TEMPLATE_PLACEHOLDER_VALUE,
   isTemplateChosen,
   templateChoices,
@@ -44,4 +46,17 @@ test("the placeholder does not count as a chosen template", () => {
   assert.equal(isTemplateChosen(""), false);
   assert.equal(isTemplateChosen("1"), true);
   assert.equal(isTemplateChosen(1), true);
+});
+
+test("either/or options read the same whether named or bare", () => {
+  const choice = {
+    name: "lease_form",
+    default: "written",
+    options: [{ value: "written", label: "Written" }, "month_to_month"],
+  };
+  assert.deepEqual(alternativeOptions(choice), [
+    { value: "written", label: "Written" },
+    { value: "month_to_month", label: "Month to month" },
+  ]);
+  assert.equal(alternativeDefaultLabel(choice), "Written");
 });
