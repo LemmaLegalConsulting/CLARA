@@ -374,11 +374,23 @@ If the GitHub repository is renamed again, update both OIDC subjects below to
 match before running a deployment. Repository secrets and variables remain on
 the renamed repository.
 
+This repository uses GitHub's immutable OIDC subject format, including numeric
+owner and repository IDs. Read the exact prefix rather than constructing it from
+the repository name:
+
+```bash
+gh api repos/LemmaLegalConsulting/CLARA/actions/oidc/customization/sub
+```
+
+Append `:ref:refs/heads/main` or `:environment:production` to the returned
+`sub_claim_prefix`. A name-only subject fails Azure login with `AADSTS700213`.
+See [GitHub's OIDC reference](https://docs.github.com/en/actions/reference/security/oidc).
+
 Two federated credentials exist:
 
-- `gh-main` — `repo:LemmaLegalConsulting/CLARA:ref:refs/heads/main`, used by
+- `gh-main` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:ref:refs/heads/main`, used by
   the workflow as written.
-- `gh-env-production` — `repo:LemmaLegalConsulting/CLARA:environment:production`,
+- `gh-env-production` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:environment:production`,
   unused until you uncomment `environment: production` in the deploy job. Do that
   to require manual approval before production, configuring reviewers on a
   `production` environment in repository settings.
