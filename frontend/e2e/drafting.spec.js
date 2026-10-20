@@ -9,8 +9,7 @@ import { apiCall, guardNetwork, modelTimeout, openScreen, selectCase, signIn } f
 // document and generation is the slow, model-backed part.
 
 const HEAT_CASE = { caseNumber: "26-0000085", client: "Christopher Anderson" };
-const HEAT_TEMPLATE = "CLE Emergency Motion for Heat";
-const writesAllowed = process.env.E2E_ALLOW_LEGALSERVER_WRITES === "1";
+const HEAT_TEMPLATE = "Defendant's Emergency Motion for Heat (Cleveland Housing Court)";
 
 const isDraftsPost = (response) =>
   /\/drafting-sessions\/\d+\/drafts\/$/.test(new URL(response.url()).pathname) && response.request().method() === "POST";
@@ -122,21 +121,21 @@ test.describe("drafting from a known template", () => {
     });
 
     await test.step("export carries the human edit into the Word file", async () => {
+      await page.locator(".legalserver-save input[type=checkbox]").uncheck();
       const exportResponse = page.waitForResponse((response) => /\/drafts\/\d+\/export\//.test(new URL(response.url()).pathname));
       const download = page.waitForEvent("download");
       await page.getByRole("button", { name: "Export to Word" }).click();
       const response = await exportResponse;
       expect(response.status()).toBe(200);
+      expect(new URL(response.url()).searchParams.get("saveToLegalServer")).toBe("0");
       const file = await download;
       expect(file.suggestedFilename()).toMatch(/\.docx$/);
       const text = docxText(await file.path());
       expect(text, "an advocate's edit must reach the export").toContain(marker);
       expect(text).toMatch(/Emergency Motion/i);
-      // The save-to-LegalServer outcome rides on a header the app must be able
-      // to read cross-origin; it must state what happened, never be silent.
-      const delivery = response.headers()["x-legalserver-delivery"];
-      expect(delivery, "the export reports its LegalServer outcome").toBeTruthy();
-      if (!writesAllowed) expect(delivery).not.toBe("saved");
+      // This demo journey opts out explicitly, so the server must not create a
+      // LegalServer delivery record or make a remote write.
+      expect(response.headers()["x-legalserver-delivery"]).toBeUndefined();
     });
 
     guard.assertClean();
