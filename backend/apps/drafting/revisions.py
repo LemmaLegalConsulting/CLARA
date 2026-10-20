@@ -109,10 +109,20 @@ def check_session_revision(session, payload):
 def locked_draft_at_revision(draft_id, payload):
     """The draft, locked for this transaction, if the save names its revision."""
     expected = parse_revision(payload.get("revision"))
-    draft = DraftDocument.objects.select_for_update().select_related("session", "template").get(pk=draft_id)
+    draft = _locked_draft_queryset().get(pk=draft_id)
     if draft.revision != expected:
         raise StaleRevision(draft)
     return draft
+
+
+def _locked_draft_queryset():
+    """Lock the draft row while eager-loading its nullable template relation.
+
+    PostgreSQL rejects an unrestricted ``FOR UPDATE`` across a nullable
+    ``select_related`` join. Limiting the lock to this queryset's base row
+    keeps the eager load and protects the revision check.
+    """
+    return DraftDocument.objects.select_for_update(of=("self",)).select_related("session", "template")
 
 
 def validation_state(draft):
