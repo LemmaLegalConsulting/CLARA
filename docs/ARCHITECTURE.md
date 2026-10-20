@@ -1,4 +1,4 @@
-# Legal Drafting Tool Architecture
+# CLARA — Cleveland Legal Aid Research Assistant Architecture
 
 This implementation is organized around reviewable workflow boundaries rather than a single free-form agent.
 

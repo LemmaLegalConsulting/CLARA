@@ -11,7 +11,6 @@ import {
   Download,
   FileText,
   FolderOpen,
-  Gavel,
   Layers3,
   LogIn,
   LogOut,
@@ -1543,7 +1542,7 @@ export function App() {
       <main className="login-screen">
         <WakingNotice />
         <form className="login-panel" onSubmit={handleLogin}>
-          <div className="brand login-brand"><div className="brand-icon"><Gavel size={22} /></div><h1>Drafting Tool</h1></div>
+          <h1 className="brand login-brand"><img className="clara-logo" src="/clara-1-lighthouse.svg" alt="CLARA — Cleveland Legal Aid Research Assistant" /></h1>
           <label className="field"><span>Username</span><input className="form-control" autoComplete="username" value={credentials.username} onChange={(event) => setCredentials((current) => ({ ...current, username: event.target.value }))} /></label>
           <label className="field"><span>Secret</span><input className="form-control" autoComplete={"current-" + "password"} type={"pass" + "word"} value={credentials.secret} onChange={(event) => setCredentials((current) => ({ ...current, secret: event.target.value }))} /></label>
           <button className="btn btn-light full" type="button" disabled={authBusy} onClick={handleOffice365Login}>{authBusy ? <Loader2 className="spin" size={16} /> : <Cloud size={16} />} Sign in with Office 365</button>
@@ -1559,7 +1558,7 @@ export function App() {
     <div className="app-shell">
       <WakingNotice />
       <aside className="sidebar">
-        <div className="brand"><div className="brand-icon"><Gavel size={22} /></div><div><span className="brand-title">Drafting Tool</span></div></div>
+        <div className="brand"><img className="clara-logo" src="/clara-1-lighthouse-on-dark.svg" alt="CLARA — Cleveland Legal Aid Research Assistant" /></div>
         <nav className="mode-list">{modeOptions.map((item) => { const Icon = item.icon; return <button key={item.id} className={mode === item.id ? "active" : ""} onClick={() => goToMode(item.id)}><Icon size={18} /><span className="mode-item-label"><span>{item.label}</span>{item.id === "draft" && selectedDraftDocument && <small>Document: {selectedDraftDocument.title}</small>}</span></button>; })}</nav>
         {["goal", "plan", "questions", "editor"].includes(draftScreen) && <WorkflowStepper steps={workflowSteps} activeStep={draftStep} onSelect={showDraftStep} />}
         <div className="source-card">

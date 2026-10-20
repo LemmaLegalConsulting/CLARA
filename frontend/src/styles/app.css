@@ -190,6 +190,13 @@ button:disabled {
   width: 100%;
 }
 
+.clara-logo {
+  display: block;
+  height: auto;
+  width: 100%;
+  max-width: 358px;
+}
+
 .login-brand {
   margin-bottom: 4px;
 }

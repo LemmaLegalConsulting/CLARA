@@ -1,6 +1,6 @@
 # Sample Eviction Defense Briefs for Argument Gym Testing & Validation
 
-This directory contains four realistic Microsoft Word (`.docx`) briefs representing residential eviction defense filings across different Ohio municipal jurisdictions. They are designed for testing and validating the **HaddenDraft Argument Gym** adversarial review pipeline and deterministic drafting validation checks.
+This directory contains four realistic Microsoft Word (`.docx`) briefs representing residential eviction defense filings across different Ohio municipal jurisdictions. They are designed for testing and validating the **CLARA Argument Gym** adversarial review pipeline and deterministic drafting validation checks.
 
 ---
 

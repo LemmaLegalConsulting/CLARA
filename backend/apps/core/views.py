@@ -45,7 +45,7 @@ def bootstrap(_request):
                 source["status"] = f"Connected as {legalserver_status['identifier']}"
     return JsonResponse(
         {
-            "product": "Drafting Tool",
+            "product": "CLARA",
             "jurisdictions": [
                 "Cleveland Municipal Court - Housing Division",
                 "Cuyahoga County Court of Common Pleas",

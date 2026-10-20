@@ -73,7 +73,7 @@ def draft_ai_audit(draft):
     return {
         "schemaVersion": AUDIT_SCHEMA_VERSION,
         "createdAt": timezone.now().isoformat(),
-        "generator": "Legal Drafting Tool",
+        "generator": "CLARA",
         "document": {
             "draftId": getattr(draft, "pk", None) or getattr(draft, "id", None),
             "title": getattr(draft, "title", ""),

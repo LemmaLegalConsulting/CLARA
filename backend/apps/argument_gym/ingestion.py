@@ -1,6 +1,6 @@
 """Structured ingestion for externally authored briefs.
 
-A HaddenDraft-native draft already has stable anchors: every section is a
+A CLARA-native draft already has stable anchors: every section is a
 ``DocumentComponent`` with a key that survives a rewrite. An uploaded brief has
 none, so a challenge against "the third paragraph of Part III.A" would have
 nothing to point at after the file is re-uploaded.
@@ -469,7 +469,7 @@ def structure_units(paragraphs):
 
 
 def units_from_sections(sections):
-    """Structure a HaddenDraft-native document from its component sections.
+    """Structure a CLARA-native document from its component sections.
 
     A native draft is already anchored, so each unit carries the block key the
     revision machinery uses rather than a synthesized locator.
