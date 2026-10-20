@@ -361,17 +361,24 @@ Authentication is federated (OIDC) — there is no client secret to rotate.
 | `AZURE_TENANT_ID` | `95fa40d6-b304-4081-bb6a-48d99c2b75ad` |
 | `AZURE_SUBSCRIPTION_ID` | `4f62b1f4-b38c-44f3-9c3f-aedaf2d12d2a` |
 
-The app registration is `HaddenDraft-GitHubActions-Deploy`. Its service principal
+The app registration is `CLARA-GitHubActions-Deploy`. Its service principal
 holds `Contributor` scoped to exactly three resources — the registry, the
 container app, and the bootstrap job — and nothing at subscription or resource
 group level. Registry access is `Contributor` rather than `AcrPush` because
 `az acr build` needs `registries/scheduleRun/action`, which `AcrPush` lacks.
 
+The GitHub repository is `LemmaLegalConsulting/CLARA`. The Azure resource names,
+image repository, database names, and public hostnames retain their existing
+identifiers; renaming the product does not provision replacement infrastructure.
+If the GitHub repository is renamed again, update both OIDC subjects below to
+match before running a deployment. Repository secrets and variables remain on
+the renamed repository.
+
 Two federated credentials exist:
 
-- `gh-main` — `repo:LemmaLegalConsulting/HaddenDraft:ref:refs/heads/main`, used by
+- `gh-main` — `repo:LemmaLegalConsulting/CLARA:ref:refs/heads/main`, used by
   the workflow as written.
-- `gh-env-production` — `repo:LemmaLegalConsulting/HaddenDraft:environment:production`,
+- `gh-env-production` — `repo:LemmaLegalConsulting/CLARA:environment:production`,
   unused until you uncomment `environment: production` in the deploy job. Do that
   to require manual approval before production, configuring reviewers on a
   `production` environment in repository settings.

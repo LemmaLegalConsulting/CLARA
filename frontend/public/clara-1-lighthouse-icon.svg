@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="512" height="512" role="img" aria-label="CLARA">
+  <title>CLARA</title>
+  <defs><clipPath id="c1i"><circle cx="100" cy="100" r="96"/></clipPath></defs>
+  <g clip-path="url(#c1i)">
+    <rect width="200" height="200" fill="#DDEFF3"/>
+    <path d="M100,62 L-10,30 L-10,92 Z M100,62 L210,30 L210,92 Z" fill="#F2B53A" opacity=".55"/>
+    <path d="M-4,170 q18,-12 36,0 t36,0 t36,0 t36,0 t36,0 t36,0 V210 H-4 Z" fill="#2A8C8C" opacity=".55"/>
+    <path d="M-22,182 q18,-12 36,0 t36,0 t36,0 t36,0 t36,0 t36,0 t36,0 V210 H-22 Z" fill="#2A8C8C"/>
+  </g>
+  <path d="M80,166 L120,166 L112,82 L88,82 Z" fill="#fff" stroke="#1B3A5C" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M85.4,108 L114.6,108 L115.9,121 L84.1,121 Z M82.7,136 L117.3,136 L118.5,149 L81.5,149 Z" fill="#1B3A5C"/>
+  <rect x="80" y="74" width="40" height="10" rx="3" fill="#1B3A5C"/>
+  <rect x="88" y="52" width="24" height="22" rx="3" fill="#F2B53A" stroke="#1B3A5C" stroke-width="6"/>
+  <path d="M83,54 L117,54 L100,36 Z" fill="#1B3A5C" stroke="#1B3A5C" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="100" cy="31" r="5" fill="#1B3A5C"/>
+  <circle cx="100" cy="100" r="96" fill="none" stroke="#1B3A5C" stroke-width="8"/>
+</svg>

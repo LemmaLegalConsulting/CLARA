@@ -8,7 +8,7 @@ one result that must never look like a clean bill.
 
 `requires` names a precondition the session either has or does not:
 
-* ``native_draft`` -- the brief is a HaddenDraft document, so the drafting
+* ``native_draft`` -- the brief is a CLARA document, so the drafting
   validation rules have a template and a session to read.
 * ``court_profile`` -- a court's filing rules are selected or detected.
 * ``case_record`` -- there are case materials to check the brief against.

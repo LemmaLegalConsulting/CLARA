@@ -1,4 +1,7 @@
-# Legal Drafting Tool
+# CLARA — Cleveland Legal Aid Research Assistant
+
+CLARA uses the provisional lighthouse logo supplied in `clara-logos.zip`. The
+light, dark, and icon SVG assets live in `frontend/public/`.
 
 This repository contains a working Django + React prototype for a housing court document drafting workspace. The app supports three modes:
 

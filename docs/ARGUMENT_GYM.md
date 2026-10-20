@@ -10,7 +10,7 @@ It runs in two places, over one pipeline:
   open draft, then tests the document that is actually stored. Challenges land
   on block keys, so they can feed the existing revision machinery.
 - **As its own mode.** Upload a brief, choose the case context, and run. The
-  brief can be an external DOCX, PDF, or text file that HaddenDraft never wrote.
+  brief can be an external DOCX, PDF, or text file that CLARA never wrote.
 
 ## Sessions
 

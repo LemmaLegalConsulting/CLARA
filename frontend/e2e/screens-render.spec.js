@@ -169,6 +169,10 @@ test("every screen in the sidebar opens and renders", async ({ page }) => {
   // The sidebar itself is the precondition: without it the app never signed in
   // and the per-screen failures below would all be the same one failure.
   await expect(page.locator("nav.mode-list")).toBeVisible();
+  await expect(page).toHaveTitle("CLARA — Cleveland Legal Aid Research Assistant");
+  const logo = page.getByRole("img", { name: "CLARA — Cleveland Legal Aid Research Assistant", exact: true });
+  await expect(logo).toBeVisible();
+  await expect(logo).toHaveJSProperty("naturalWidth", 716);
 
   // No case is active until the advocate chooses one; the first row is never
   // chosen for them. Then choose the stub case, as an advocate would.
