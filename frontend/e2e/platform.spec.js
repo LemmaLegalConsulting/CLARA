@@ -34,7 +34,7 @@ test.describe("signing in and out", () => {
     await page.getByLabel("Username").fill(credentials.username);
     await page.getByLabel("Secret").fill("definitely-not-the-password");
     await page.getByRole("button", { name: "Sign in", exact: true }).click();
-    await expect(page.locator(".alert-danger")).toBeVisible();
+    await expect(page.locator(".alert-danger")).toHaveText("Invalid username or password");
     await expect(page.getByRole("heading", { name: "Cases" })).toHaveCount(0);
     guard.assertClean();
   });
