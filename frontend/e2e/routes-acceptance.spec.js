@@ -68,6 +68,30 @@ async function signIn(page, username) {
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
 }
 
+test("password sign-in waits for the initial session and CSRF handshake", async ({ page }) => {
+  const writes = await stubServer(page, { signedIn: null, canOpen: () => true, wakeFailures: 0 });
+  let releaseHandshake;
+  const handshake = new Promise((resolve) => { releaseHandshake = resolve; });
+  await page.route("**/api/auth/me/", async (route) => {
+    await handshake;
+    await route.fulfill({ json: { user: { isAuthenticated: false } } });
+  });
+  await page.goto("/");
+  await page.getByLabel("Username").fill("ada");
+  await page.getByLabel("Secret").fill("not-a-real-secret");
+  const submit = page.getByRole("button", { name: "Sign in", exact: true });
+  try {
+    await expect(submit).toBeDisabled();
+    await page.getByLabel("Secret").press("Enter");
+    expect(writes).not.toContain("POST /auth/login/");
+  } finally {
+    releaseHandshake();
+  }
+  await expect(submit).toBeEnabled();
+  await submit.click();
+  await expect(page.getByRole("heading", { name: "Cases" })).toBeVisible();
+});
+
 test("a deep link survives signing in with a password", async ({ page }) => {
   await stubServer(page, { signedIn: null, canOpen: () => true, wakeFailures: 0 });
   await page.goto("/drafting/26-0001/sessions/184/plan");

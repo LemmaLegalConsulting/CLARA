@@ -21,11 +21,5 @@
         "Cache-Control": "no-cache"
       }
     }
-  ],
-  "responseOverrides": {
-    "404": {
-      "rewrite": "/index.html",
-      "statusCode": 200
-    }
-  }
+  ]
 }
