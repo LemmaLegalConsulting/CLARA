@@ -359,6 +359,8 @@ export function App() {
 
   async function handleLogin(event) {
     event.preventDefault();
+    // The initial session response also establishes the CSRF cookie.
+    if (!auth || authBusy) return;
     setAuthBusy(true);
     setError("");
     try {
@@ -1546,8 +1548,9 @@ export function App() {
           <label className="field"><span>Username</span><input className="form-control" autoComplete="username" value={credentials.username} onChange={(event) => setCredentials((current) => ({ ...current, username: event.target.value }))} /></label>
           <label className="field"><span>Secret</span><input className="form-control" autoComplete={"current-" + "password"} type={"pass" + "word"} value={credentials.secret} onChange={(event) => setCredentials((current) => ({ ...current, secret: event.target.value }))} /></label>
           <button className="btn btn-light full" type="button" disabled={authBusy} onClick={handleOffice365Login}>{authBusy ? <Loader2 className="spin" size={16} /> : <Cloud size={16} />} Sign in with Office 365</button>
+          {!auth && !error && <p role="status">Preparing secure sign-in…</p>}
           {error && <div className="inline-error alert alert-danger">{error}</div>}
-          <button className="btn btn-primary full" disabled={authBusy || !credentials.username || !credentials.secret}>{authBusy ? <Loader2 className="spin" size={16} /> : <LogIn size={16} />} Sign in</button>
+          <button className="btn btn-primary full" disabled={!auth || authBusy || !credentials.username || !credentials.secret}>{authBusy ? <Loader2 className="spin" size={16} /> : <LogIn size={16} />} Sign in</button>
           <a className="btn btn-light link-button full" href={api.adminUrl()}><Settings size={16} /> Admin</a>
         </form>
       </main>
