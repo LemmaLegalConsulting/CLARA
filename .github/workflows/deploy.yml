@@ -50,15 +50,17 @@ jobs:
       # No submodules. private-content is a private repo, and production reads
       # organization content from the published storage share rather than from
       # the image — so CI needs no deploy key. The suite passes without it.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
           cache: pip
 
       - name: Install backend dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
+          pip install -r requirements.txt
 
       - name: Django system checks
         run: python backend/manage.py check
@@ -78,9 +80,9 @@ jobs:
       # Matches the Dockerfile's node:24-slim frontend stage. CI must build on
       # the runtime production builds on, or a build that passes here can still
       # fail in the image.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -109,7 +111,7 @@ jobs:
 
       - name: Upload the smoke report when it fails
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: screen-smoke-report
           path: |
@@ -130,10 +132,10 @@ jobs:
     outputs:
       image: ${{ steps.build.outputs.image }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Log in to Azure
-        uses: azure/login@v3
+        uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -200,9 +202,9 @@ jobs:
       # The API goes first, deliberately. The app is the client; publishing it
       # ahead of the API it calls would put a build that expects new endpoints
       # in front of a deployment that does not have them yet.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
