@@ -1,0 +1,28 @@
+# Keep dependency and Action updates visible as reviewable pull requests.
+version: 2
+updates:
+- package-ecosystem: docker
+  directories:
+  - /
+  - /backend
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+- package-ecosystem: github-actions
+  directories:
+  - /
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directories:
+  - /frontend
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directories:
+  - /
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
