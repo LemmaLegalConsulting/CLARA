@@ -391,7 +391,7 @@ Two federated credentials exist:
 - `gh-main` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:ref:refs/heads/main`, used by
   the previous workflow. Retire this branch-only credential after the protected-environment workflow is deployed.
 - `gh-env-production` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:environment:production`,
-  used by the protected `production` deployment job. The environment requires approval from `nonprofittechy` and permits protected branches only. Main requires an approving PR review and the `test` status check, including for administrators. Verify these external settings before each release-policy change.
+  used by the protected `production` deployment job. The environment requires approval from `nonprofittechy` and permits protected branches only. Main requires the `test` status check, including for administrators. PR approval is required by default; `nonprofittechy` has an explicit review-bypass allowance so the operator can merge their own PRs. This exception does not bypass required status checks. Verify these external settings before each release-policy change.
 
 To also re-upload the caselaw corpus (slow — thousands of small files, and only
 necessary when the corpus itself changes):
