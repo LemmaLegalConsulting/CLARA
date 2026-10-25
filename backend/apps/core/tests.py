@@ -5,7 +5,7 @@ from urllib.parse import parse_qs, urlparse
 
 from django.contrib import admin
 from django.contrib.auth.models import User
-from django.test import TestCase, override_settings
+from django.test import TestCase, TransactionTestCase, override_settings
 
 from apps.ai.chat_history import append_message, messages_for_user
 from apps.ai.models import ChatConversation
@@ -90,15 +90,13 @@ class AuthViewTests(TestCase):
         OFFICE365_SCOPES="openid profile email",
     )
     def test_office365_start_returns_authorization_url(self):
-        response = self.client.get("/api/auth/office365/start/")
-
+        with patch("apps.core.oidc.application") as app:
+            app.return_value.initiate_auth_code_flow.return_value = {
+                "state": "state", "auth_uri": "https://login.microsoftonline.com/authorize?client_id=client-id"}
+            response = self.client.get("/api/auth/office365/start/")
         self.assertEqual(response.status_code, 200)
-        payload = response.json()
-        parsed = urlparse(payload["authUrl"])
-        params = parse_qs(parsed.query)
-        self.assertEqual(parsed.netloc, "login.microsoftonline.com")
-        self.assertEqual(params["client_id"], ["client-id"])
-        self.assertEqual(params["scope"], ["openid profile email"])
+        self.assertEqual(urlparse(response.json()["authUrl"]).netloc, "login.microsoftonline.com")
+        self.assertEqual(self.client.session["office365_flow"]["state"], "state")
 
     @override_settings(FRONTEND_SITE_URL="http://localhost:5173")
     def test_admin_view_site_points_to_frontend(self):
@@ -113,33 +111,25 @@ class AuthViewTests(TestCase):
         FRONTEND_SITE_URL="http://localhost:5173",
     )
     def test_office365_callback_logs_in_with_model_backend(self):
+        from datetime import timedelta
+        from django.utils import timezone
+        from apps.core import oidc
+        from apps.core.models import OAuthTransaction, Office365Principal
+        tenant = "11111111-1111-1111-1111-111111111111"
+        object_id = "22222222-2222-2222-2222-222222222222"
+        user = User.objects.create_user(username="approved", email="advocate@example.invalid")
+        Office365Principal.objects.create(user=user, tenant_id=tenant, object_id=object_id)
         session = self.client.session
-        session["office365_oauth_state"] = "state"
+        session["office365_flow"] = {"state": "state"}
         session.save()
-        claims = {
-            "preferred_username": "advocate@example.org",
-            "email": "advocate@example.org",
-            "given_name": "Ada",
-            "family_name": "Advocate",
-            "tid": "tenant-id",
-        }
-        payload = base64.urlsafe_b64encode(json.dumps(claims).encode("utf-8")).decode("utf-8").rstrip("=")
-        id_token = f"header.{payload}.signature"
-
-        with patch("apps.core.views.requests.post") as post:
-            post.return_value.status_code = 200
-            post.return_value.json.return_value = {
-                "access_token": "access-token",
-                "refresh_token": "refresh-token",
-                "id_token": id_token,
-                "scope": "openid profile email",
-            }
+        OAuthTransaction.objects.create(state_digest=oidc.state_digest("state"), expires_at=timezone.now()+timedelta(minutes=10))
+        with override_settings(OFFICE365_TENANT_ID=tenant), patch("apps.core.oidc.application") as app, patch("apps.core.oidc.validated_claims", return_value={"tid": tenant, "oid": object_id}):
+            app.return_value.acquire_token_by_auth_code_flow.return_value = {
+                "id_token_claims": {"tid": tenant, "oid": object_id}, "expires_in": 3600}
             response = self.client.get("/api/auth/office365/callback/?code=code&state=state")
-
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], "http://localhost:5173")
-        user = User.objects.get(username="advocate@example.org")
-        self.assertEqual(user.email, "advocate@example.org")
+        self.assertEqual(int(self.client.session["_auth_user_id"]), user.pk)
 
 
 class ReadinessProbeTests(TestCase):
@@ -173,7 +163,7 @@ class ReadinessProbeTests(TestCase):
             self.client.get("/readyz")
 
 
-class PreloadWarmupTests(TestCase):
+class PreloadWarmupTests(TransactionTestCase):
     """What the gunicorn master leaves behind for the workers it forks."""
 
     def test_warmup_closes_the_connections_it_opened_before_workers_fork(self):
@@ -189,7 +179,9 @@ class PreloadWarmupTests(TestCase):
 
         from django.db import connections
 
-        import config.wsgi
+        # First import also warms up; do not close this TestCase's live PostgreSQL transaction.
+        with patch.object(connections, "close_all"):
+            import config.wsgi
         from apps.templates_app import signals
 
         seen = []

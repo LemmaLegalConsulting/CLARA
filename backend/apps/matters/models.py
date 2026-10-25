@@ -17,6 +17,11 @@ class Matter(models.Model):
 
     class Meta:
         ordering = ["client_name"]
+        permissions = [
+            ("write_legalserver_documents", "Can upload documents to LegalServer"),
+            ("write_legalserver_notes", "Can save case notes to LegalServer"),
+            ("write_legalserver_properties", "Can update LegalServer case properties"),
+        ]
 
     def __str__(self):
         return f"{self.external_id} - {self.client_name}"

@@ -431,6 +431,8 @@ class AdviceLetterApiTests(TestCase):
         LEGALSERVER_REQUIRE_OFFICE365_EMAIL_MATCH=False,
     )
     def test_advice_letter_save_uses_its_download_filename_in_legalserver(self):
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
         self.matter.raw_payload = {
             **self.matter.raw_payload,
             "matter_uuid": "1f689912-a490-4ced-a99d-a21d7a5caeb2",

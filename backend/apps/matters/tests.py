@@ -23,6 +23,9 @@ class FakeLegalServerClient:
     def __init__(self):
         self.calls = []
 
+    def find_user(self, identifier):
+        return {"email": identifier}
+
     def search_matters(self, *, query="", user_email="", limit=50):
         self.calls.append({"query": query, "user_email": user_email, "limit": limit})
         return [
@@ -95,7 +98,7 @@ class CaseConnectionTests(TestCase):
     def test_connected_user_filters_legalserver_by_saved_identifier(self, client_class):
         fake_client = FakeLegalServerClient()
         client_class.return_value = fake_client
-        UserSourceIdentity.objects.create(
+        UserSourceIdentity.objects.create(is_verified=True,
             user=self.user,
             provider="legalserver",
             identifier="quinten@lemmalegal.com",
@@ -113,7 +116,7 @@ class CaseConnectionTests(TestCase):
     def test_case_search_does_not_limit_to_primary_assignment(self, client_class):
         fake_client = FakeLegalServerClient()
         client_class.return_value = fake_client
-        UserSourceIdentity.objects.create(
+        UserSourceIdentity.objects.create(is_verified=True,
             user=self.user,
             provider="legalserver",
             identifier="quinten@lemmalegal.com",
@@ -345,17 +348,15 @@ class CaseConnectionTests(TestCase):
         self.assertEqual(matter.client_name, "Real Client")
         self.assertEqual(Matter.objects.count(), 1)
 
-    def test_user_can_connect_legalserver_identifier_without_admin(self):
+    def test_user_cannot_remap_legalserver_identity_without_admin(self):
         response = self.client.post(
             "/api/legalserver/account/",
             data=json.dumps({"identifier": "quinten@lemmalegal.com"}),
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()["legalserver"]["connected"])
-        identity = UserSourceIdentity.objects.get(user=self.user, provider="legalserver")
-        self.assertEqual(identity.identifier, "quinten@lemmalegal.com")
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(UserSourceIdentity.objects.filter(user=self.user, provider="legalserver").exists())
 
     def test_case_document_context_summarizes_and_searches_case_notes(self):
         matter = Matter.objects.create(

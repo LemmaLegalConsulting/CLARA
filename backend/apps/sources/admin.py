@@ -112,19 +112,25 @@ class UserOAuthConnectionAdmin(admin.ModelAdmin):
 
 @admin.register(UserSourceIdentity)
 class UserSourceIdentityAdmin(admin.ModelAdmin):
-    list_display = ("user", "provider", "identifier", "enabled", "updated_at")
-    list_filter = ("provider", "enabled")
+    list_display = ("user", "provider", "identifier", "enabled", "is_verified", "updated_at")
+    list_filter = ("provider", "enabled", "is_verified")
     search_fields = ("user__username", "user__email", "identifier")
     fieldsets = (
         (None, {"fields": ("user", "provider", "enabled")}),
         (
             "External identity mapping",
             {
-                "fields": ("identifier",),
+                "fields": ("identifier", "is_verified"),
                 "description": "For LegalServer, this is the email or username used to map the logged-in app user to LegalServer permissions. Disable this row to turn off an individual mapping.",
             },
         ),
     )
+
+    def save_model(self, request, obj, form, change):
+        if change and {"identifier", "user", "provider"}.intersection(form.changed_data):
+            obj.is_verified = False
+            self.message_user(request, "Identity changed. Verify the new mapping and mark it verified in a separate save.")
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(RetrievedDocument)

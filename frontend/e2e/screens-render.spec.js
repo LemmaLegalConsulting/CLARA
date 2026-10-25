@@ -260,17 +260,16 @@ test("a case that does not open shows nothing from any other case", async ({ pag
   await expect(page).toHaveURL(/\/cases\/26-0001$/);
 });
 
-test("an account without LegalServer is told to connect it, and the case then opens", async ({ page }) => {
+test("an account without LegalServer requires administrator mapping before the case opens", async ({ page }) => {
   let connected = false;
   await page.route((url) => url.pathname.endsWith("/api/cases/by-route-key/"), (route) => (
     connected
       ? route.fulfill({ json: { case: MATTER } })
       : route.fulfill({ status: 404, json: { error: "Case not found or not available to this user", reason: "legalserver_not_connected" } })
   ));
-  await page.route("**/api/legalserver/account/", (route) => {
-    if (route.request().method() !== "POST") return route.fallback();
-    connected = true;
-    return route.fulfill({ json: { legalserver: { configured: true, connected: true, identifier: "smoke@example.org" } } });
+  const mappingWrites = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/api/legalserver/account/") && ["POST", "PATCH"].includes(request.method())) mappingWrites.push(request.method());
   });
   const errors = watchForErrors(page, { allow: [/status of 404/] });
   await page.goto("/cases/26-0001");
@@ -278,8 +277,14 @@ test("an account without LegalServer is told to connect it, and the case then op
   await expect(page.getByText("assigned to someone else")).toHaveCount(0);
   await page.getByRole("button", { name: "Connect LegalServer" }).first().click();
   const dialog = page.getByRole("dialog", { name: "LegalServer connection settings" });
-  await dialog.getByLabel("LegalServer identifier").fill("smoke@example.org");
-  await dialog.getByRole("button", { name: "Connect LegalServer" }).click();
+  await expect(dialog.getByText("LegalServer account mappings are managed by an administrator.", { exact: false })).toBeVisible();
+  await expect(dialog.getByLabel("LegalServer identifier")).toHaveCount(0);
+  await expect(dialog.getByRole("button", { name: "Connect LegalServer" })).toHaveCount(0);
+  await dialog.getByRole("button", { name: "Close", exact: true }).click();
+  expect(mappingWrites).toEqual([]);
+  // Simulate an administrator approving the mapping outside this user session.
+  connected = true;
+  await page.reload();
   await expect(page.locator(".topbar-case")).toContainText(MATTER.client);
   await expect(page).toHaveURL(/\/cases\/26-0001$/);
 });

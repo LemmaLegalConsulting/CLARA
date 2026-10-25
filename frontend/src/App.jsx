@@ -198,7 +198,6 @@ export function App() {
   const [authBusy, setAuthBusy] = useState(false);
   const [auth, setAuth] = useState(null);
   const [legalserver, setLegalserver] = useState(null);
-  const [legalserverIdentifier, setLegalserverIdentifier] = useState("");
   const [caseSearch, setCaseSearch] = useState("");
   const [caseFilters, setCaseFilters] = useState(DEFAULT_CASE_FILTERS);
   const caseRequestRef = useRef(0);
@@ -314,7 +313,6 @@ export function App() {
       problemCodes: caseResponse.problemCodes || [],
     });
     setLegalserver(caseResponse.legalserver || null);
-    setLegalserverIdentifier(caseResponse.legalserver?.identifier || caseResponse.legalserver?.suggestedIdentifier || "");
     if (append) return;
     // A filter narrows what is listed, not what is being worked on: the active
     // case stays active even when the current filter would not show it. And
@@ -818,24 +816,6 @@ export function App() {
         setTriageHistoryFor(selectedMatterId);
       });
   }, [auth, selectedMatterId]);
-
-  async function handleLegalServerConnect(event) {
-    event.preventDefault();
-    setAccountBusy(true);
-    setError("");
-    try {
-      const response = await api.connectLegalServer({ identifier: legalserverIdentifier });
-      setLegalserver(response.legalserver);
-      await loadWorkspace();
-      setConnectionSettingsOpen(false);
-      // A case this link could not reach before may open now.
-      setCaseLookupAttempt((current) => current + 1);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setAccountBusy(false);
-    }
-  }
 
   async function handleLegalServerDisconnect() {
     setAccountBusy(true);
@@ -1572,7 +1552,7 @@ export function App() {
       <main className="workspace">
         <header className="topbar">{matter && <div className="topbar-case"><div className="topbar-case-heading"><h2><button className="topbar-case-preview" type="button" aria-haspopup="dialog" title="Open case preview" onClick={() => setCasePreviewMatterId(matter.id)}><span>{matter.client}</span><FolderOpen size={17} /></button></h2>{selectedDraftDocument && <span className="selected-document-pill" title={`Selected document: ${selectedDraftDocument.title}`}><FileText size={14} /><span>{selectedDraftDocument.title}</span></span>}</div><div className="active-case-banner"><span>{matter.matter}{matter.posture ? ` · ${matter.posture}` : ""}</span><small>{matter.sourceSystem || "LegalServer"} case {matter.id}</small></div></div>}<div className="topbar-actions"><div className="dropdown account-dropdown"><button className="btn btn-light dropdown-toggle account-menu-toggle" type="button" aria-expanded={accountMenuOpen} onClick={() => setAccountMenuOpen((current) => !current)}><UserRound size={16} /><span className="account-name">{accountName}</span></button>{accountMenuOpen && <div className="dropdown-menu dropdown-menu-end show account-menu"><div className="account-menu-header"><span>Signed in as</span><strong>{accountName}</strong></div><button className="dropdown-item" type="button" onClick={() => { setAccountMenuOpen(false); setProfileOpen(true); }}><UserRound size={16} /> Profile</button><button className="dropdown-item" disabled={authBusy} type="button" onClick={handleLogout}><LogOut size={16} /> Sign out</button><div className="dropdown-divider" /><a className="dropdown-item" href={api.adminUrl()}><Settings size={16} /> Admin</a></div>}</div></div></header>
         {profileOpen && <div className="modal-backdrop" role="presentation"><div className="profile-modal" ref={profileModalRef} role="dialog" aria-modal="true" aria-label="Profile"><div className="modal-heading"><h4>Profile</h4><button className="btn btn-light icon-button" type="button" onClick={() => setProfileOpen(false)} title="Close" aria-label="Close"><X size={16} /></button></div><AuthorProfile user={auth} onSaved={(profile) => { updateAuthProfile(profile); setProfileOpen(false); }} /><ChangePassword /></div></div>}
-        {connectionSettingsOpen && <div className="modal-backdrop" role="presentation"><form className="profile-modal connection-modal" ref={connectionModalRef} role="dialog" aria-modal="true" aria-label="LegalServer connection settings" onSubmit={handleLegalServerConnect}><div className="modal-heading"><div><h4>LegalServer Connection</h4><p className="modal-subtitle">{legalserverLoading ? "Checking your saved account." : legalserverConnected ? `Connected as ${legalserver.identifier}` : "Connect a LegalServer account to load assigned matters."}</p></div><button className="btn btn-light icon-button" type="button" onClick={() => setConnectionSettingsOpen(false)} title="Close" aria-label="Close"><X size={16} /></button></div>{!legalserverConfigured && <div className="inline-error">LegalServer API credentials are not configured for this environment.</div>}{legalserver?.syncError && legalserver.syncError !== "not_connected" && <div className="inline-error">LegalServer sync: {legalserver.syncError}</div>}{legalserverConfigured && <><label className="field"><span>{legalserverConnected ? "Connected as" : "LegalServer username or email"}</span><input className="form-control" aria-label="LegalServer identifier" disabled={legalserverLoading || accountBusy} value={legalserverIdentifier} onChange={(event) => setLegalserverIdentifier(event.target.value)} /></label><div className="button-row"><button className="btn btn-primary" type="submit" disabled={legalserverLoading || accountBusy || !legalserverIdentifier.trim()}>{accountBusy ? <Loader2 className="spin" size={16} /> : <Link2 size={16} />}{legalserverConnected ? "Update connection" : "Connect LegalServer"}</button>{legalserverConnected && <button className="btn btn-light" type="button" disabled={accountBusy} onClick={handleLegalServerDisconnect}>{accountBusy ? <Loader2 className="spin" size={16} /> : <Unplug size={16} />} Disconnect</button>}</div></>}</form></div>}
+        {connectionSettingsOpen && <div className="modal-backdrop" role="presentation"><form className="profile-modal connection-modal" ref={connectionModalRef} role="dialog" aria-modal="true" aria-label="LegalServer connection settings" onSubmit={(event) => event.preventDefault()}><div className="modal-heading"><div><h4>LegalServer Connection</h4><p className="modal-subtitle">{legalserverLoading ? "Checking your saved account." : legalserverConnected ? `Connected as ${legalserver.identifier}` : "Ask an administrator to verify your LegalServer account mapping."}</p></div><button className="btn btn-light icon-button" type="button" onClick={() => setConnectionSettingsOpen(false)} title="Close" aria-label="Close"><X size={16} /></button></div>{!legalserverConfigured && <div className="inline-error">LegalServer API credentials are not configured for this environment.</div>}{legalserver?.syncError && legalserver.syncError !== "not_connected" && <div className="inline-error">LegalServer sync: {legalserver.syncError}</div>}{legalserverConfigured && <><p>LegalServer account mappings are managed by an administrator. Contact your administrator to connect or change your account.</p>{legalserverConnected && <div className="button-row"><button className="btn btn-light" type="button" disabled={accountBusy} onClick={handleLegalServerDisconnect}>{accountBusy ? <Loader2 className="spin" size={16} /> : <Unplug size={16} />} Disconnect</button></div>}</>}</form></div>}
         {error && <div className="error-banner alert alert-danger">{error}</div>}
         {!route.found && <RouteNotice kind="not_found" onChooseCase={() => navigate(paths.cases())} />}
         {caseNotice && <RouteNotice kind={caseNotice} caseKey={route.caseKey} action={caseNoticeAction} onChooseCase={() => navigate(paths.cases())} />}

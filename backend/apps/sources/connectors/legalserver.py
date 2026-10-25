@@ -566,14 +566,15 @@ class LegalServerClient:
                 status_code=400,
             )
         normalized = identifier.casefold().strip()
+        matches = []
         for user in users_by_id.values():
             values = [
                 _first_value(user, "email", "user_email", "email_address", default=""),
                 _first_value(user, "user_name", "username", "login", default=""),
             ]
             if any(str(value).casefold().strip() == normalized for value in values if value):
-                return user
-        return next(iter(users_by_id.values()), {})
+                matches.append(user)
+        return matches[0] if len(matches) == 1 else {}
 
 
 def user_email_for_filter(user):

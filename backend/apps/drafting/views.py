@@ -28,6 +28,7 @@ from apps.drafting.resume import (
 from apps.drafting.serializers import draft_to_dict, session_to_dict
 from apps.drafting.services import (
     advance,
+    active_template_ids,
     apply_plan_edits,
     create_draft,
     create_or_update_plan,
@@ -152,6 +153,10 @@ def sessions(request):
                 status=503,
             )
 
+    try:
+        selected_ids = active_template_ids(body.get("selectedTemplateIds", [template.pk] if template else []))
+    except ValueError as exc:
+        return JsonResponse({"error": str(exc)}, status=400)
     session = DraftingSession.objects.create(
         mode=body.get("mode", "draft_from_template"),
         matter=matter,
@@ -159,7 +164,7 @@ def sessions(request):
         author_profile=body.get("authorProfile", {}),
         template_data=body.get("templateData", {}),
         goal=body.get("goal", ""),
-        selected_template_ids=body.get("selectedTemplateIds", [body["templateId"]] if body.get("templateId") else []),
+        selected_template_ids=selected_ids,
         instructions=body.get("instructions", ""),
     )
     initialize_session(session)

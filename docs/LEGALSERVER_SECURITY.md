@@ -10,10 +10,11 @@ Because LegalServer API calls do not enforce SSO requirements, this application 
 
 The app derives a LegalServer access profile for each signed-in user.
 
-- Django staff, Django superusers, and users in configured `LEGALSERVER_SUPERUSER_GROUPS` are treated as application superusers and may access anything the configured LegalServer API user can access.
-- LegalServer users whose API profile contains a configured `LEGALSERVER_SUPERUSER_ROLES` value are also treated as superusers.
-- Regular users must have a LegalServer identity mapping and, by default, that mapping must match the Office365 or Django login email.
-- Regular users are additionally constrained to matters whose assignment fields match their LegalServer identifier, even if the LegalServer API user can see more.
+- Django superusers and members of explicitly configured `LEGALSERVER_SUPERUSER_GROUPS` have locally administered all-case read access. Generic Django staff status grants no case access.
+- Every other user needs an enabled, administrator-verified **User source identity**. Self-service remapping is disabled. A unique exact remote lookup must succeed, its account must not be disabled, and its email must match the verified local login email before any remote roles are accepted.
+- A matching, active remote account with a configured `LEGALSERVER_SUPERUSER_ROLES` value may receive all-case read access. A mismatched administrator account never grants roles.
+- Ordinary users need a current upstream assignment for each sensitive case read. Cached assignments alone never authorize access. Upstream lookup failures deny access; there is no offline permission grace period. Session listing uses a bounded current assignment search rather than one remote request for every cached case.
+- LegalServer writeback requires a responding upstream and current case access at execution time, plus a separate Django permission for the operation: `matters.write_legalserver_documents`, `matters.write_legalserver_notes`, or `matters.write_legalserver_properties`. Read access and generic staff status do not imply any of these permissions. Failed authorization is recorded as a skipped delivery and never prevents downloading the exported document.
 
 ## LegalServer API authentication
 
@@ -24,11 +25,15 @@ Set `LEGALSERVER_BASE_URL` and one of the following credential options:
 
 Bearer token authentication is preferred because credentials stay in the `Authorization` header and are not sent in query strings. Basic authentication is supported for deployments that do not use personal access tokens.
 
-## Office365 default mapping
+## Approving and migrating identities
 
-When `LEGALSERVER_AUTO_MAP_OFFICE365_EMAIL=true`, Office365 sign-in creates a LegalServer identity mapping from the Office365 email if the user does not already have one. Existing manual mappings are not overwritten.
+Office365 sign-in requires a concrete tenant UUID and an enabled **Office365 principal** mapping the validated `(tenant_id, object_id)` to an existing active Django user. Verify these immutable identifiers in Entra; never select the local user solely because an email claim matches. Keep a local administrator login available during migration.
 
-Set `LEGALSERVER_AUTO_MAP_OFFICE365_EMAIL=false` for deployments where LegalServer identifiers do not match Office365 emails. Administrators can also disable or edit individual mappings in Django admin under User source identities.
+Existing LegalServer mappings migrate as **unverified**. Before rollout, an administrator must verify each user's local login email and LegalServer account, then enable and mark the mapping verified under **User source identities**. Retargeting a verified mapping clears verification; confirm the new mapping in a separate save. Django admin records these changes in its audit log. The verification filter helps locate pending rows.
+
+Grant the separate write permissions to the intended users or groups. No migration automatically grants write permissions to ordinary users. Remove mappings and locally granted all-case permissions when access is revoked.
+
+The old `LEGALSERVER_AUTO_MAP_OFFICE365_EMAIL` and `LEGALSERVER_REQUIRE_OFFICE365_EMAIL_MATCH` switches are removed: SSO does not create mappings, and administrators cannot disable the remote email-match check through configuration.
 
 ## Configurable LegalServer API shape
 
@@ -41,7 +46,7 @@ The defaults assume conventional endpoints and payloads, but deployments may dif
 
 Matter search sends only the v2 documented matter-search parameters: `page_size`, `results`, and text search keys such as `case_number`, `case_title`, `external_id`, `first`, and `last`. User access filtering is applied inside the app after LegalServer returns authorized records.
 
-If the users endpoint is unavailable or not included in the API user's permissions, regular users can still proceed when the saved LegalServer identifier matches the signed-in email. LegalServer role-based elevation requires a reachable users endpoint or a Django-side superuser group/staff assignment.
+The integration account must be able to read the users endpoint. If it is unavailable, ordinary-user authorization and remote-role elevation fail closed. Locally administered all-case read permission remains independent of upstream assignments, but writes still require a successful online check.
 
 ## Premium API note
 

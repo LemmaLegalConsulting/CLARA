@@ -1,8 +1,11 @@
-import base64
 import json
 import re
 import secrets
-from urllib.parse import urlencode
+from datetime import timedelta
+from uuid import UUID
+from django.utils import timezone
+from apps.core import oidc
+from apps.core.models import Office365Principal, OAuthTransaction
 
 import requests
 from django.conf import settings
@@ -20,7 +23,7 @@ from apps.core.return_paths import safe_return_path
 from apps.matters.seed import seed_matters
 from apps.matters.legalserver_delivery import delivery_defaults
 from apps.matters.services import legalserver_account_status
-from apps.sources.models import UserOAuthConnection, UserSourceIdentity
+from apps.sources.models import UserOAuthConnection
 from apps.sources.registry import connector_registry
 from apps.templates_app.seed import seed_templates
 from apps.templates_app.content_library import sync_prepared_templates
@@ -268,100 +271,53 @@ def office365_start(request):
             },
             status=503,
         )
-    state = secrets.token_urlsafe(24)
-    request.session["office365_oauth_state"] = state
-    # Kept server-side beside the state, never passed through Microsoft, so
-    # the only return target is one this session asked for and we validated.
-    request.session["office365_return_path"] = safe_return_path(request.GET.get("returnTo", ""))
-    params = {
-        "client_id": settings.OFFICE365_CLIENT_ID,
-        "response_type": "code",
-        "redirect_uri": settings.OFFICE365_REDIRECT_URI,
-        "response_mode": "query",
-        "scope": settings.OFFICE365_SCOPES,
-        "state": state,
-    }
-    tenant = settings.OFFICE365_TENANT_ID
-    return JsonResponse(
-        {
-            "configured": True,
-            "authUrl": f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize?{urlencode(params)}",
-        }
-    )
-
-
-def decode_jwt_payload(token):
     try:
-        payload = token.split(".")[1]
-        padded = payload + "=" * (-len(payload) % 4)
-        return json.loads(base64.urlsafe_b64decode(padded.encode("utf-8")).decode("utf-8"))
-    except (IndexError, ValueError, json.JSONDecodeError):
-        return {}
-
-
-def default_legalserver_identity_from_office365(user, claims):
-    if not getattr(settings, "LEGALSERVER_AUTO_MAP_OFFICE365_EMAIL", True):
-        return
-    identifier = (
-        claims.get("email")
-        or claims.get("preferred_username")
-        or claims.get("upn")
-        or getattr(user, "email", "")
-        or user.get_username()
+        scopes = [scope for scope in settings.OFFICE365_SCOPES.split()
+                  if scope not in {"openid", "profile", "offline_access"}]
+        flow = oidc.application().initiate_auth_code_flow(
+            scopes, redirect_uri=settings.OFFICE365_REDIRECT_URI,
+            state=secrets.token_urlsafe(32),
+        )
+    except (ValueError, requests.RequestException):
+        return JsonResponse({"error": "Office 365 sign-in is unavailable"}, status=503)
+    request.session["office365_flow"] = flow
+    request.session["office365_return_path"] = safe_return_path(request.GET.get("returnTo", ""))
+    OAuthTransaction.objects.filter(expires_at__lte=timezone.now()).delete()
+    OAuthTransaction.objects.create(
+        state_digest=oidc.state_digest(flow["state"]),
+        expires_at=timezone.now() + timedelta(minutes=10),
     )
-    identifier = (identifier or "").strip()
-    if not identifier:
-        return
-    identity, created = UserSourceIdentity.objects.get_or_create(
-        user=user,
-        provider="legalserver",
-        defaults={"identifier": identifier, "enabled": True},
-    )
-    if created:
-        return
-    if identity.enabled and not identity.identifier:
-        identity.identifier = identifier
-        identity.save(update_fields=["identifier", "updated_at"])
+    return JsonResponse({"configured": True, "authUrl": flow["auth_uri"]})
 
 
 def office365_callback(request):
-    if request.GET.get("state") != request.session.get("office365_oauth_state"):
+    flow = request.session.pop("office365_flow", {})
+    received = request.GET.get("state", "")
+    expected = flow.get("state", "")
+    if not received or not expected or not secrets.compare_digest(received, expected):
         return JsonResponse({"error": "Invalid Office 365 sign-in state"}, status=400)
-    if request.GET.get("error"):
-        return JsonResponse({"error": request.GET.get("error_description") or request.GET["error"]}, status=400)
-    code = request.GET.get("code")
-    if not code:
-        return JsonResponse({"error": "Missing Office 365 authorization code"}, status=400)
-
-    token_url = f"https://login.microsoftonline.com/{settings.OFFICE365_TENANT_ID}/oauth2/v2.0/token"
-    data = {
-        "client_id": settings.OFFICE365_CLIENT_ID,
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": settings.OFFICE365_REDIRECT_URI,
-        "scope": settings.OFFICE365_SCOPES,
-    }
-    if settings.OFFICE365_CLIENT_SECRET:
-        data["client_secret"] = settings.OFFICE365_CLIENT_SECRET
-
-    response = requests.post(token_url, data=data, timeout=20)
-    if response.status_code >= 400:
-        return JsonResponse({"error": "Office 365 token exchange failed"}, status=502)
-    token_payload = response.json()
-    claims = decode_jwt_payload(token_payload.get("id_token", ""))
-    username = claims.get("preferred_username") or claims.get("email") or claims.get("upn")
-    if not username:
-        return JsonResponse({"error": "Office 365 did not return a usable username"}, status=502)
-
-    User = get_user_model()
-    user, _created = User.objects.update_or_create(
-        username=username,
-        defaults={
-            "email": claims.get("email") or username,
-            "first_name": claims.get("given_name", ""),
-            "last_name": claims.get("family_name", ""),
-        },
-    )
+    # Conditional UPDATE is atomic even if two workers load the same session.
+    consumed = OAuthTransaction.objects.filter(
+        state_digest=oidc.state_digest(expected), consumed=False,
+        expires_at__gt=timezone.now(),
+    ).update(consumed=True)
+    if not consumed:
+        return JsonResponse({"error": "Expired or reused Office 365 sign-in state"}, status=400)
+    try:
+        token_payload = oidc.application().acquire_token_by_auth_code_flow(flow, request.GET.dict())
+        claims = oidc.validated_claims(token_payload.get("id_token", ""))
+        tenant = str(UUID(claims.get("tid", "")))
+        object_id = UUID(claims.get("oid", ""))
+        if "error" in token_payload or tenant != oidc.tenant_id():
+            raise ValueError("Unapproved tenant")
+    except (ValueError, TypeError, requests.RequestException):
+        return JsonResponse({"error": "Office 365 authentication failed"}, status=400)
+    principal = Office365Principal.objects.select_related("user").filter(
+        tenant_id=tenant, object_id=object_id, enabled=True, user__is_active=True,
+    ).first()
+    if principal is None:
+        return JsonResponse({"error": "This Office 365 principal has not been approved"}, status=403)
+    user = principal.user
     UserOAuthConnection.objects.update_or_create(
         user=user,
         provider="office365",
@@ -372,11 +328,10 @@ def office365_callback(request):
             "access_token": token_payload.get("access_token", ""),
             "refresh_token": token_payload.get("refresh_token", ""),
             "scopes": token_payload.get("scope", settings.OFFICE365_SCOPES),
+            "expires_at": timezone.now() + timedelta(seconds=int(token_payload.get("expires_in", 0))),
         },
     )
-    default_legalserver_identity_from_office365(user, claims)
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    request.session.pop("office365_oauth_state", None)
     return_path = safe_return_path(request.session.pop("office365_return_path", ""))
     return redirect(f"{settings.FRONTEND_SITE_URL.rstrip('/')}{return_path}" if return_path else settings.FRONTEND_SITE_URL)
 

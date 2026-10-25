@@ -23,15 +23,23 @@ from apps.matters.services import upsert_matter_from_legalserver
 from apps.sources.models import UserSourceIdentity
 
 
-class OfflineLegalServerClient:
-    """Keeps the access check off the network; a developer's .env may hold live credentials."""
+class FixtureLegalServerClient:
+    """Models a responding upstream with the synthetic route-test records."""
 
-    configured = False
+    configured = True
     user_filter_param = "assigned_user_email"
     matter_profile_url = None
 
+    def find_user(self, identifier):
+        return {"email": identifier}
 
-offline = patch("apps.matters.services.LegalServerClient", OfflineLegalServerClient)
+    def get_matter(self, matter_id):
+        matter = Matter.objects.filter(external_id=matter_id).first()
+        return dict(matter.raw_payload) if matter else {}
+
+
+
+offline = patch("apps.matters.services.LegalServerClient", FixtureLegalServerClient)
 
 
 def make_matter(external_id, case_number=None, *, assigned="bob@example.org", source_system="LegalServer"):
@@ -61,7 +69,7 @@ def renumber(matter, case_number):
 class RouteAliasTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("bob", "bob@example.org", "pw")
-        UserSourceIdentity.objects.create(user=self.user, provider="legalserver", identifier="bob@example.org")
+        UserSourceIdentity.objects.create(is_verified=True, user=self.user, provider="legalserver", identifier="bob@example.org")
 
     def test_case_number_becomes_the_route_key(self):
         matter = make_matter("MID-1", "26-0222")
@@ -138,7 +146,7 @@ class RouteAliasTests(TestCase):
 
     def test_serializer_carries_route_case_key_beside_the_identity(self):
         matter = make_matter("MID-1", "26-0222")
-        data = matter_to_dict(matter, legalserver_client=OfflineLegalServerClient())
+        data = matter_to_dict(matter, legalserver_client=FixtureLegalServerClient())
         self.assertEqual(data["id"], "MID-1")
         self.assertEqual(data["caseNumber"], "26-0222")
         self.assertEqual(data["routeCaseKey"], "26-0222")
@@ -150,14 +158,14 @@ class RouteAliasTests(TestCase):
 
 
 @offline
-@patch("apps.sources.connectors.legalserver.LegalServerClient", OfflineLegalServerClient)
+@patch("apps.sources.connectors.legalserver.LegalServerClient", FixtureLegalServerClient)
 @override_settings(LEGALSERVER_REQUIRE_OFFICE365_EMAIL_MATCH=False, ENABLE_DEMO_MATTERS=False)
 class CaseByRouteKeyApiTests(TestCase):
     url = "/api/cases/by-route-key/"
 
     def setUp(self):
         self.user = get_user_model().objects.create_user("bob", "bob@example.org", "pw")
-        UserSourceIdentity.objects.create(user=self.user, provider="legalserver", identifier="bob@example.org")
+        UserSourceIdentity.objects.create(is_verified=True, user=self.user, provider="legalserver", identifier="bob@example.org")
         self.client.force_login(self.user)
 
     def test_opens_a_case_by_its_readable_number(self):
@@ -250,7 +258,7 @@ class RouteAliasWriteTests(TestCase):
         self.assertEqual(writes, [])
 
 
-class ConfiguredLegalServerClient(OfflineLegalServerClient):
+class ConfiguredLegalServerClient(FixtureLegalServerClient):
     configured = True
 
     def find_user(self, identifier):
@@ -279,13 +287,13 @@ class UnreachableReasonTests(TestCase):
 
     @override_settings(LEGALSERVER_REQUIRE_OFFICE365_EMAIL_MATCH=True)
     def test_a_mismatched_identity_is_told_so(self, _sync):
-        UserSourceIdentity.objects.create(user=self.user, provider="legalserver", identifier="someone-else@example.org")
+        UserSourceIdentity.objects.create(is_verified=True, user=self.user, provider="legalserver", identifier="someone-else@example.org")
         response = self.client.get(self.url, {"key": "26-0222"})
         self.assertEqual(response.json()["reason"], "legalserver_identity_mismatch")
 
     @override_settings(LEGALSERVER_REQUIRE_OFFICE365_EMAIL_MATCH=False)
-    def test_a_connected_account_gets_no_reason(self, _sync):
-        UserSourceIdentity.objects.create(user=self.user, provider="legalserver", identifier="carol@example.org")
+    def test_an_unverified_account_is_told_identity_could_not_be_verified(self, _sync):
+        UserSourceIdentity.objects.create(is_verified=True, user=self.user, provider="legalserver", identifier="carol@example.org")
         response = self.client.get(self.url, {"key": "26-9999"})
         self.assertEqual(response.status_code, 404)
-        self.assertNotIn("reason", response.json())
+        self.assertEqual(response.json()["reason"], "legalserver_identity_mismatch")

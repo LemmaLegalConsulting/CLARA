@@ -243,7 +243,8 @@ class BackgroundImportTests(ManagedSourceFixture, TestCase):
         self.assertEqual(started, [True])
 
     def test_a_worker_that_dies_records_the_failure_instead_of_staying_silent(self):
-        with patch("apps.sources.publication.threading.Thread") as thread:
+        with patch("apps.sources.publication.threading.Thread") as thread, patch("django.db.close_old_connections"):
+            # This fake runs inline; closing connections would abort TestCase's PostgreSQL transaction.
             thread.side_effect = lambda target, **_kwargs: SimpleNamespace(start=target)
             # The worker looks the function up on the module; this call site
             # holds the real one, so only the worker's re-entry is broken.

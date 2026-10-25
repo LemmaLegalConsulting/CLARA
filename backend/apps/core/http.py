@@ -46,7 +46,13 @@ def api_login_required(view_func):
     def wrapped(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({"error": "Authentication required"}, status=401)
-        return guarded(request, *args, **kwargs)
+        from apps.core.constrained_worker import WorkerBusyError
+        try:
+            return guarded(request, *args, **kwargs)
+        except WorkerBusyError as exc:
+            response = JsonResponse({"error": str(exc)}, status=503)
+            response["Retry-After"] = "5"
+            return response
 
     return wrapped
 

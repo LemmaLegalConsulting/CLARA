@@ -1,0 +1,14 @@
+# Security-sensitive boundaries require review by an existing repository administrator.
+# Multiple owners preserve independent approval when an owner authors a change.
+/.github/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/config/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/core/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/matters/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/templates_app/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/exporting/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/sources/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/ai/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/backend/apps/drafting/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/nginx.conf @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/Dockerfile @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
+/requirements.txt @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer

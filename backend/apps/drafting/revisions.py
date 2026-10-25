@@ -81,6 +81,9 @@ def checkpoint_session(session_id, payload):
         value = payload[api_name]
         if not isinstance(value, kind):
             raise ValueError(f"{api_name} must be a {kind.__name__}.")
+        if api_name == "selectedTemplateIds":
+            from apps.drafting.services import active_template_ids
+            value = active_template_ids(value)
         if api_name == "workflowOptions":
             value = _clean_workflow_options(value)
         updates[field] = value

@@ -82,7 +82,7 @@ def missing_for_session(session):
 
     templates = [session.template] if session.template else []
     templates += list(
-        DocumentTemplate.objects.filter(id__in=session.selected_template_ids or []).exclude(
+        DocumentTemplate.objects.filter(id__in=session.selected_template_ids or [], is_active=True).exclude(
             id=getattr(session.template, "id", None)
         )
     )

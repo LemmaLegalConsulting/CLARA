@@ -2,7 +2,6 @@ import re
 from dataclasses import dataclass, replace
 
 from django.conf import settings
-from jinja2 import ChainableUndefined
 
 from apps.ai.openai_client import OpenAIBackendError, OpenAICompatibleClient
 from apps.ai.prompt_catalog import render_prompt
@@ -16,7 +15,7 @@ from apps.templates_app.template_variables import (
     template_choice_values,
     template_field_values,
 )
-from apps.templates_app.jinja_filters import TEMPLATE_HELPERS_GUIDE, listify, template_environment
+from apps.templates_app.jinja_filters import TEMPLATE_HELPERS_GUIDE, listify
 
 
 @dataclass
@@ -128,7 +127,9 @@ class ConstrainedDraftingService:
         household = listify((context.template_data or {}).get("other_occupants", []))
         values = {
             "fields": template_data,
-            "matter": context.matter,
+            "matter": {key: getattr(context.matter, key, "") for key in (
+                "external_id", "client_name", "matter_type", "jurisdiction", "posture", "summary"
+            )},
             "client": client,
             "household": household,
             "author": author,
@@ -165,7 +166,8 @@ class ConstrainedDraftingService:
         }
         values.update(template_choice_values(getattr(context, "template", None), getattr(context, "template_data", None)))
         normalized_body = normalize_docxtpl_blocks(normalized_body)
-        return template_environment(undefined=ChainableUndefined).from_string(normalized_body).render(values)
+        from apps.core.constrained_worker import render_text
+        return render_text(normalized_body, values)
 
     def generate_curated_facts_section(self, facts, curated_facts):
         def clean_fact_text(value):
@@ -270,6 +272,8 @@ class ConstrainedDraftingService:
         )
 
     def compose_document(self, context, selected_block_keys):
+        if not getattr(context.template, "is_active", True):
+            raise ValueError("Template is awaiting review or inactive")
         selected_facts = context.selected_facts
         selected_sources = context.selected_sources
         sections = []

@@ -1,5 +1,6 @@
 """Prepare and inspect DOCX templates without generating or rewriting prose."""
 import io
+import json
 import re
 import zipfile
 
@@ -8,31 +9,18 @@ from docx.text.paragraph import Paragraph
 from docxcompose.composer import Composer
 from docxtpl import DocxTemplate
 from jinja2 import nodes
-from jinja2.sandbox import SandboxedEnvironment
+from jinja2.sandbox import SecurityError
 
 from .content_library import full_template_path
 from .fill_paths import canonical_path, path_parts
 from .ingestion import discover_blocks, bind_alternatives
-from .jinja_filters import JINJA_FILTERS
+from .jinja_filters import JINJA_FILTERS, fill_environment
 from .placeholders import convert_paragraph
 from .template_variables import extract_template_variables_from_text, normalize_docxtpl_blocks
 from .word_templates import block_template_path, style_template_path
 
 MAX_DOCX_BYTES = 15 * 1024 * 1024
 MAX_XML_BYTES = 40 * 1024 * 1024
-
-
-class FillEnvironment(SandboxedEnvironment):
-    def is_safe_callable(self, obj):
-        return any(obj is function for function in self.globals.values())
-
-
-def fill_environment(**kwargs):
-    env = FillEnvironment(autoescape=True, **kwargs)
-    env.globals.clear()
-    env.globals.update(JINJA_FILTERS)
-    env.filters.update(JINJA_FILTERS)
-    return env
 
 
 def validate_docx(content):
@@ -81,7 +69,7 @@ def prepare_upload(content):
 
 
 def wrap_optional(document, block, *, full=False):
-    expression = '{%p if fill_options["' + block.key + '"] %}'
+    expression = "{%p if fill_options[" + json.dumps(block.key) + "] %}"
     if not full:
         first = document.element.body[0]
         opening = document.add_paragraph(expression)._p
@@ -154,10 +142,14 @@ def template_sources(content):
 
 def inspect_docx(content):
     """Inventory fields; collection members are edited as one structured input."""
+    validate_docx(content)
     env = fill_environment()
     paths, controls, collections = set(), set(), set()
     for source in template_sources(content):
-        ast = env.parse(source)
+        try:
+            ast = env.parse(source)
+        except SecurityError as exc:
+            raise ValueError(str(exc)) from exc
         for node in ast.find_all((nodes.Include, nodes.Import, nodes.FromImport, nodes.Extends, nodes.Macro)):
             raise ValueError(f"Unsupported template instruction: {type(node).__name__}")
         for call in ast.find_all(nodes.Call):

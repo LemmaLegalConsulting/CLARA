@@ -14,12 +14,14 @@ from apps.sources import views as source_views
 from apps.sources import sharepoint_views
 from apps.templates_app import advice_letter_views
 from apps.templates_app import views as template_views
+from apps.templates_app.private_media import private_media
 
 
 admin.site.site_url = settings.FRONTEND_SITE_URL
 AUTH_PREFIX = "api/" + "auth/"
 
 urlpatterns = [
+    path("media/<path:name>", private_media, name="private_media"),
     path("api/template-fill/", fill_views.catalog),
     path("api/template-fill/start/", fill_views.start),
     path("api/template-fill/sessions/<int:session_id>/", fill_views.session_detail),

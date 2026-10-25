@@ -57,10 +57,10 @@ class MatterAccessScopeTests(TestCase):
         self.assertFalse(user_can_access_matter(self.user, matter))
 
     @override_settings(ENABLE_DEMO_MATTERS=False)
-    def test_staff_keep_superuser_access(self):
+    def test_staff_do_not_receive_all_case_access(self):
         staff = get_user_model().objects.create_user("admin", "admin@example.org", "pw", is_staff=True)
         matter = legalserver_matter("LS-REAL-3", {"assigned_user_email": "someone-else@example.org"})
-        self.assertTrue(user_can_access_matter(staff, matter))
+        self.assertFalse(user_can_access_matter(staff, matter))
 
 
 class LegalServerIdentifierMatchTests(TestCase):
