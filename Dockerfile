@@ -1,5 +1,5 @@
 # Stage 1: Build Frontend
-FROM node:24.22.1-slim AS frontend
+FROM node:26.12.1-slim AS frontend
 
 # eMudhra certificate incident: refresh each stage's system trust store.
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
