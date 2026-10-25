@@ -265,16 +265,7 @@ def legalserver_account(request):
         UserSourceIdentity.objects.filter(user=request.user, provider="legalserver").update(enabled=False)
         return JsonResponse({"legalserver": legalserver_account_status(request.user)})
 
-    body = json.loads(request.body.decode("utf-8") or "{}")
-    identifier = (body.get("identifier") or "").strip()
-    if not identifier:
-        return JsonResponse({"error": "LegalServer identifier is required"}, status=400)
-    UserSourceIdentity.objects.update_or_create(
-        user=request.user,
-        provider="legalserver",
-        defaults={"identifier": identifier, "enabled": True},
-    )
-    return JsonResponse({"legalserver": legalserver_account_status(request.user)})
+    return JsonResponse({"error": "Ask an administrator to verify and configure your LegalServer identity."}, status=403)
 
 
 @api_login_required
@@ -543,15 +534,16 @@ def case_document_file(request, matter_id, document_id):
     except LegalServerError as exc:
         return JsonResponse({"error": str(exc)}, status=502)
     filename = document.get("filename") or downloaded.get("filename") or "case-document"
-    content_type = downloaded.get("content_type") or ""
-    if content_type in ("", "application/octet-stream"):
-        content_type = document.get("mimeType") or mimetypes.guess_type(filename)[0] or "application/octet-stream"
-    response = HttpResponse(
-        downloaded["content"],
-        content_type=content_type,
-    )
-    response["Content-Disposition"] = content_disposition_header(False, filename)
-    return allow_document_framing(response)
+    # Neither the upstream MIME header nor a filename proves a safe preview.
+    content = downloaded["content"]
+    is_pdf = content.startswith(b"%PDF-")
+    response = HttpResponse(content, content_type="application/pdf" if is_pdf else "application/octet-stream")
+    response["Content-Disposition"] = content_disposition_header(not is_pdf, filename)
+    response["X-Content-Type-Options"] = "nosniff"
+    allow_document_framing(response)
+    if not is_pdf:
+        response["Content-Security-Policy"] += "; sandbox; default-src 'none'"
+    return response
 
 
 def _fact_slug(matter, title):

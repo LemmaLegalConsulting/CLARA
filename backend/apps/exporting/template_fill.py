@@ -10,8 +10,8 @@ from jinja2 import ChainableUndefined, UndefinedError
 from lxml import etree
 
 from apps.templates_app.fill_paths import write_path
-from apps.templates_app.fill_templates import fill_environment
-from apps.templates_app.template_variables import normalize_docxtpl_blocks
+from apps.templates_app.jinja_filters import fill_environment
+from apps.templates_app.template_syntax import normalize_docxtpl_blocks
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 
@@ -62,7 +62,7 @@ def highlight_markers(content, markers):
     return output.getvalue()
 
 
-def render_fill(content, state, *, preview=False):
+def _render_fill_in_worker(content, state, *, preview=False):
     """Render the session's answers into its template snapshot.
 
     With ``preview`` the DOCX comes back unhighlighted, together with a map of
@@ -169,3 +169,8 @@ def render_fill(content, state, *, preview=False):
     if preview:
         return output.getvalue(), marked, assumed
     return highlight_markers(output.getvalue(), markers)
+
+
+def render_fill(content, state, *, preview=False):
+    from apps.core.constrained_worker import run_fill
+    return run_fill(content, state, preview=preview)

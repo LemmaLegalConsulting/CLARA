@@ -26,7 +26,7 @@ class RevisionTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("advocate", "a@example.com", "pw", is_staff=True)
         self.client.force_login(self.user)
-        self.matter = Matter.objects.create(
+        self.matter = Matter.objects.create(source_system="Manual", raw_payload={"created_by_user_id": self.user.pk},
             external_id="MID-1", client_name="Jane Tenant", matter_type="Eviction", jurisdiction="Cleveland"
         )
         self.session = DraftingSession.objects.create(
@@ -151,7 +151,7 @@ class RevisionTests(TestCase):
 class GenerationGuardTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("advocate", "a@example.com", "pw", is_staff=True)
-        matter = Matter.objects.create(external_id="MID-1", client_name="Jane", matter_type="Eviction", jurisdiction="X")
+        matter = Matter.objects.create(source_system="Manual", raw_payload={"created_by_user_id": self.user.pk}, external_id="MID-1", client_name="Jane", matter_type="Eviction", jurisdiction="X")
         self.session = DraftingSession.objects.create(
             mode="draft_from_template", matter=matter, draft_plan={"documents": [{"title": "Answer"}]}
         )

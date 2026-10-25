@@ -40,6 +40,8 @@ class DraftExportDeliveryTests(TestCase):
             sections=[{"heading": "Answer", "text": "Defendant answers."}],
             plain_text="Defendant answers.",
         )
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     def test_the_export_uploads_by_default_and_reports_it_in_a_header(self):
         with patch("apps.sources.connectors.legalserver.LegalServerClient.upload_matter_document") as upload:

@@ -389,11 +389,9 @@ See [GitHub's OIDC reference](https://docs.github.com/en/actions/reference/secur
 Two federated credentials exist:
 
 - `gh-main` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:ref:refs/heads/main`, used by
-  the workflow as written.
+  the previous workflow. Retire this branch-only credential after the protected-environment workflow is deployed.
 - `gh-env-production` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:environment:production`,
-  unused until you uncomment `environment: production` in the deploy job. Do that
-  to require manual approval before production, configuring reviewers on a
-  `production` environment in repository settings.
+  used by the protected `production` deployment job. The environment requires approval from `nonprofittechy` and permits protected branches only. Main requires an approving PR review and the `test` status check, including for administrators. Verify these external settings before each release-policy change.
 
 To also re-upload the caselaw corpus (slow — thousands of small files, and only
 necessary when the corpus itself changes):

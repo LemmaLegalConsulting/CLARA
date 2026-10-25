@@ -11,6 +11,7 @@ from apps.sources.connectors.legalserver import (
     LegalServerError,
     legalserver_matter_identifier,
     legalserver_matter_identifier_candidates,
+    legalserver_matter_uuid,
     matter_payload_to_defaults,
 )
 from apps.sources.models import UserSourceIdentity
@@ -198,7 +199,7 @@ def _user_group_names(user):
 def django_user_has_legalserver_superuser_role(user):
     if not user or not getattr(user, "is_authenticated", False):
         return False
-    if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
+    if getattr(user, "is_superuser", False):
         return True
     configured_groups = {group.casefold() for group in getattr(settings, "LEGALSERVER_SUPERUSER_GROUPS", [])}
     return bool(configured_groups & _user_group_names(user))
@@ -260,35 +261,37 @@ def legalserver_access_profile_for_user(user, *, client=None):
         identifier=identifier,
         login_email=login_email,
         is_superuser=django_user_has_legalserver_superuser_role(user),
-        identity_required=getattr(settings, "LEGALSERVER_REQUIRE_OFFICE365_EMAIL_MATCH", True),
+        identity_required=True,
     )
     if not identifier:
         return profile
 
-    identifier_matches_login = identifier.casefold().strip() == login_email if login_email else False
-    profile.email_matches_login = identifier_matches_login
-
+    # A local, administrator-approved identity is required. Never elevate from
+    # a remote role until that exact active account proves the identity match.
     try:
         client = client or LegalServerClient()
         if getattr(client, "configured", False) and hasattr(client, "find_user"):
             profile.user_payload = client.find_user(identifier)
     except (LegalServerError, AttributeError):
         profile.user_payload = {}
-    if profile.user_payload:
-        profile.roles = legalserver_user_roles(profile.user_payload)
-        profile.is_superuser = profile.is_superuser or legalserver_roles_include_superuser(profile.roles)
-        legalserver_email = legalserver_user_email(profile.user_payload)
-        if legalserver_email and login_email:
-            profile.email_matches_login = legalserver_email == login_email
+    remote = profile.user_payload if isinstance(profile.user_payload, dict) else {}
+    disabled = any(str(remote[key]).strip().casefold() not in {"false", "0", "no", ""}
+                   for key in ("disabled", "is_disabled") if key in remote)
+    disabled = disabled or any(str(remote[key]).strip().casefold() not in {"true", "1", "yes", "active", "enabled"}
+                               for key in ("active", "is_active", "enabled") if key in remote)
+    profile.email_matches_login = bool(login_email and legalserver_user_email(remote) == login_email)
+    if not remote or disabled or not profile.email_matches_login:
+        if not profile.is_superuser:
+            profile.error = "identity_mismatch"
+        # Explicit local administrators remain independent of remote mappings.
+        return profile
+    profile.roles = legalserver_user_roles(remote)
+    profile.is_superuser = profile.is_superuser or legalserver_roles_include_superuser(profile.roles)
 
-    if profile.is_superuser:
-        profile.email_matches_login = True
-    elif profile.identity_required and not profile.email_matches_login:
-        profile.error = "identity_mismatch"
     return profile
 
 
-def user_can_access_matter(user, matter, *, access_profile=None):
+def user_can_access_matter(user, matter, *, access_profile=None, client=None, require_remote=False):
     if not user or not getattr(user, "is_authenticated", False) or not matter:
         return False
     raw_payload = matter.raw_payload or {}
@@ -298,12 +301,29 @@ def user_can_access_matter(user, matter, *, access_profile=None):
         # Seeded sample data carries no client information, so it is readable
         # whenever it is enabled at all.
         return settings.ENABLE_DEMO_MATTERS
-    access_profile = access_profile or legalserver_access_profile_for_user(user)
+    # Explicit locally administered all-case permission does not depend on an
+    # upstream assignment. Deliveries still require a responding upstream.
+    if not require_remote and django_user_has_legalserver_superuser_role(user):
+        return True
+    client = client or LegalServerClient()
+    access_profile = access_profile or legalserver_access_profile_for_user(user, client=client)
+    if matter.source_system == "LegalServer":
+        # No offline permission snapshots: revalidate on every sensitive access.
+        if not client.configured:
+            return False
+        try:
+            current = client.get_matter(legalserver_matter_uuid(raw_payload) or matter.external_id)
+        except LegalServerError:
+            return False
+        if not current:
+            return False
+        if access_profile.is_superuser:
+            return True
+        return bool(access_profile.identifier and not access_profile.error and
+                    payload_matches_legalserver_identifier(current, access_profile.identifier))
     if access_profile.is_superuser:
         return True
-    if not access_profile.identifier or access_profile.error:
-        return False
-    return payload_matches_legalserver_identifier(raw_payload, access_profile.identifier)
+    return False
 
 
 def local_matters_for_user(user):
@@ -313,10 +333,25 @@ def local_matters_for_user(user):
 
 
 def accessible_matters_for_user(user):
-    access_profile = legalserver_access_profile_for_user(user)
-    if access_profile.is_superuser:
+    if django_user_has_legalserver_superuser_role(user):
         return list(Matter.objects.all())
-    return [matter for matter in Matter.objects.all() if user_can_access_matter(user, matter, access_profile=access_profile)]
+    local = local_matters_for_user(user)
+    if settings.ENABLE_DEMO_MATTERS:
+        local += list(Matter.objects.filter(source_system=DEMO_SOURCE_SYSTEM))
+    client = LegalServerClient()
+    profile = legalserver_access_profile_for_user(user, client=client)
+    if not client.configured or not profile.identifier or profile.error:
+        return local
+    # One current assignment search, not one network request per cached case.
+    try:
+        payloads = client.search_matters(user_email=profile.identifier, limit=1000)
+    except LegalServerError:
+        return local
+    current_ids = set()
+    for payload in payloads:
+        if profile.is_superuser or payload_matches_legalserver_identifier(payload, profile.identifier):
+            current_ids.update(legalserver_matter_identifier_candidates(payload))
+    return local + list(Matter.objects.filter(source_system="LegalServer", external_id__in=current_ids))
 
 
 def matter_for_user(user, external_id):
@@ -407,7 +442,8 @@ def legalserver_account_status(user, *, client=None):
         "roles": access_profile.roles,
         "emailMatchesLogin": access_profile.email_matches_login,
         "requiresOffice365EmailMatch": access_profile.identity_required,
-        "autoMapOffice365Email": getattr(settings, "LEGALSERVER_AUTO_MAP_OFFICE365_EMAIL", True),
+        "autoMapOffice365Email": False,
+        "mappingManagedByAdministrator": True,
     }
 
 

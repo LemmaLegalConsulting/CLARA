@@ -1,7 +1,6 @@
 name: Deploy to Azure
 
-# Deploys on merge to main. Merging is the trigger, so a pull request that never
-# lands never deploys, and every deployed commit is one that passed review.
+# Production requires branch protection and environment reviewers configured in GitHub.
 on:
   push:
     branches: [main]
@@ -22,7 +21,6 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write   # required for federated (OIDC) login to Azure
 
 env:
   AZURE_RESOURCE_GROUP: agentic-housing-rg
@@ -123,12 +121,12 @@ jobs:
     needs: test
     # Never on a pull request: the test job above gates the merge, and this job
     # publishes to production.
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    # To require manual approval before production, create a "production"
-    # environment in repo settings with required reviewers and uncomment the
-    # line below. The federated credential for it already exists.
-    # environment: production
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
     outputs:
       image: ${{ steps.build.outputs.image }}
     steps:

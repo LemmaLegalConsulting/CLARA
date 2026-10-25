@@ -21,10 +21,14 @@ def templates(request):
 def template_from_example(request):
     if request.method != "POST":
         return method_not_allowed(["POST"])
+    if not request.user.has_perm("templates_app.add_documenttemplate"):
+        return JsonResponse({"error": "Template administration permission required"}, status=403)
     body = json_body(request)
     template = build_template_from_example(
         title=body.get("title") or "Example-derived template",
         example_text=body.get("exampleText") or "",
         jurisdiction=body.get("jurisdiction") or "",
     )
+    template.is_active = False
+    template.save(update_fields=["is_active"])
     return JsonResponse({"template": template_to_dict(template, include_blocks=True)}, status=201)

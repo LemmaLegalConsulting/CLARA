@@ -47,7 +47,7 @@ class SafeReturnPathTests(SimpleTestCase):
 
 
 OFFICE365 = {
-    "OFFICE365_TENANT_ID": "organizations",
+    "OFFICE365_TENANT_ID": "11111111-1111-1111-1111-111111111111",
     "OFFICE365_CLIENT_ID": "client-id",
     "OFFICE365_CLIENT_SECRET": "secret",
     "OFFICE365_REDIRECT_URI": "http://localhost:5173/api/auth/office365/callback/",
@@ -58,14 +58,25 @@ OFFICE365 = {
 
 @override_settings(**OFFICE365)
 class Office365ReturnPathTests(TestCase):
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        from apps.core.models import Office365Principal
+        user = get_user_model().objects.create_user("approved", "advocate@example.invalid")
+        Office365Principal.objects.create(user=user, tenant_id=OFFICE365["OFFICE365_TENANT_ID"],
+                                         object_id="22222222-2222-2222-2222-222222222222")
+        patcher = patch("apps.core.oidc.application")
+        self.app = patcher.start().return_value
+        self.addCleanup(patcher.stop)
+        self.app.initiate_auth_code_flow.return_value = {"state": "state", "auth_uri": "https://login.microsoftonline.com/authorize"}
+        self.app.acquire_token_by_auth_code_flow.return_value = {"id_token_claims": {
+            "tid": OFFICE365["OFFICE365_TENANT_ID"], "oid": "22222222-2222-2222-2222-222222222222"}}
+        claims_patch = patch("apps.core.oidc.validated_claims", return_value=self.app.acquire_token_by_auth_code_flow.return_value["id_token_claims"])
+        claims_patch.start()
+        self.addCleanup(claims_patch.stop)
+
     def sign_in(self):
-        claims = {"preferred_username": "advocate@example.org", "email": "advocate@example.org"}
-        payload = base64.urlsafe_b64encode(json.dumps(claims).encode("utf-8")).decode("utf-8").rstrip("=")
-        state = self.client.session["office365_oauth_state"]
-        with patch("apps.core.views.requests.post") as post:
-            post.return_value.status_code = 200
-            post.return_value.json.return_value = {"access_token": "a", "id_token": f"h.{payload}.s"}
-            return self.client.get(f"/api/auth/office365/callback/?code=code&state={state}")
+        state = self.client.session["office365_flow"]["state"]
+        return self.client.get(f"/api/auth/office365/callback/?code=code&state={state}")
 
     def test_returns_to_the_page_that_was_asked_for(self):
         self.client.get("/api/auth/office365/start/", {"returnTo": "/drafting/26-0222/sessions/184/plan"})

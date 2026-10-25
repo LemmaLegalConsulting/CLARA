@@ -64,3 +64,21 @@ class OrganizationSettings(models.Model):
 
     def __str__(self):
         return "Organization settings"
+
+
+class Office365Principal(models.Model):
+    """An administrator-approved immutable identity; never linked by email."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    tenant_id = models.UUIDField()
+    object_id = models.UUIDField()
+    enabled = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["tenant_id", "object_id"], name="unique_office365_principal")]
+
+
+class OAuthTransaction(models.Model):
+    """Atomic one-use guard shared by every application worker."""
+    state_digest = models.CharField(max_length=64, primary_key=True)
+    expires_at = models.DateTimeField()
+    consumed = models.BooleanField(default=False)

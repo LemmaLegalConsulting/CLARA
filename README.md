@@ -61,7 +61,7 @@ Office 365 / SharePoint supports two access paths:
 - **User delegated access:** save an enabled Office 365 entry under **User OAuth connections** for a Django user. SharePoint searches use that user's Graph token first, so the user sees documents their account can access.
 - **Server fallback access:** configure SharePoint server credentials under **Source configurations**. The connector uses those only when there is no delegated user token, which supports volunteers or external users who should only see documents exposed through the server/legal-system integration.
 
-For Office 365 sign-in across any work/school tenant, use `OFFICE365_TENANT_ID=organizations`. Use a concrete tenant ID only when sign-in should be restricted to that tenant.
+Office 365 sign-in requires a concrete tenant UUID in `OFFICE365_TENANT_ID`. Before rollout, run migrations and create an enabled **Office365 principal** in Django admin for each approved user, using the tenant and object IDs verified in Entra. Existing email-based accounts are never automatically linked. Keep a local administrator login available during this explicit migration. MSAL manages the authorization-code flow, PKCE and nonce validation; PyJWT separately verifies signature, issuer, audience and timestamps; database-backed transactions expire after ten minutes and are single-use. Entra assignment, conditional access and MFA policies must also be checked by the operator.
 
 ## Start The Application
 
@@ -898,3 +898,32 @@ In **Research → Browse the library → SharePoint precedents**, enter a search
 see document names, metadata, and links that open originals in SharePoint.
 Empty results, missing configuration, denied access, and throttling are shown as
 distinct states. Searching and opening links do not publish documents.
+
+
+## Security deployment requirements
+
+LegalServer identities are administrator-managed. Existing mappings migrate as unverified; an administrator must verify the local login email and remote account, then mark the mapping verified in Django admin. Admin changes are recorded in Django's audit log. Self-service remapping is disabled,
+and generic Django staff status does not grant all-case access. Exact unique active
+remote users must match the approved local login email before remote roles apply.
+Grant the separate `write_legalserver_documents`, `write_legalserver_notes`, and `write_legalserver_properties` permissions only to the intended users/groups. Ordinary case access alone never grants those writes. LegalServer case reads and deliveries recheck current assignments; unavailable
+upstream authorization denies access. There is no offline permission grace period.
+
+Example-derived templates require template-add permission and remain inactive until
+reviewed and enabled in admin. Shared rendering prohibits internal attribute access
+and arbitrary calls. Draft/regeneration text and uploaded-template fill rendering run in the bounded worker. Printed containers are checked before string conversion. Maintained-template export rendering uses the same restricted environment; full export process isolation remains a release verification item.
+
+Case documents preview inline only with a PDF signature and an explicit PDF MIME type;
+other documents download as attachments. Attachment responses carry sandbox CSP; PDF previews retain the framing policy, and both send nosniff.
+nginx proxies `/media/` to Django. Only users with the matching template, block, or letterhead view permission may download registered assets; anonymous access and arbitrary storage paths are denied. Downloads are attachments with no-store caching. Admin uploads and server-side exports continue to use storage directly.
+
+General extraction accepts at most 15 MB, 40 MB expanded DOCX, 2,048 archive members,
+300 PDF pages and 4 MB of text. Linux parser subprocesses have a 20-second CPU budget,
+25-second wall timeout, 768 MB memory limit and two concurrent slots per container/host. The worker receives no application environment credentials and its process group is terminated on timeout. This is resource containment, not a filesystem or network sandbox.
+Optional extraction backends must fit these same limits; temporary files are private
+and removed after conversion. These limits do not replace deployment-wide quotas.
+
+The deployment workflow uses the `production` environment and job-scoped OIDC.
+Configure required environment reviewers, reviewed PRs, required status checks and
+push/force-push/deletion restrictions in GitHub; the workflow alone does not enforce
+those repository settings. Check Azure's federated trust matches the environment.
+Do not treat passing local tests as verification of the deployed image or controls.

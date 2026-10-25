@@ -120,9 +120,9 @@ def prepare_workbook(source: Path, output: Path) -> list[str]:
 
 def render_workbook(template_path: Path, context: dict, output_path: Path, *, jinja_env=None):
     """Fill a prepared workbook's shared strings, leaving formulas alone."""
-    from jinja2 import Environment
+    from .jinja_filters import template_environment
 
-    environment = jinja_env or Environment()
+    environment = jinja_env or template_environment()
     with zipfile.ZipFile(template_path) as archive:
         members = {name: archive.read(name) for name in archive.namelist()}
 

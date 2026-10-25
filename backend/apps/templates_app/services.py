@@ -24,6 +24,7 @@ def build_template_from_example(*, title, example_text, jurisdiction=""):
         jurisdiction=jurisdiction,
         source_label="User example",
         created_from_example=True,
+        is_active=False,
         metadata={"builder": "heuristic-outline"},
     )
 

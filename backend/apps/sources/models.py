@@ -137,6 +137,7 @@ class UserSourceIdentity(models.Model):
     provider = models.CharField(max_length=80, choices=PROVIDER_CHOICES)
     identifier = models.CharField(max_length=255)
     enabled = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False, help_text="Administrator has verified this principal and its LegalServer account.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -152,7 +153,7 @@ class UserSourceIdentity(models.Model):
         if not user or not getattr(user, "is_authenticated", False):
             return ""
         try:
-            identity = cls.objects.filter(user=user, provider=provider, enabled=True).first()
+            identity = cls.objects.filter(user=user, provider=provider, enabled=True, is_verified=True).first()
         except (DatabaseError, OperationalError, ProgrammingError):
             return ""
         return identity.identifier if identity and identity.identifier else ""

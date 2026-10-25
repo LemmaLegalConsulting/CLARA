@@ -33,7 +33,7 @@ class DraftGenerationJobTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("advocate", "advocate@example.com", "pw", is_staff=True)
         self.client.force_login(self.user)
-        matter = Matter.objects.create(
+        matter = Matter.objects.create(source_system="Manual", raw_payload={"created_by_user_id": self.user.pk},
             external_id="LS-300", client_name="Jane Tenant", matter_type="Eviction",
             jurisdiction="Cleveland Housing Court", summary="Rent dispute and repairs.",
         )

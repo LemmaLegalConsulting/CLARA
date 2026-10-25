@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 LOCAL_SOURCE_SYSTEMS = {"Manual", "Demo"}
 
 REASON_LABELS = {
+    "authorization_unavailable_or_revoked": "Your current case access or permission to save this kind of work could not be verified; nothing was uploaded.",
     "writes_disabled": "Writing to LegalServer is turned off on this server, so nothing was uploaded.",
     "not_configured": "LegalServer is not configured, so nothing was uploaded.",
     "local_case": "This case does not exist in LegalServer, so nothing was uploaded.",
@@ -167,6 +168,16 @@ def _skip(matter, *, user, kind, origin, reason, title="", filename="", scope_ke
     )
 
 
+def _write_authorized(user, matter, client, permission):
+    from apps.matters.services import user_can_access_matter
+    try:
+        return bool(user and user.has_perm(f"matters.{permission}") and
+                    user_can_access_matter(user, matter, client=client, require_remote=True))
+    except Exception:
+        logger.warning("LegalServer write authorization could not be verified", exc_info=True)
+        return False
+
+
 def save_case_note(
     matter,
     *,
@@ -193,6 +204,8 @@ def save_case_note(
         return _skip(matter, user=user, kind=kind, origin=origin, reason="empty", title=title)
     client = client or LegalServerClient()
     ok, reason = can_deliver(matter, client=client)
+    if ok and not _write_authorized(user, matter, client, "write_legalserver_notes"):
+        ok, reason = False, "authorization_unavailable_or_revoked"
     if not ok:
         return _skip(matter, user=user, kind=kind, origin=origin, reason=reason, title=title)
     database_id = matter_database_id_for(matter)
@@ -297,6 +310,8 @@ def save_document(
         return _skip(matter, user=user, kind=kind, origin=origin, reason="empty", title=title, filename=filename)
     client = client or LegalServerClient()
     ok, reason = can_deliver(matter, client=client)
+    if ok and not _write_authorized(user, matter, client, "write_legalserver_documents"):
+        ok, reason = False, "authorization_unavailable_or_revoked"
     if not ok:
         return _skip(matter, user=user, kind=kind, origin=origin, reason=reason, title=title, filename=filename)
     if not matter_uuid_for(matter):
@@ -423,6 +438,8 @@ def apply_triage_outcome(matter, assessment, *, user, origin="triage", client=No
 
     client = client or LegalServerClient()
     ok, reason = can_deliver(matter, client=client)
+    if ok and not _write_authorized(user, matter, client, "write_legalserver_properties"):
+        ok, reason = False, "authorization_unavailable_or_revoked"
     if not ok:
         return _record(
             matter,

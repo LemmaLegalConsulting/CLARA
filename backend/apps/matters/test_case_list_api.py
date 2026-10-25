@@ -33,6 +33,9 @@ class ListingLegalServerClient:
         self.matters = matters
         self.calls = []
 
+    def find_user(self, identifier):
+        return {"email": identifier}
+
     def search_matters(self, *, query="", user_email="", limit=50):
         self.calls.append({"query": query, "limit": limit})
         if query:
@@ -57,7 +60,7 @@ class CaseListApiTests(TestCase):
             password="password",
         )
         self.client.force_login(self.user)
-        UserSourceIdentity.objects.create(
+        UserSourceIdentity.objects.create(is_verified=True,
             user=self.user, provider="legalserver", identifier="quinten@lemmalegal.com"
         )
         self.matters = [legalserver_matter(index) for index in range(1, 26)]

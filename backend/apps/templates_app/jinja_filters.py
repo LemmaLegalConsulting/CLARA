@@ -8,10 +8,13 @@ projects are MIT licensed; see THIRD_PARTY_NOTICES.md.
 from __future__ import annotations
 
 import re
+from functools import wraps
 from collections.abc import Iterable, Mapping
 from decimal import Decimal, InvalidOperation
 
-from jinja2 import ChainableUndefined, Environment, Undefined
+from jinja2 import ChainableUndefined, Template, Undefined, nodes
+from jinja2.sandbox import ImmutableSandboxedEnvironment, SecurityError
+from jinja2.visitor import NodeTransformer
 
 
 KNOWN_PRONOUNS = {
@@ -105,6 +108,8 @@ def currency(value):
     try:
         amount = Decimal(text.replace("$", "").replace(",", "").strip())
     except InvalidOperation:
+        return text
+    if not amount.is_finite() or abs(amount.adjusted()) > 18:
         return text
     return f"${amount:,.2f}"
 
@@ -279,8 +284,153 @@ JINJA_FILTERS = {
 }
 
 
-def template_environment(*, undefined=ChainableUndefined):
-    environment = Environment(undefined=undefined, autoescape=False)
+def validate_output_value(value):
+    # Count repeated container references before Python can stringify a compact
+    # nested list into an exponentially larger single output chunk.
+    remaining = [1024 * 1024, 20_000]
+    def visit(item, depth):
+        remaining[1] -= 1
+        if depth > 12 or remaining[1] < 0:
+            raise SecurityError("Template value exceeds structural limits")
+        if isinstance(item, str):
+            remaining[0] -= len(item) * 8 + 8
+        elif isinstance(item, dict):
+            for key, nested in item.items():
+                visit(key, depth + 1)
+                visit(nested, depth + 1)
+        elif isinstance(item, (list, tuple, set)):
+            for nested in item:
+                visit(nested, depth + 1)
+        else:
+            remaining[0] -= 64
+        if remaining[0] < 0:
+            raise SecurityError("Template value exceeds size limit")
+    visit(value, 0)
+    return value
+
+
+MAX_EXPRESSION_CHARS = 1024 * 1024
+
+
+def bounded_join(value, separator="", attribute=None):
+    if attribute is not None:
+        raise SecurityError("Attribute joins are prohibited")
+    parts = []
+    size = 0
+    separator = str(separator)
+    for item in value:
+        item = str(item)
+        size += len(item) + (len(separator) if parts else 0)
+        if size > MAX_EXPRESSION_CHARS:
+            raise SecurityError("Template expression exceeds size limit")
+        parts.append(item)
+    return separator.join(parts)
+
+
+def bounded_replace(value, old, new, count=None):
+    value, old, new = str(value), str(old), str(new)
+    occurrences = value.count(old)
+    if count is not None and int(count) >= 0:
+        occurrences = min(occurrences, int(count))
+    if len(value) + occurrences * max(0, len(new) - len(old)) > MAX_EXPRESSION_CHARS:
+        raise SecurityError("Template expression exceeds size limit")
+    return value.replace(old, new, -1 if count is None else int(count))
+
+
+class BoundConcatenation(NodeTransformer):
+    def visit_Concat(self, node, *args, **kwargs):
+        self.generic_visit(node, *args, **kwargs)
+        return nodes.Filter(nodes.List(node.nodes), "_bounded_concat", [], [], None, None).set_lineno(node.lineno)
+
+
+class BoundedTemplate(Template):
+    def generate(self, *args, **kwargs):
+        size = 0
+        for chunk in super().generate(*args, **kwargs):
+            size += len(chunk)
+            if size > 8 * 1024 * 1024:
+                raise SecurityError("Rendered template exceeds output limit")
+            yield chunk
+
+    def render(self, *args, **kwargs):
+        return "".join(self.generate(*args, **kwargs))
+
+
+class RestrictedTemplateEnvironment(ImmutableSandboxedEnvironment):
+    """Only data lookups and explicitly registered language helpers are callable."""
+
+    template_class = BoundedTemplate
+    intercepted_binops = frozenset({"+"})
+
+    def call_binop(self, context, operator, left, right):
+        if isinstance(left, (str, list, tuple)) and isinstance(right, type(left)):
+            if len(left) + len(right) > 100_000:
+                raise SecurityError("Template expression exceeds size limit")
+        return super().call_binop(context, operator, left, right)
+
+    def is_safe_attribute(self, obj, attr, value):
+        return False
+
+    def is_safe_callable(self, obj):
+        return any(obj is helper for helper in self.globals.values())
+
+    def _parse(self, source, name, filename):
+        if len(source) > 2_000_000:
+            raise SecurityError("Template is too large")
+        tree = super()._parse(source, name, filename)
+        for node in tree.find_all(nodes.Node):
+            if isinstance(node, (nodes.Import, nodes.FromImport, nodes.Include, nodes.Extends,
+                                 nodes.Macro, nodes.CallBlock, nodes.Pow, nodes.Mul, nodes.Mod,
+                                 nodes.AssignBlock)):
+                raise SecurityError("Unsupported template operation")
+            if isinstance(node, nodes.For) and (node.recursive or list(node.find_all(nodes.For))):
+                raise SecurityError("Nested or recursive template loops are prohibited")
+            if isinstance(node, nodes.Filter) and node.name not in self.filters:
+                raise SecurityError("Attribute filters are prohibited")
+            if isinstance(node, nodes.Getattr) and node.attr.startswith("_"):
+                raise SecurityError("Private template attributes are prohibited")
+            if isinstance(node, nodes.Call) and (
+                not isinstance(node.node, nodes.Name) or node.node.name not in JINJA_FILTERS
+            ):
+                raise SecurityError("Only approved template helpers may be called")
+        return BoundConcatenation().visit(tree)
+
+
+def checked_template_function(function):
+    @wraps(function)
+    def checked(*args, **kwargs):
+        # Filters and helpers may stringify before finalize gets a chance to run.
+        for value in (*args, *kwargs.values()):
+            validate_output_value(value)
+        return validate_output_value(function(*args, **kwargs))
+    return checked
+
+
+def configure_template_environment(environment):
+    environment.finalize = validate_output_value
+    # No allocating width/format/attribute filters from stock Jinja.
+    allowed = {"default", "d", "lower", "upper", "title", "capitalize", "trim",
+               "length", "first", "last", "int", "float", "string", "escape", "e", "safe", "truncate"}
+    environment.filters = {key: value for key, value in environment.filters.items() if key in allowed}
+    environment.filters.update({"join": bounded_join, "replace": bounded_replace, "_bounded_concat": bounded_join})
     environment.filters.update(JINJA_FILTERS)
+    environment.globals.clear()
     environment.globals.update(JINJA_FILTERS)
+    environment.filters = {name: checked_template_function(function) for name, function in environment.filters.items()}
+    environment.globals = {name: checked_template_function(function) for name, function in environment.globals.items()}
     return environment
+
+
+def template_environment(*, undefined=ChainableUndefined):
+    return configure_template_environment(RestrictedTemplateEnvironment(undefined=undefined, autoescape=False))
+
+
+class FillEnvironment(RestrictedTemplateEnvironment):
+    def is_safe_callable(self, obj):
+        return any(obj is function for function in self.globals.values())
+
+
+def fill_environment(**kwargs):
+    env = FillEnvironment(autoescape=True, **kwargs)
+    configure_template_environment(env)
+    return env

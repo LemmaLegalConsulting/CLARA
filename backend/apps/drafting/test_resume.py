@@ -28,8 +28,8 @@ def make_matter(external_id, case_number):
 
 class ResumeTests(TestCase):
     def setUp(self):
-        # Staff reach every case without a LegalServer lookup.
-        self.user = get_user_model().objects.create_user("advocate", "a@example.com", "pw", is_staff=True)
+        # This fixture has explicit locally administered all-case permission.
+        self.user = get_user_model().objects.create_user("advocate", "a@example.com", "pw", is_superuser=True)
         self.client.force_login(self.user)
         self.matter = make_matter("MID-1", "26-0222")
         self.other = make_matter("MID-2", "26-0333")

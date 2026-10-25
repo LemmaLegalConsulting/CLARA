@@ -99,6 +99,8 @@ class DeliveryDefaultTests(TestCase):
 class DeliveryEligibilityTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("bob", "bob@example.org", "pw")
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     @override_settings(**{**CONFIGURED, "LEGALSERVER_ALLOW_WRITES": False})
     def test_a_server_with_writes_turned_off_sends_nothing(self):
@@ -125,7 +127,7 @@ class DeliveryEligibilityTests(TestCase):
         )
 
         self.assertEqual(delivery.status, LegalServerDelivery.SKIPPED)
-        self.assertEqual(delivery.reason, "no_matter_id")
+        self.assertEqual(delivery.reason, "authorization_unavailable_or_revoked")
 
     @override_settings(**CONFIGURED)
     def test_a_case_with_no_matter_uuid_is_not_addressed_by_case_number(self):
@@ -204,6 +206,8 @@ class CaseNoteDeliveryTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("bob", "bob@example.org", "pw")
         self.matter = legalserver_matter()
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     def test_a_note_reaches_the_matter_and_is_recorded(self):
         session = RecordingSession({"data": {"id": 4242, "note_uuid": "note-uuid"}})
@@ -299,6 +303,8 @@ class DocumentDeliveryTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("bob", "bob@example.org", "pw")
         self.matter = legalserver_matter()
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     def test_a_document_is_uploaded_as_multipart_with_its_filename(self):
         session = RecordingSession({"data": {"id": "doc-9"}})
@@ -372,6 +378,8 @@ class TriageFieldMapTests(TestCase):
             standard="...",
             criteria=["A tenant facing eviction"],
         )
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     def field_map(self, *, enabled, dry_run):
         return {
@@ -587,6 +595,8 @@ class TriageEndpointDeliveryTests(TestCase):
         self.rubric = TriageRubric.objects.create(
             slug="endpoint-rubric", name="Rubric", standard="...", criteria=["A criterion"]
         )
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     def run_triage(self, payload):
         def fake_triage(matter, *, rubric, user=None):
@@ -645,6 +655,8 @@ class ScopedUpdateTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user("bob", "bob@example.org", "pw")
         self.matter = legalserver_matter()
+        from apps.matters.testing import responding_legalserver
+        responding_legalserver(self)
 
     def test_a_second_note_under_one_scope_key_replaces_the_first(self):
         session = RecordingSession({"data": {"id": 4176}})

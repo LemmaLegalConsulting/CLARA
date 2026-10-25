@@ -178,7 +178,7 @@ def advance(session, payload):
     if "missingInformation" in payload:
         session.missing_information = payload["missingInformation"] or []
     if "selectedTemplateIds" in payload:
-        session.selected_template_ids = payload["selectedTemplateIds"] or []
+        session.selected_template_ids = active_template_ids(payload["selectedTemplateIds"])
     if "instructions" in payload:
         session.instructions = payload["instructions"]
     if "template" in payload:
@@ -524,9 +524,9 @@ def create_or_update_plan(session, payload):
     if "selectedSourceResults" in payload:
         session.selected_source_results = payload.get("selectedSourceResults") or []
     if "selectedTemplateIds" in payload:
-        session.selected_template_ids = [int(value) for value in (payload.get("selectedTemplateIds") or []) if str(value).isdigit()]
+        session.selected_template_ids = active_template_ids(payload.get("selectedTemplateIds") or [])
     elif "templateId" in payload and payload.get("templateId"):
-        session.selected_template_ids = [int(payload["templateId"])]
+        session.selected_template_ids = active_template_ids([payload["templateId"]])
     plan = _fallback_plan(session, allow_multiple=bool(payload.get("allowMultipleDocuments")))
     session.draft_plan = plan
     session.missing_information = missing_information_items(plan)
@@ -557,7 +557,7 @@ def apply_plan_edits(session, payload):
     ]
     if not session.selected_template_ids:
         slugs = [item.get("template_slug") for item in document_items if item.get("template_slug")]
-        session.selected_template_ids = list(DocumentTemplate.objects.filter(slug__in=slugs).values_list("id", flat=True))
+        session.selected_template_ids = list(DocumentTemplate.objects.filter(slug__in=slugs, is_active=True).values_list("id", flat=True))
     session.missing_information = missing_information_items(plan)
     session.template_data = _template_data_with_missing_information_answers(
         session.template_data,
@@ -581,7 +581,7 @@ def template_for_reference(value):
         template_id = int(value)
     except (TypeError, ValueError):
         return None
-    return DocumentTemplate.objects.filter(id=template_id).first()
+    return DocumentTemplate.objects.filter(id=template_id, is_active=True).first()
 
 
 def _template_for_plan_item(item):
@@ -1400,6 +1400,8 @@ def create_draft(session, *, template=None, block_keys=None, title=None, instruc
     scoped_instructions = "\n\n".join(part for part in [instructions if instructions is not None else session.instructions, answered_context] if part)
     context = regeneration_context(session, template=template, instructions=scoped_instructions)
     active_template = template or session.template
+    if active_template and not active_template.is_active:
+        raise ValueError("Selected template is unavailable or awaiting review")
     if not active_template:
         # compose_document walks template.blocks, so there is no usable
         # template-less path here despite the fallbacks further down.
@@ -1563,3 +1565,15 @@ def outline_for_session(session):
         "selectedSupportCount": len(session.selected_source_results or []),
         "approvedIssues": [issue.title for issue in issues],
     }
+
+
+def active_template_ids(values):
+    if not isinstance(values, list):
+        raise ValueError("Selected templates must be a list")
+    ids = []
+    for value in values:
+        template = template_for_reference(value)
+        if template is None:
+            raise ValueError("Selected template is unavailable or awaiting review")
+        ids.append(template.pk)
+    return ids
