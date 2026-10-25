@@ -11,12 +11,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# PR checks have their own queues so production approval cannot block testing.
 # Serialize deploys. Two merges in quick succession must not race to update the
 # same revision, and cancel-in-progress would be wrong here: a half-finished
 # deploy that has run migrations but not yet rolled the app is worse than a slow
 # queue.
 concurrency:
-  group: deploy-azure
+  group: ${{ github.event_name == 'pull_request' && github.ref || 'deploy-azure' }}
   cancel-in-progress: false
 
 permissions:

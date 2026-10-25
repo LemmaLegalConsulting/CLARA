@@ -1,5 +1,5 @@
 from django.conf import settings
-from openai import OpenAI
+from openai import OpenAI, OpenAIError
 
 from apps.sources.models import SourceConfiguration
 
@@ -19,10 +19,13 @@ class OpenAICompatibleClient:
             },
         )
         self.model = model or config["model"]
-        self.client = client or OpenAI(
-            api_key=api_key or config["api_key"],
-            base_url=base_url or config["base_url"] or None,
-        )
+        try:
+            self.client = client or OpenAI(
+                api_key=api_key or config["api_key"],
+                base_url=base_url or config["base_url"] or None,
+            )
+        except OpenAIError as exc:
+            raise OpenAIBackendError("AI provider could not be initialized; check its configuration.") from exc
 
     def complete(self, *, system, user, temperature=0.2, model=None, reasoning_level=None):
         return self.complete_messages(
