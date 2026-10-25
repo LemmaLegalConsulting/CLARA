@@ -1,5 +1,9 @@
 # Stage 1: Build Frontend
-FROM node:24-slim AS frontend
+FROM node:24.22.1-slim AS frontend
+
+# eMudhra certificate incident: refresh each stage's system trust store.
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && update-ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
@@ -8,6 +12,12 @@ RUN npm run build
 
 # Stage 2: Python dependencies, built and slimmed in a stage that is thrown away
 FROM python:3.12-slim AS pydeps
+
+# eMudhra certificate incident: refresh each stage's system trust store.
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && update-ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN python -m pip install --no-cache-dir --upgrade "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70" \
+    && python -m pip install --no-cache-dir --upgrade "certifi>=2026.10.19"
 
 # Dependencies are installed into a virtualenv in a throwaway stage, slimmed
 # there, and only the result is copied into the runtime image. Doing the removal
@@ -24,11 +34,18 @@ FROM python:3.12-slim AS pydeps
 COPY requirements.txt .
 COPY docker/slim_site_packages.py /tmp/
 RUN python -m venv /opt/venv \
+    && /opt/venv/bin/python -m pip install --no-cache-dir --upgrade "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70" \
     && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt gunicorn \
     && /opt/venv/bin/python /tmp/slim_site_packages.py
 
 # Stage 3: the image that actually runs
 FROM python:3.12-slim
+
+# eMudhra certificate incident: refresh each stage's system trust store.
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && update-ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN python -m pip install --no-cache-dir --upgrade "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70" \
+    && python -m pip install --no-cache-dir --upgrade "certifi>=2026.10.19"
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
