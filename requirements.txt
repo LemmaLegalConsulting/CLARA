@@ -7,7 +7,7 @@ docxcompose>=2.2.0,<3.0
 PyYAML>=6.0.3,<7.0
 azure-storage-blob>=12.31.0,<13.0
 azure-identity>=1.26.0,<2.0
-boto3>=1.43.117,<2.0
+boto3>=1.43.118,<2.0
 psycopg[binary]>=3.3.6,<4.0
 textstat>=0.7.13,<1.0
 
