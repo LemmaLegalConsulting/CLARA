@@ -11,12 +11,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# PR checks have their own queues so production approval cannot block testing.
 # Serialize deploys. Two merges in quick succession must not race to update the
 # same revision, and cancel-in-progress would be wrong here: a half-finished
 # deploy that has run migrations but not yet rolled the app is worse than a slow
 # queue.
 concurrency:
-  group: deploy-azure
+  group: ${{ github.event_name == 'pull_request' && github.ref || 'deploy-azure' }}
   cancel-in-progress: false
 
 permissions:
@@ -75,12 +76,12 @@ jobs:
         env:
           DJANGO_DEBUG: 'true'
 
-      # Matches the Dockerfile's node:24-slim frontend stage. CI must build on
+      # Matches the Dockerfile's node:26-slim frontend stage. CI must build on
       # the runtime production builds on, or a build that passes here can still
       # fail in the image.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.22.1'
+          node-version: '26.12.1'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -202,7 +203,7 @@ jobs:
       # in front of a deployment that does not have them yet.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24.22.1'
+          node-version: '26.12.1'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 

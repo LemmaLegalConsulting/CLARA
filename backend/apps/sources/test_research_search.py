@@ -19,7 +19,7 @@ from __future__ import annotations
 import json
 
 import yaml
-from django.test import SimpleTestCase, TestCase
+from django.test import SimpleTestCase, TestCase, override_settings
 
 from apps.core.content_library import content_path
 from apps.sources.research import engine, snippets
@@ -461,6 +461,7 @@ class RegressionQueryTests(TestCase):
             self.assertIn(wanted, [item["value"] for item in payload["unmatched"]], message)
 
 
+@override_settings(OPENAI_API_KEY="synthetic-test-key")
 class ResearchSearchApiTests(TestCase):
     """The endpoint, and especially what it says about AI in each state."""
 
@@ -497,6 +498,14 @@ class ResearchSearchApiTests(TestCase):
         self.assertFalse(payload["ai"]["rerank"]["requested"])
         self.assertFalse(payload["ai"]["synthesis"]["requested"])
         self.assertTrue(payload["ai"]["synthesis"]["reason"])
+
+    @override_settings(OPENAI_API_KEY="", AI_DRAFTING_ENABLED=True)
+    def test_missing_provider_credentials_preserve_search_results(self):
+        payload = self.search(query="habitability", aiRerank=True, aiSynthesis=True)
+        self.assertTrue(payload["results"])
+        for operation in ("rerank", "synthesis"):
+            self.assertFalse(payload["ai"][operation]["applied"])
+            self.assertIn("configuration", payload["ai"][operation]["reason"])
 
     def test_a_search_can_be_linked_to(self):
         response = self.client.get("/api/research/search/", {"q": "habitability", "corpus": "statutes"})
@@ -629,6 +638,7 @@ class CountyGroupingTests(SimpleTestCase):
             self.assertEqual(payload["total"], 3, spelling)
 
 
+@override_settings(OPENAI_API_KEY="synthetic-test-key")
 class GetCannotStartGenerativeWorkTests(TestCase):
     """A link is opened by crawlers, prefetchers and whoever it was forwarded to."""
 
@@ -708,6 +718,7 @@ class GetCannotStartGenerativeWorkTests(TestCase):
         self.assertTrue(payload["ai"]["synthesis"]["applied"])
 
 
+@override_settings(OPENAI_API_KEY="synthetic-test-key")
 class RerankHonestyTests(TestCase):
     """"Applied" has to mean a model actually reordered something."""
 
