@@ -880,3 +880,33 @@ test("compact gym lenses stay reachable from a finding and separate pleaded from
   await page.screenshot({ path: test.info().outputPath("gym-overview-mobile.png"), fullPage: true });
   expect(writes).toEqual([]);
 });
+
+for (const extension of ["docx", "pdf"]) {
+  test(`gym downloads an annotated ${extension} and reports unavailable originals`, async ({ page }) => {
+    const workspace = { id: 5, title: "Sample review", documents: [], matterId: "", enabledChecks: [] };
+    const run = { id: 17, workspaceId: 5, status: "complete", briefTitle: "Sample brief", challenges: [] };
+    let unavailable = false;
+    await page.route("**/api/argument-gym/**", (route) => {
+      const path = new URL(route.request().url()).pathname;
+      if (path.endsWith("/artifacts/annotated/")) {
+        if (unavailable) return route.fulfill({ status: 409, json: { error: "The original file is unavailable. Upload it again and run the gym." } });
+        return route.fulfill({
+          contentType: extension === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          headers: { "content-disposition": `attachment; filename="argument-gym-17-annotated.${extension}"` },
+          body: "Synthetic download payload",
+        });
+      }
+      if (path.endsWith("/workspaces/5/")) return route.fulfill({ json: { workspace, latestRun: run } });
+      if (path.endsWith("/runs/17/")) return route.fulfill({ json: { run } });
+      return route.fallback();
+    });
+    await page.goto("/argument-gym/workspaces/5/runs/17");
+    const download = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Download annotated copy" }).click();
+    expect((await download).suggestedFilename()).toBe(`argument-gym-17-annotated.${extension}`);
+    await expect(page.getByText("Annotated copy downloaded. Review all comments, including unplaced notes.")).toBeVisible();
+    unavailable = true;
+    await page.getByRole("button", { name: "Download annotated copy" }).click();
+    await expect(page.getByText("The original file is unavailable. Upload it again and run the gym.")).toBeVisible();
+  });
+}

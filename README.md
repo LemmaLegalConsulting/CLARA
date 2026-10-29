@@ -927,3 +927,22 @@ Configure required environment reviewers, reviewed PRs, required status checks a
 push/force-push/deletion restrictions in GitHub; the workflow alone does not enforce
 those repository settings. Check Azure's federated trust matches the environment.
 Do not treat passing local tests as verification of the deployed image or controls.
+
+### Argument Gym annotated downloads
+
+After a completed run, **Download annotated copy** exports all stored challenges
+(including addressed and dismissed ones) as native DOCX comments or PDF page
+annotations. This performs no new AI calls and does not apply suggested edits.
+Word comments anchor to uniquely matched containing paragraphs, including table
+cells. PDF notes anchor to a uniquely matched page, not text coordinates. Missing
+or ambiguous quotations become explicitly unplaced notes (an appended paragraph
+in Word, or notes on PDF page 1). The export annotates challenges, not every
+format/compliance result; use the run report for full check coverage.
+
+New uploads retain immutable originals through `apps.core.storage`, in
+`raw/argument-gym/<workspace>/<unique-id>.<extension>` and, following successful
+ingestion, the corresponding `published/` path. Downloads require workspace
+access and verify the original's SHA-256. Earlier uploads without originals
+must be uploaded and reviewed again. Native drafts export as DOCX only while
+their run snapshot remains current. PDF exhibits remain in the downloaded file,
+but annotation matching is limited to the brief's reviewed page range.

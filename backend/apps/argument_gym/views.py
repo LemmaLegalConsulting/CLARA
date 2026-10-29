@@ -5,6 +5,10 @@ access boundary the rest of the app uses. A workspace with no matter is a
 standalone stress test and belongs to whoever created it.
 """
 
+import hashlib
+import uuid
+from pathlib import Path
+
 from django.db import models
 from django.http import JsonResponse
 from django.utils import timezone
@@ -306,9 +310,10 @@ def workspace_documents(request, workspace_id):
         if not upload:
             return JsonResponse({"error": "Upload a brief or case document"}, status=400)
         role = request.POST.get("role") or GymDocument.BRIEF_UNDER_TEST
+        content = upload.read()
         try:
             ingested = ingest_upload(
-                upload.read(), filename=upload.name, content_type=upload.content_type or ""
+                content, filename=upload.name, content_type=upload.content_type or ""
             )
         except DocumentExtractionError as exc:
             return JsonResponse({"error": str(exc)}, status=400)
@@ -316,8 +321,16 @@ def workspace_documents(request, workspace_id):
             return JsonResponse({"error": "No readable text could be extracted from this file"}, status=400)
         role = role if role in dict(GymDocument.ROLE_CHOICES) else GymDocument.BRIEF_UNDER_TEST
         split = (ingested["metadata"].get("split") or {}) if role == GymDocument.BRIEF_UNDER_TEST else {}
+        from apps.core.storage import RAW, get_document_storage
+
+        storage_key = f"argument-gym/{workspace.pk}/{uuid.uuid4().hex}{Path(upload.name).suffix.lower()}"
+        get_document_storage(RAW).put_bytes(content=content, key=storage_key, content_type=upload.content_type or "application/octet-stream")
+        # Successful text ingestion publishes the immutable original for review exports.
+        get_document_storage().put_bytes(content=content, key=storage_key, content_type=upload.content_type or "application/octet-stream")
+        ingested["metadata"]["sourceChecksum"] = hashlib.sha256(content).hexdigest()
         document = GymDocument.objects.create(
             workspace=workspace,
+            storage_key=storage_key,
             role=role,
             source_type=GymDocument.UPLOAD,
             title=request.POST.get("title") or upload.name,
@@ -502,6 +515,13 @@ def run_artifact(request, run_id, kind):
     run, error = _run_or_404(request.user, run_id)
     if error:
         return error
+    if kind == "annotated":
+        from apps.exporting.gym_annotations import AnnotationUnavailable, annotated_download
+
+        try:
+            return annotated_download(run)
+        except AnnotationUnavailable as exc:
+            return JsonResponse({"error": str(exc)}, status=409)
     builder = artifacts.ARTIFACT_BUILDERS.get(kind)
     if not builder:
         return JsonResponse({"error": f"Unknown artifact '{kind}'"}, status=404)

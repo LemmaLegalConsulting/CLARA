@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 import { api } from "../api/client.js";
+import { saveResponseAsFile } from "./downloadFile.js";
 import { useModalDismiss } from "../hooks/useModalDismiss.js";
 import {
   CASE_CONTEXT_CHOICES,
@@ -1631,6 +1632,19 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
     }
   };
 
+  const downloadAnnotated = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      await saveResponseAsFile(await api.gymArtifact(run.id, "annotated"));
+      setNotice("Annotated copy downloaded. Review all comments, including unplaced notes.");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const openArtifact = async (kind) => {
     setBusy(true);
     try {
@@ -1848,6 +1862,13 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
             <button className="btn btn-light" type="button" disabled={actionsDisabled} onClick={startRun}>
               {busy ? <Loader2 className="spin" size={16} /> : <Swords size={16} />} Run again
             </button>
+          </div>
+
+          <div className="gym-annotated-download">
+            <button className="btn btn-light" type="button" disabled={actionsDisabled} onClick={downloadAnnotated}>
+              <FileText size={16} /> Download annotated copy
+            </button>
+            <p className="muted">All challenges as Word comments or PDF page notes, including handled findings. Unmatched passages are labeled unplaced. Suggested edits remain comments for your review.</p>
           </div>
 
           {run.assessment && (
