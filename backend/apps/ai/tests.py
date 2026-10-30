@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 
 from apps.ai.case_chat import case_chat_reply
 from apps.ai.case_chat import normalize_ai_text as normalize_chat_text
-from apps.ai.openai_client import OpenAICompatibleClient
+from apps.ai.openai_client import OpenAIBackendError, OpenAICompatibleClient
 from apps.ai.models import PromptOverride
 from apps.ai.prompt_catalog import PromptCatalogError, PromptRenderError, get_prompt, load_file_prompts, render_prompt
 from apps.ai.services import ConstrainedDraftingService, GenerationContext
@@ -35,6 +35,31 @@ class FakeOpenAIClient:
 
 
 class OpenAICompatibleClientTests(TestCase):
+    def test_missing_or_blank_credentials_fail_before_creating_sdk_client(self):
+        for key in (None, "", " \t\n"):
+            with self.subTest(key=key), self.settings(OPENAI_API_KEY=key), \
+                    patch("apps.ai.openai_client.OpenAI") as sdk:
+                with self.assertRaisesRegex(OpenAIBackendError, "configuration.*API key"):
+                    OpenAICompatibleClient()
+                sdk.assert_not_called()
+
+    @override_settings(OPENAI_API_KEY="")
+    def test_injected_client_needs_no_credentials(self):
+        fake_client = FakeOpenAIClient()
+        client = OpenAICompatibleClient(client=fake_client, model="test-model")
+        self.assertEqual(client.complete(system="System", user="User"), "Generated section")
+
+    @override_settings(OPENAI_API_KEY="")
+    def test_admin_and_explicit_credentials_work_without_environment_credentials(self):
+        SourceConfiguration.objects.create(
+            name="AI", kind="openai", openai_api_key="test-admin-key",
+        )
+        with patch("apps.ai.openai_client.OpenAI") as sdk:
+            OpenAICompatibleClient()
+            self.assertEqual(sdk.call_args.kwargs["api_key"], "test-admin-key")
+            OpenAICompatibleClient(api_key="test-explicit-key")
+            self.assertEqual(sdk.call_args.kwargs["api_key"], "test-explicit-key")
+
     def test_complete_uses_chat_completions_endpoint(self):
         fake_client = FakeOpenAIClient()
         client = OpenAICompatibleClient(client=fake_client, model="test-model")
