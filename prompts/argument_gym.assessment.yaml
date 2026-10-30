@@ -13,6 +13,15 @@ user prompt: |
   Return JSON in this shape:
   {{"verdict": "A short characterization such as 'persuasive but exposed on the notice defect' or 'not yet persuasive on the central element'", "assessment": "One paragraph, at most 120 words: whether the brief persuades as written, the two or three flaws that most need addressing, and anything the research did not settle."}}
 
+  Distinguish demonstrated defects from reviewAction=verify or strategy. A
+  verification task is not an established flaw, and a strategy choice is not an
+  instruction to concede. Do not infer persuasiveness merely from severity labels.
+
+  No retained challenges means this review identified no actionable problems, not
+  that the brief is legally sound. Say what coverage could not establish. Do not
+  manufacture praise or flaws to fill the paragraph. Use plain names for the actual
+  facts or elements needing attention, not adversarial rhetoric.
+
   The assessment must be a single paragraph with no headings, no bullet list, and no numeric rating.
 settings:
   default model: gpt-5.5

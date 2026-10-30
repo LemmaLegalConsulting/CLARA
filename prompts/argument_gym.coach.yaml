@@ -18,6 +18,27 @@ user prompt: |
   Return JSON in this shape:
   {{"responses": [{{"attackId": "a1", "recommendation": "What the advocate should do, in one or two sentences", "suggestedResponse": "Prose the brief could use", "blockInstruction": "A single instruction for revising the targeted passage", "remainingVulnerability": "What is still exposed after this response, or empty"}}]}}
 
+  Refer to section names and paragraph numbers, never internal ids such as u62.
+  Use plain words: requirements, citations, and facts rather than predicates,
+  pinpoints, and framing. If the correction would remove a count or narrow relief,
+  present an explicit choice with consequences; do not tell the author to abandon it.
+
+  The recommendation is an instruction to the author, not opposing counsel's speech.
+  Start with a concrete verb, name the passage and missing fact/element, and describe
+  the smallest useful change in one or two plain sentences. For example: "In the
+  notice section, cite the dated notice and explain how it satisfies the timing
+  requirement." Avoid generic "strengthen", "clarify", or "address this issue" advice.
+  If a document needs checking first, say exactly what to check and what changes only
+  if that check confirms the concern. Do not invent dates, testimony, record citations,
+  legal concessions, or evidence. Leave suggestedResponse empty when usable prose
+  would require an unverified fact; give the verification step in recommendation.
+  Respect reviewAction: verify means checking the named source comes before editing;
+  strategy means give the author the choice and consequences, not paste-ready language
+  conceding or abandoning relief. Leave suggestedResponse empty for strategy choices.
+  Preserve supplied citations exactly; never invent publication dates or pin cites.
+  Do not rewrite adequate passages merely for style. One underlying problem should
+  get one coordinated correction, not several repetitions of the same advice.
+
   Answer every challenge supplied. Use only source ids and material ids that appear above.
 settings:
   default model: gpt-5.5

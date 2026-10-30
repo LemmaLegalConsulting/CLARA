@@ -34,6 +34,8 @@ import {
   challengeSummary,
   challengeReview,
   challengePreview,
+  challengeGroups,
+  priorityForChallenge,
   overviewLenses,
   checklistItemsFromText,
   checklistItemsToText,
@@ -717,7 +719,7 @@ function EvidenceModal({ challenge, onClose }) {
 function ChallengeCard({ challenge, busy, queued, onDisposition, onResearch, onQueueRevision, onCopy, onEvidence }) {
   const target = targetLabel(challenge.target);
   const evidence = evidenceCount(challenge);
-  const response = challenge.suggestedResponse || challenge.recommendation;
+  const response = challenge.recommendation;
   const remaining = challenge.researchCoverage?.remainingVulnerability;
 
   return (
@@ -731,12 +733,18 @@ function ChallengeCard({ challenge, busy, queued, onDisposition, onResearch, onQ
         {challenge.recurring && <span className="gym-recurring">raised again</span>}
       </header>
 
-      <h3 className="gym-finding-title">{challenge.opponentArgument}</h3>
+      <p className="gym-category">{priorityForChallenge(challenge).label}</p>
+      <h3 className="gym-finding-title">{challengePreview(challenge).title}</h3>
+      {challenge.whyItMatters && <p><strong>Why it matters:</strong> {challenge.whyItMatters}</p>}
       {challenge.briefCurrentlySays && <blockquote className="gym-quote">{challenge.briefCurrentlySays}</blockquote>}
       <div className="gym-fix">
         <h4>What to do</h4>
         <p className="gym-response-text">{response || "No suggested response was recorded. Review the reasoning and sources before deciding how to address this."}</p>
       </div>
+      {challenge.suggestedResponse && <details className="gym-fix">
+        <summary>Suggested wording — review before using</summary>
+        <p className="gym-response-text">{challenge.suggestedResponse}</p>
+      </details>}
       {remaining && <p className="gym-remaining">Still exposed: {remaining}</p>}
 
       <div className="gym-card-actions">
@@ -922,8 +930,10 @@ function ChallengeReview({ challenges, filter, requestedChallenge, busyChallenge
       <h3 className="gym-priorities-title" ref={headingRef} tabIndex={-1}>{filter === "resolved" ? "Handled challenges" : filter === "all" ? "All challenges" : "What matters most"}</h3>
       {review.total > 0 ? <>
         <p className="muted">{filter === "open" ? "Start with the highest-ranked open challenges. Open one to decide what to do." : "Open a finding to review its response and disposition."}</p>
+        {challengeGroups(review.shown).map((group) => <section key={group.id}>
+        <h4>{group.label}</h4>
         <ol className="gym-priority-list">
-          {review.shown.map((challenge) => {
+          {group.challenges.map((challenge) => {
             const preview = challengePreview(challenge);
             return <li key={challenge.id}>
               <button type="button" className="gym-priority" data-challenge-id={challenge.id} onClick={() => openFinding(challenge.id)}>
@@ -934,6 +944,7 @@ function ChallengeReview({ challenges, filter, requestedChallenge, busyChallenge
             </li>;
           })}
         </ol>
+        </section>)}
         {review.hidden > 0 && <button className="text-link-button gym-show-more" type="button" onClick={() => setShowAll(true)}>Show {review.hidden} more {review.hidden === 1 ? "challenge" : "challenges"}</button>}
         {showAll && review.total > 3 && <button className="text-link-button gym-show-more" type="button" onClick={() => setShowAll(false)}>Show the first three</button>}
       </> : <p>{emptyStateMessage(challenges, filter)}</p>}
@@ -1058,7 +1069,7 @@ function ArtifactModal({ artifact, onClose }) {
               <ol>
                 {artifact.vulnerabilities.map((item) => (
                   <li key={item.challengeId}>
-                    <strong>{item.category}</strong> ({item.severity}) — {item.argument}
+                    <strong>{item.category}</strong> ({item.severity}) — {item.finding || item.argument}
                     {item.recommendation && <p className="muted">{item.recommendation}</p>}
                   </li>
                 ))}
@@ -1071,7 +1082,7 @@ function ArtifactModal({ artifact, onClose }) {
               <ul>
                 {artifact.handledWell.map((item) => (
                   <li key={item.challengeId}>
-                    <strong>{item.category}</strong> — {item.argument}
+                    <strong>{item.category}</strong> — {item.finding || item.argument}
                   </li>
                 ))}
               </ul>

@@ -670,3 +670,32 @@ test("overview lenses describe the saved run, including off and unavailable chec
   assert.equal(lenses.find((lens) => lens.id === "style").groups[0].findings.length, 1);
   assert.ok(overviewLenses().every((lens) => lens.status === "Execution not recorded."));
 });
+
+test("plain finding headings and verification groups precede optional prose", async () => {
+  const { challengePreview, challengeGroups, rankedChallenges } = await import("../src/components/argumentGym.js");
+  const rows = [
+    { id: 1, severity: "high", confidence: "low", importance: 100 },
+    { id: 2, severity: "medium", confidence: "high" },
+    { id: 3, severity: "high", confidence: "high" },
+    { id: 4, severity: "low", confidence: "high" },
+  ];
+  const groups = challengeGroups(rankedChallenges(rows));
+  assert.deepEqual(groups.map(g => g.label), ["Address first", "Address next", "Verify before changing", "Optional improvements"]);
+  assert.deepEqual(groups.flatMap(g => g.challenges.map(c => c.id)), [3, 2, 1, 4]);
+  assert.equal(challengePreview({ finding: "The notice element has weak support", opponentArgument: "An adversarial speech" }).title, "The notice element has weak support");
+});
+
+test("explicit verification and strategy actions do not become instructions to revise", async () => {
+  const { priorityForChallenge } = await import("../src/components/argumentGym.js");
+  assert.equal(priorityForChallenge({ reviewAction: "verify", confidence: "high", severity: "high" }).id, "verify");
+  assert.equal(priorityForChallenge({ reviewAction: "strategy", severity: "high" }).label, "Decide the approach");
+});
+
+test("handled findings stay below open work across priority groups", async () => {
+  const { challengeGroups, rankedChallenges } = await import("../src/components/argumentGym.js");
+  const groups = challengeGroups(rankedChallenges([
+    { id: 1, severity: "high", disposition: "addressed" },
+    { id: 2, severity: "medium", disposition: "open" },
+  ]));
+  assert.deepEqual(groups.map(g => g.label), ["Address next", "Addressed"]);
+});

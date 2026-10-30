@@ -1,0 +1,50 @@
+schema_version: 1
+synthetic: true
+description: >-
+  Closed-world materiality controls. The stipulated rule is invented, not legal
+  guidance. A clean brief must produce no edits; a consequential defect must survive.
+  Counts alone cannot establish review quality.
+rule: >-
+  Stipulated Rule X: Relief requires written notice at least ten days before filing.
+  Notice timing is the only disputed element. The date of filing is June 20.
+cases:
+  - id: sufficient-support
+    brief: >-
+      INTRODUCTION: The applicant requests relief under Rule X. ARGUMENT:
+      Notice was delivered on June 1, as shown by the signed receipt reproduced
+      below. June 1 is nineteen days before the June 20 filing. Rule X is satisfied.
+      RECEIPT: Received written notice June 1, signed Recipient.
+      CONCLUSION: Relief is respectfully requested under Rule X.
+    expected_kept: []
+    attacks:
+      - id: timing
+        category: missing_element
+        argument: The notice timing element lacks support.
+        whyItMatters: Without ten days of notice, relief is unavailable.
+      - id: intro
+        category: legal_authority
+        argument: The introduction does not explain the ten-day requirement.
+        whyItMatters: The court needs to know the rule.
+      - id: style
+        category: framing
+        argument: The conclusion uses passive voice and respectfully requested.
+        whyItMatters: Active voice would be shorter.
+  - id: decisive-timing-defect
+    brief: >-
+      ARGUMENT: Written notice was delivered June 18. The signed receipt states
+      Received June 18, signed Recipient. The filing date is June 20. This satisfies
+      the ten-day notice requirement in Rule X, and the applicant requests relief.
+    expected_kept: [timing]
+    attacks:
+      - id: timing
+        category: missing_element
+        argument: Only two days separate notice and filing, not the required ten.
+        whyItMatters: The requested relief fails the stipulated timing requirement.
+      - id: duplicate
+        category: factual_support
+        argument: The receipt date does not establish ten days before filing.
+        whyItMatters: This is the same notice-timing defect.
+      - id: style
+        category: framing
+        argument: The brief should say seeks relief instead of requests relief.
+        whyItMatters: It might read more smoothly.

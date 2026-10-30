@@ -56,6 +56,8 @@ export function rankedChallenges(challenges = [], { filter = "all" } = {}) {
     const byDisposition =
       (DISPOSITION_ORDER[left.disposition] ?? 0) - (DISPOSITION_ORDER[right.disposition] ?? 0);
     if (byDisposition !== 0) return byDisposition;
+    const byPriority = priorityForChallenge(left).rank - priorityForChallenge(right).rank;
+    if (byPriority !== 0) return byPriority;
     const bySeverity = (SEVERITY_ORDER[left.severity] ?? 1) - (SEVERITY_ORDER[right.severity] ?? 1);
     if (bySeverity !== 0) return bySeverity;
     const byImportance = (right.importance ?? 0) - (left.importance ?? 0);
@@ -129,6 +131,8 @@ export function rerunSummary(comparison = {}) {
 
 export function copyTextForChallenge(challenge = {}) {
   const lines = [
+    ...(challenge.finding ? [`Finding: ${challenge.finding}`] : []),
+    ...(challenge.recommendation ? [`What to do: ${challenge.recommendation}`] : []),
     `Opposition point (${challenge.categoryLabel || challenge.category || "challenge"}): ${challenge.opponentArgument || ""}`,
   ];
   const target = targetLabel(challenge.target);
@@ -707,9 +711,35 @@ export function challengeReview(challenges = [], { filter = "open", showAll = fa
   };
 }
 
+// Certainty and consequence are separate: an uncertain serious concern calls
+// for verification, not an instruction to concede or rewrite the argument.
+export function priorityForChallenge(challenge = {}) {
+  if (challenge.reviewAction === "verify" || challenge.confidence === "low" || ["weak", "misplaced"].includes(challenge.judgeVerdict)) {
+    return { id: "verify", rank: 2, label: "Verify before changing" };
+  }
+  if (challenge.reviewAction === "strategy") return { id: "strategy", rank: 3, label: "Decide the approach" };
+  if (challenge.severity === "low") return { id: "optional", rank: 4, label: "Optional improvements" };
+  if (challenge.severity === "high") return { id: "first", rank: 0, label: "Address first" };
+  return { id: "next", rank: 1, label: "Address next" };
+}
+
+export function challengeGroups(challenges = []) {
+  const groups = [];
+  for (const challenge of challenges) {
+    const priority = !isOpen(challenge)
+      ? { id: challenge.disposition, rank: challenge.disposition === "addressed" ? 10 : 11,
+          label: challenge.disposition === "addressed" ? "Addressed" : "Dismissed" }
+      : priorityForChallenge(challenge);
+    let group = groups.find((item) => item.id === priority.id);
+    if (!group) { group = { ...priority, challenges: [] }; groups.push(group); }
+    group.challenges.push(challenge);
+  }
+  return groups.sort((left, right) => left.rank - right.rank);
+}
+
 export function challengePreview(challenge = {}) {
   return {
-    title: clamp(challenge.opponentArgument || "Review this challenge", 160).text,
+    title: clamp(challenge.finding || challenge.opponentArgument || "Review this finding", 160).text,
     action: clamp(challenge.recommendation || challenge.suggestedResponse || "Open this finding to review the reasoning and evidence.", 150).text,
     target: targetLabel(challenge.target),
   };

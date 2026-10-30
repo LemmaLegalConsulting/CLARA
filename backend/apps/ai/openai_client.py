@@ -19,9 +19,14 @@ class OpenAICompatibleClient:
             },
         )
         self.model = model or config["model"]
+        resolved_api_key = api_key or config["api_key"]
+        # The SDK accepts an empty string and fails only on the first request.
+        # Validate our effective configuration before constructing a transport.
+        if client is None and not (resolved_api_key or "").strip():
+            raise OpenAIBackendError("AI provider configuration is missing an API key.")
         try:
-            self.client = client or OpenAI(
-                api_key=api_key or config["api_key"],
+            self.client = client if client is not None else OpenAI(
+                api_key=resolved_api_key,
                 base_url=base_url or config["base_url"] or None,
             )
         except OpenAIError as exc:
