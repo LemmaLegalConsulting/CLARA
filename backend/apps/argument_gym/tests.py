@@ -160,11 +160,38 @@ class StandalonePipelineTests(TestCase):
         run = gym_run(self.workspace, self.brief)
         self.assertEqual(run.status, GymRun.COMPLETE, run.error)
         challenges = list(run.challenges.all())
-        self.assertGreaterEqual(len(challenges), 3)
+        self.assertGreater(len(challenges), 0)
         self.assertLessEqual(len(challenges), 7)
         self.assertEqual([challenge.ordinal for challenge in challenges], list(range(1, len(challenges) + 1)))
         importances = [challenge.importance for challenge in challenges]
         self.assertEqual(importances, sorted(importances, reverse=True))
+
+    def test_rejected_attacks_are_not_restored_and_are_auditable(self):
+        from apps.argument_gym import pipeline
+        from apps.argument_gym.serializers import run_to_dict
+        original = pipeline._fallback_assessments
+        def reject(attacks):
+            return [{**a, "keep": False, "verdict": "misplaced"} for a in original(attacks)]
+        with patch.object(pipeline, "_fallback_assessments", side_effect=reject):
+            run = gym_run(self.workspace, self.brief)
+        self.assertEqual(run.status, GymRun.COMPLETE, run.error)
+        self.assertEqual(run.challenges.count(), 0)
+        judge = next(stage for stage in run.stage_trace if stage["stage"] == "judge")
+        self.assertTrue(judge["assessments"])
+        self.assertTrue(all(not a["keep"] for a in judge["assessments"]))
+        self.assertEqual(run_to_dict(run)["challenges"], [])
+
+    def test_finding_and_action_are_exposed_in_api(self):
+        from apps.argument_gym.serializers import challenge_to_dict
+        run = gym_run(self.workspace, self.brief)
+        challenge = run.challenges.first()
+        challenge.finding = "The notice element has weak support"
+        challenge.review_action = "verify"
+        challenge.save()
+        challenge.refresh_from_db()
+        payload = challenge_to_dict(challenge)
+        self.assertEqual(payload["finding"], challenge.finding)
+        self.assertEqual(payload["reviewAction"], "verify")
 
     def test_every_challenge_points_at_a_passage_of_the_brief(self):
         run = gym_run(self.workspace, self.brief)

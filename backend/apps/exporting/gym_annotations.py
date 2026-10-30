@@ -34,11 +34,12 @@ def _note(challenge, run):
     parts = [f"Argument Gym · run {run.pk} · challenge {challenge.pk}",
              f"{challenge.get_category_display()} · {challenge.severity} · {challenge.disposition}"]
     for label, value in (
+        ("Finding", challenge.finding),
+        ("What to do", challenge.coaching_recommendation),
         ("Passage", _quote(challenge, run.brief)),
         ("Opponent", challenge.opponent_argument),
         ("Why it matters", challenge.why_it_matters),
         ("Judge", challenge.judge_assessment),
-        ("Coaching", challenge.coaching_recommendation),
         ("Suggested response (review before using)", challenge.suggested_response),
         ("Disposition note", challenge.disposition_note),
     ):

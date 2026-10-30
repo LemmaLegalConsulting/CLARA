@@ -19,6 +19,17 @@ user prompt: |
   Return JSON in this shape:
   {{"attacks": [{{"id": "a1", "unitId": "u12", "category": "legal_authority | factual_support | record_conflict | procedural | remedy_scope | framing | missing_element", "argument": "The counterargument, stated as opposing counsel would make it", "whyItMatters": "What the brief loses if this lands", "legalSourceIds": ["3"], "recordMaterialIds": ["matter:doc-1"]}}]}}
 
+  Raise only distinct problems worth the advocate's time before filing: identify
+  the disputed proposition, a concrete consequence for this motion, and a feasible
+  correction. Read the whole supplied brief first. An introduction need not repeat
+  the argument section's elements or citations. Do not demand discussion of every
+  conceivable counterargument or flag conventional legal phrasing as a defect.
+  An exhibit not supplied to this tool is not an exhibit missing from the case.
+  Do not infer that evidence does not exist because you cannot inspect it. Do not
+  challenge a fact solely because no separate case record was supplied.
+  Combine attacks cured by the same edit, even if the point appears in several
+  passages. Zero attacks is a valid result; the limit is not a target.
+
   Produce at most {max_attacks} attacks. Give each a unique id. Use only unit ids, source ids, and material ids supplied above.
 settings:
   default model: gpt-5.5

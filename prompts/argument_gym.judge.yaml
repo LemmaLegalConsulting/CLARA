@@ -14,7 +14,46 @@ user prompt: |
   {attacks}
 
   Return JSON in this shape:
-  {{"assessments": [{{"attackId": "a1", "keep": true, "verdict": "serious | answerable | weak | misplaced", "assessment": "How this lands in this court on this record", "briefCurrentlySays": "What the brief already says on the point, or empty if it says nothing", "severity": "high | medium | low", "importance": 80, "confidence": "high | medium | low", "coverageNote": "What further research would settle this, or empty"}}]}}
+  {{"assessments": [{{"attackId": "a1", "keep": true, "finding": "The notice element has weak support", "duplicateOf": "", "reviewAction": "revise | verify | strategy", "verdict": "serious | answerable | weak | misplaced", "assessment": "How this lands in this court on this record", "briefCurrentlySays": "What the brief already says on the point, or empty if it says nothing", "severity": "high | medium | low", "importance": 80, "confidence": "high | medium | low", "coverageNote": "What further research would settle this, or empty"}}]}}
+
+  Apply this materiality test to every attack:
+  - What specific proposition or requested relief is at risk, on the supplied law
+    and record? Would correcting it plausibly affect the ruling or prevent a real
+    filing problem? If not, reject it, even if it is a possible improvement.
+  - Read the entire supplied brief for an answer. Do not demand that the introduction
+    repeat later analysis, or that every paragraph carry its own citation. If the
+    relevant text was truncated, do not infer that the argument is absent.
+  - Missing access to an exhibit, discovery, or an order is a coverage limitation,
+    not proof the brief lacks evidence. Reject attacks based solely on that gap.
+    A visible unresolved citation placeholder supporting a decisive fact is different.
+  - Reject speculative alternative fact patterns, generic requests for more cases,
+    stylistic preferences, and attacks the brief already answers adequately.
+  - Consolidate the same underlying defect: retain the most useful representative
+    and mark repetitions keep=false with duplicateOf set to that attack's id.
+    Distinct elements requiring different corrections remain separate.
+  - Keep only serious or answerable attacks with a concrete consequence and a
+    practical correction. Weak or misplaced attacks must have keep=false. There is
+    no minimum: rejecting every attack is a successful review.
+
+  Set reviewAction to revise for a demonstrated defect with a concrete correction,
+  verify when a named fact, exhibit, or authority must first be checked, and strategy
+  when the response would concede, withdraw, or narrow a claim or requested relief.
+  A verification item can matter greatly without being a proven defect. Any proposed
+  withdrawal of a count, narrower liability theory, concession, or change from a
+  merits judgment to dismissal is strategy, even if that choice seems obvious.
+
+  Write finding as a short, plain statement of the problem, ideally under 12 words.
+  Name the actual element or fact: "The notice element has weak support", "The payment
+  date needs support", or "The requested relief exceeds the argument". Use an element
+  number only if the supplied rule numbers it. Avoid adversarial speeches, jargon,
+  conclusions about the whole case, and vague labels such as "factual predicate gap".
+  Do not use "predicates", "pinpoints", "overframed", "capacity support", or
+  "vulnerable" in the heading. Say "The lease requirements need citations", "The
+  fee argument is too broad", or "The claim against the manager needs support".
+  Use section names or paragraph numbers in explanations, never internal unit ids.
+  Severity means consequence, confidence means certainty; never turn uncertainty
+  into a high-severity defect. High means a plausible loss of relief or a threshold
+  bar, medium a material weakness worth fixing, low an optional improvement.
 
   Assess every attack. Keep at most {max_kept}. Importance is 0-100 and orders the kept attacks by how much the outcome turns on them.
 settings:

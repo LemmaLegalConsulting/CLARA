@@ -756,7 +756,9 @@ test("gym review foregrounds fixes and lets the author open style notes", async 
     compliance: { checked: true, findings: [{ severity: "info", message: "Page count could not be measured." }] },
     challenges: [{ id: 9, disposition: "open", severity: "high", categoryLabel: "Record support",
       opponentArgument: "The factual assertion lacks a record citation.",
-      judgeAssessment: "The missing record citation weakens this assertion.", suggestedResponse: "Add the supporting record citation.", target: { blockKey: "argument" }, researchCoverage: {} },
+      finding: "The notice element has weak support", reviewAction: "revise",
+      recommendation: "Add the supporting record citation.",
+      judgeAssessment: "The missing record citation weakens this assertion.", suggestedResponse: "Notice was delivered on the date shown in the receipt.", target: { blockKey: "argument" }, researchCoverage: {} },
       ...[10, 11, 12, 13].map((id) => ({ id, disposition: "open", severity: "low", opponentArgument: `Additional challenge ${id}`, suggestedResponse: `Response ${id}`, target: {} })),
     ],
   };
@@ -779,7 +781,11 @@ test("gym review foregrounds fixes and lets the author open style notes", async 
   await expect(page.locator(".gym-priority").first()).toContainText("Add the supporting record citation.");
   await page.locator(".gym-priority").first().click();
   await expect(page.getByRole("heading", { name: "What to do" })).toBeVisible();
-  await expect(page.locator(".gym-response-text")).toHaveText("Add the supporting record citation.");
+  await expect(page.locator(".gym-finding-title")).toHaveText("The notice element has weak support");
+  await expect(page.locator(".gym-response-text").first()).toHaveText("Add the supporting record citation.");
+  await expect(page.getByText("Notice was delivered on the date shown in the receipt.")).not.toBeVisible();
+  await page.getByText("Suggested wording — review before using", { exact: true }).click();
+  await expect(page.getByText("Notice was delivered on the date shown in the receipt.")).toBeVisible();
   await expect(page.getByText("The missing record citation weakens this assertion.", { exact: false })).not.toBeVisible();
   await page.screenshot({ path: test.info().outputPath("gym-finding.png"), fullPage: true });
   await page.getByText("Why: what opposing counsel and the judge said", { exact: true }).click();

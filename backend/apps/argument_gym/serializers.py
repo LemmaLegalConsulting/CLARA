@@ -101,6 +101,8 @@ def challenge_to_dict(challenge):
         "category": challenge.category,
         "categoryLabel": challenge.get_category_display(),
         "target": challenge.target,
+        "finding": challenge.finding,
+        "reviewAction": challenge.review_action,
         "opponentArgument": challenge.opponent_argument,
         "whyItMatters": challenge.why_it_matters,
         "briefCurrentlySays": challenge.brief_currently_says,

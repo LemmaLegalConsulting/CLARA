@@ -130,3 +130,96 @@ No case-record attachments are supplied by this runner. Do not treat missing
 record coverage as a defect in a filing. Compare findings and dispositions
 within each revision family, distinguish `unmeasured` from `pass`, and report
 fallbacks explicitly. There is no aggregate brief-quality score.
+
+## Materiality and actionable findings
+
+The judge now supplies `finding` (a short statement naming the actual problem)
+and `reviewAction` (`revise`, `verify`, or `strategy`). The API exposes those
+fields on each challenge. The UI groups demonstrated concerns by consequence,
+then verification tasks, strategy choices, and optional improvements. An
+instruction to the author is separate from proposed replacement prose. Old runs
+retain their original text; rerun them to obtain the new headings and assessment.
+Apply the new `argument_gym` migration before running the application.
+
+There is no minimum finding count. A valid empty opponent response and a judge
+that rejects every attack are successful reviews, not reasons to manufacture
+findings. Weak/misplaced attacks are excluded; the judge's decisions, including
+rejections, remain in the stage trace. Rank precedes the maximum-count cap.
+Duplicates should identify their retained representative. A missing exhibit is
+not missing evidence in the litigation. Fallback reviews are labeled as
+verification tasks rather than asserting that a source proves the concern.
+
+All extracted brief units and complete paragraphs now reach the argument map,
+opponent, judge, and coach. The former 80-unit/900-character cutoff could hide
+an entire argument section while reporting its analysis as absent. The upload
+size limit and its truncation notice still apply. Larger inputs can increase
+model latency and cost; processing remains asynchronous.
+
+`actionability.yaml` supplies a supported-brief negative control and a decisive
+notice-timing positive control, with duplicate and style distractors. Its rule
+is fictional. Run the actual judge prompt against these controls:
+
+```sh
+.venv/bin/python scripts/benchmark_gym_actionability.py --output-dir /tmp/gym-actionability-new-run
+```
+
+This makes live calls to the configured provider (`--model` defaults to
+`gpt-5.5`, medium reasoning). Requests, responses, and per-case expected/actual
+retained attack ids are saved. Provider failures/fallbacks are `not_run`, never
+passes. A lower finding count alone is not success: the consequential positive
+control must survive. These are small screening controls, not an attorney-labeled
+measure of legal accuracy.
+
+To isolate filtering changes on an existing private real-brief capture:
+
+```sh
+.venv/bin/python scripts/replay_gym_findings.py \
+  --capture-dir cle_real_briefs/benchmark_outputs/<run>/document-02 \
+  --output-dir cle_real_briefs/benchmark_outputs/<new-replay> --coach
+```
+
+Repeat `--capture-dir` for multiple documents. The capture must have the
+`result.json` and `call-*.json` layout from `benchmark_real_briefs.py`. The replay
+uses the original candidates, argument map, and retrieved sources, rereads the
+complete local DOCX, and runs the current judge and optional separate coach.
+It does **not** rerun retrieval or measure recall of new attacks. The supplied
+DOCX may contain exhibits; this diagnostic replay preserves the original
+runner's `split_exhibits=False` behavior rather than benchmarking the upload
+boundary detector. Outputs must remain under ignored `cle_real_briefs/`.
+
+For substantive review, label each distinct issue for materiality, support,
+already-answered context, duplication, and whether the proposed action is safe.
+Assess false negatives as well as noise. Do not assume an accepted or filed
+brief is flawless, and do not reward finding more issues. Keep brief text,
+reviewer packets, and model outputs private.
+
+This evaluation design draws on Harvey's [Legal Agent Benchmark](https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark)
+use of reviewable work product and explicit task criteria, and
+[BigLaw Bench: Arena](https://www.harvey.ai/blog/introducing-biglaw-bench-arena)
+use of reasoned comparisons. These are methodological references, not evidence
+that CLARA meets those benchmarks. Independent model reviews are diagnostic
+opinions, not attorney ground truth.
+
+### Exploratory results, October 29, 2026
+
+Independent Claude and Argon CLI reviews of three saved real-brief outputs
+identified duplicate concerns, missing-exhibit assumptions, and argument sections
+omitted by the 80-unit cap. These reviews are model opinions, not legal labels.
+The reviewed sample consists of three summary-judgment briefs; it does not
+establish performance on appellate briefs or other filing types.
+
+With `gpt-5.5` at medium reasoning, replaying their saved candidates against
+complete extracted text and the revised judge/coach produced **3, 6, and 4**
+retained findings, compared with **7 each** in the saved outputs. All six model
+calls completed without fallback. The supported synthetic control retained zero
+findings; the timing-defect control retained the material issue and rejected
+duplicate/style distractors. Both control calls completed without fallback.
+
+These counts are diagnostic, not a precision estimate or proof of improvement:
+the replay holds earlier retrieval and candidate attacks fixed, and expert labels
+are still needed for the remaining findings and missed issues. Inspection also
+found overly technical headings and strategy recommendations phrased as edits;
+the subsequent language instructions and verification/strategy prose guard were
+added after this replay, with focused regression tests. Exact private requests,
+responses, reviewer outputs, and reports are in
+`cle_real_briefs/actionability-experiment/`; none are versioned here.

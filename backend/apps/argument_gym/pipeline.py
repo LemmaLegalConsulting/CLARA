@@ -51,7 +51,6 @@ from apps.validation.readability import check_readability, summarize as summariz
 MAX_QUERIES = 5
 MAX_ATTACKS = 10
 MAX_CHALLENGES = 7
-MIN_CHALLENGES = 3
 MAX_MATERIALS = 6
 SEVERITY_PREFIX = {"error": "E", "warning": "W", "info": "I"}
 logger = logging.getLogger(__name__)
@@ -101,7 +100,7 @@ class Stage:
         self.name = name
         self.llm_client = llm_client
 
-    def run(self, *, prompt_key, context, parse, fallback, temperature=0.2):
+    def run(self, *, prompt_key, context, parse, fallback, temperature=0.2, empty_key=None):
         method = "llm" if ai_enabled() else "deterministic"
 
         def execute(plan):
@@ -119,10 +118,13 @@ class Stage:
                 )
             except (OpenAIBackendError, PromptCatalogError):
                 return {"method": "llm", "items": []}
-            return {"method": "llm", "items": parse(json_object(response))}
+            payload = json_object(response)
+            items = parse(payload)
+            return {"method": "llm", "items": items,
+                    "valid_empty": empty_key is not None and payload.get(empty_key) == []}
 
         def evaluate(_plan, result):
-            if not result["items"]:
+            if not result["items"] and not result.get("valid_empty"):
                 return ToolEvaluation(False, f"{self.name}_empty", f"The {self.name} stage produced nothing usable.")
             return ToolEvaluation(True, f"{self.name}_complete", f"{self.name} produced {len(result['items'])} item(s).")
 
@@ -189,7 +191,7 @@ def _units_of_type(units, *types):
     return [unit for unit in units if unit["type"] in types]
 
 
-def _unit_payload(units, *, limit=80, types=None):
+def _unit_payload(units, *, limit=None, types=None):
     selected = [unit for unit in units if not types or unit["type"] in types]
     return [
         {
@@ -198,7 +200,7 @@ def _unit_payload(units, *, limit=80, types=None):
             "section": unit["locator"]["section"],
             "paragraph": unit["locator"]["paragraph"],
             "page": unit["locator"]["page"],
-            "text": unit["text"][:900],
+            "text": unit["text"],
         }
         for unit in selected[:limit]
     ]
@@ -338,7 +340,7 @@ def record_audit_stage(units, excerpts, argument_map, *, jurisdiction, llm_clien
         context={
             "jurisdiction": jurisdiction,
             "argument_map": dumps(argument_map),
-            "asserted_facts": dumps(_unit_payload(fact_units, limit=40)),
+            "asserted_facts": dumps(_unit_payload(fact_units)),
             "record_excerpts": dumps(excerpts),
         },
         parse=parse,
@@ -473,7 +475,6 @@ def research_coverage(trace):
 
 
 def _fallback_attacks(units, argument_map, record_findings, legal_sources):
-    units_by_id = {unit["id"]: unit for unit in units}
     findings_by_unit = {finding["unitId"]: finding for finding in record_findings}
     attacks = []
 
@@ -519,14 +520,6 @@ def _fallback_attacks(units, argument_map, record_findings, legal_sources):
         if len(attacks) >= MAX_ATTACKS:
             break
 
-    relief_units = [unit for unit in units_by_id.values() if unit["type"] == ingestion.REQUESTED_RELIEF]
-    if relief_units and len(attacks) < MAX_ATTACKS:
-        add(
-            relief_units[0]["id"],
-            GymChallenge.REMEDY_SCOPE,
-            "The relief requested reaches further than the argument that precedes it supports.",
-            "A court that agrees on the merits can still refuse the remedy as framed.",
-        )
     return attacks[:MAX_ATTACKS]
 
 
@@ -573,6 +566,7 @@ def opponent_stage(units, argument_map, record_findings, legal_sources, *, juris
         parse=parse,
         fallback=lambda: _fallback_attacks(units, argument_map, record_findings, legal_sources),
         temperature=0.4,
+        empty_key="attacks",
     )
 
 
@@ -600,16 +594,18 @@ def _fallback_assessments(attacks):
             {
                 "attackId": attack["id"],
                 "keep": True,
-                "verdict": "serious" if grounded else "answerable",
+                "verdict": "answerable",
+                "finding": "Check this passage against its sources",
+                "reviewAction": "verify",
                 "assessment": (
-                    "Grounded in a supplied source or case material, so the court would have something to read."
+                    "A source was supplied, but this fallback did not assess whether it supports the challenge."
                     if grounded
-                    else "Raised without a supplied source, so it is worth answering but not yet worth conceding."
+                    else "No source supports this fallback concern. Verify it before changing the brief."
                 ),
                 "briefCurrentlySays": "",
                 "severity": severity,
                 "importance": SEVERITY_WEIGHT[severity] + (10 if grounded else 0),
-                "confidence": "medium" if grounded else "low",
+                "confidence": "low",
                 "coverageNote": "" if grounded else "No retrieved authority bears on this yet.",
             }
         )
@@ -617,6 +613,35 @@ def _fallback_assessments(attacks):
     for rank, assessment in enumerate(assessments):
         assessment["keep"] = rank < MAX_CHALLENGES
     return assessments
+
+
+def select_challenges(attacks, assessments):
+    """Keep the judge's supported decisions, preserving rejected items in trace."""
+    by_id = {item["attackId"]: item for item in assessments}
+    candidates = [attack for attack in attacks
+                  if by_id.get(attack["id"], {}).get("keep") is True
+                  and by_id[attack["id"]].get("verdict") in {"serious", "answerable"}]
+    candidate_ids = {attack["id"] for attack in candidates}
+    # Only suppress a duplicate when its retained representative exists. Bad
+    # references and cycles must not silently delete substantive findings.
+    candidates = [attack for attack in candidates
+                  if not (by_id[attack["id"]].get("duplicateOf") in candidate_ids
+                          and not by_id[by_id[attack["id"]]["duplicateOf"]].get("duplicateOf"))]
+    return sorted(candidates, key=lambda attack: -by_id[attack["id"]].get("importance", 0))[:MAX_CHALLENGES]
+
+
+def readable_references(text, units):
+    """Internal model anchors are useful links, not prose for the advocate."""
+    labels = {}
+    for unit in units:
+        locator = unit.get("locator") or {}
+        parts = []
+        if locator.get("section"):
+            parts.append(f"section {locator['section']}")
+        if locator.get("paragraph"):
+            parts.append(f"paragraph {locator['paragraph']}")
+        labels[unit["id"]] = ", ".join(parts) or "the cited passage"
+    return re.sub(r"\bu\d+\b", lambda match: labels.get(match[0], match[0]), text)
 
 
 def judge_stage(units, argument_map, attacks, legal_sources, *, jurisdiction, llm_client=None):
@@ -638,9 +663,12 @@ def judge_stage(units, argument_map, attacks, legal_sources, *, jurisdiction, ll
             cleaned.append(
                 {
                     "attackId": assessment["attackId"],
-                    "keep": bool(assessment.get("keep", True)),
+                    "keep": assessment.get("keep") is True and assessment.get("verdict") in {"serious", "answerable"},
+                    "finding": clean(assessment.get("finding"), limit=160),
+                    "reviewAction": choice(assessment.get("reviewAction"), {"revise", "verify", "strategy"}, "verify"),
+                    "duplicateOf": clean(assessment.get("duplicateOf"), limit=20),
                     "verdict": choice(assessment.get("verdict"), verdicts, "answerable"),
-                    "assessment": clean(assessment.get("assessment"), limit=1200),
+                    "assessment": readable_references(clean(assessment.get("assessment"), limit=1200), units),
                     "briefCurrentlySays": clean(assessment.get("briefCurrentlySays"), limit=800),
                     "severity": choice(assessment.get("severity"), SEVERITIES, "medium"),
                     "importance": max(0, min(importance, 100)),
@@ -663,6 +691,7 @@ def judge_stage(units, argument_map, attacks, legal_sources, *, jurisdiction, ll
         parse=parse,
         fallback=lambda: _fallback_assessments(attacks),
         temperature=0.1,
+        empty_key="assessments" if not attacks else None,
     )
 
 
@@ -692,6 +721,7 @@ def _fallback_responses(challenges):
 
 def coach_stage(units, challenges, legal_sources, record_findings, *, jurisdiction, llm_client=None):
     attack_ids = {challenge["attackId"] for challenge in challenges}
+    actions = {challenge["attackId"]: challenge.get("reviewAction") for challenge in challenges}
 
     def parse(payload):
         responses = payload.get("responses")
@@ -704,8 +734,9 @@ def coach_stage(units, challenges, legal_sources, record_findings, *, jurisdicti
             cleaned.append(
                 {
                     "attackId": response["attackId"],
-                    "recommendation": clean(response.get("recommendation"), limit=1200),
-                    "suggestedResponse": clean(response.get("suggestedResponse"), limit=3000),
+                    "recommendation": readable_references(clean(response.get("recommendation"), limit=1200), units),
+                    "suggestedResponse": ("" if actions.get(response["attackId"]) in {"verify", "strategy"}
+                                          else readable_references(clean(response.get("suggestedResponse"), limit=3000), units)),
                     "blockInstruction": clean(response.get("blockInstruction"), limit=1000),
                     "remainingVulnerability": clean(response.get("remainingVulnerability"), limit=800),
                 }
@@ -723,6 +754,7 @@ def coach_stage(units, challenges, legal_sources, record_findings, *, jurisdicti
         },
         parse=parse,
         fallback=lambda: _fallback_responses(challenges),
+        empty_key="responses" if not challenges else None,
     )
 
 
@@ -744,20 +776,13 @@ def _fallback_assessment(challenges):
             ),
         }]
     ranked = sorted(challenges, key=lambda item: (SEVERITY_RANK.get(item["severity"], 1), -item["importance"]))
-    serious = [item for item in ranked if item["severity"] == "high"]
     leading = ranked[:2]
-    if serious:
-        verdict = f"exposed on {leading[0]['categoryLabel'].casefold()}"
-        opening = (
-            f"As written, the brief is vulnerable: {len(serious)} of the {len(challenges)} challenges raised "
-            "go to a step the argument depends on."
-        )
-    else:
-        verdict = "broadly persuasive, with points left open"
-        opening = (
-            f"The brief holds together on its central argument; the {len(challenges)} challenges raised "
-            "are answerable rather than fatal."
-        )
+    verdict = "review the identified concerns"
+    opening = (
+        f"This run identified {len(challenges)} concerns to review. "
+        "Verification tasks require checking the named source before changing the brief; "
+        "they are not established defects. This summary does not assess the brief's overall persuasiveness."
+    )
     points = " ".join(
         f"{index}. {item['categoryLabel']} at {item['target'].get('section') or 'the passage cited'}: "
         f"{item['argument'][:160].rstrip()}."
@@ -1294,33 +1319,13 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
             # the deterministic assessment stands in and the trace says so.
             assessments = _fallback_assessments(attacks)
             trace = {"stage": "judge", "method": "off", "count": len(assessments), "trace": []}
+        trace["assessments"] = assessments
         note_stage(trace)
 
         assessment_by_attack = {assessment["attackId"]: assessment for assessment in assessments}
-        kept = [
-            attack
-            for attack in attacks
-            if assessment_by_attack.get(attack["id"], {}).get("keep", False)
-        ]
-        # The judge is allowed to throw everything out, but a run that reports
-        # nothing is indistinguishable from a run that failed. Fall back to the
-        # highest-importance attacks so the advocate sees what was considered.
-        if len(kept) < MIN_CHALLENGES:
-            ranked = sorted(
-                attacks,
-                key=lambda attack: assessment_by_attack.get(attack["id"], {}).get("importance", 0),
-                reverse=True,
-            )
-            for attack in ranked:
-                if attack not in kept:
-                    kept.append(attack)
-                if len(kept) >= min(MIN_CHALLENGES, len(attacks)):
-                    break
-        kept = sorted(
-            kept[:MAX_CHALLENGES],
-            key=lambda attack: assessment_by_attack.get(attack["id"], {}).get("importance", 0),
-            reverse=True,
-        )
+        # A rejected attack must never be restored to fill a quota. Rank before
+        # capping so a late, consequential finding is not silently dropped.
+        kept = select_challenges(attacks, assessments)
 
         sources_by_id = {source["id"]: source for source in legal_sources}
         findings_by_unit = {finding["unitId"]: finding for finding in record_findings}
@@ -1336,6 +1341,8 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
                     "argument": attack["argument"],
                     "whyItMatters": attack["whyItMatters"],
                     "judgeAssessment": assessment.get("assessment", ""),
+                    "finding": assessment.get("finding", ""),
+                    "reviewAction": assessment.get("reviewAction", "verify"),
                     "briefCurrentlySays": assessment.get("briefCurrentlySays", "") or unit["text"][:600],
                     "target": _target_for(unit, units_by_id),
                     "legalSources": [sources_by_id[source_id] for source_id in attack["legalSourceIds"] if source_id in sources_by_id],
@@ -1376,6 +1383,8 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
                     category=attack["category"],
                     fingerprint=challenge_fingerprint(attack["category"], target, attack["argument"]),
                     target=target,
+                    finding=assessment.get("finding", ""),
+                    review_action=assessment.get("reviewAction", "verify"),
                     opponent_argument=attack["argument"],
                     why_it_matters=attack["whyItMatters"],
                     brief_currently_says=assessment.get("briefCurrentlySays", "") or unit["text"][:600],
@@ -1403,6 +1412,9 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
                     "categoryLabel": challenge.get_category_display(),
                     "severity": challenge.severity,
                     "importance": challenge.importance,
+                    "finding": challenge.finding,
+                    "reviewAction": challenge.review_action,
+                    "confidence": challenge.confidence,
                     "target": challenge.target,
                     "argument": challenge.opponent_argument,
                     "judge": challenge.judge_assessment,

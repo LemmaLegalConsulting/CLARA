@@ -391,6 +391,8 @@ class GymChallenge(models.Model):
         blank=True,
         help_text="Where in the brief this lands: {'unitId', 'section', 'paragraph', 'page', 'excerpt', 'blockKey'}.",
     )
+    finding = models.CharField(max_length=160, blank=True, help_text="Plain-language statement of the specific problem.")
+    review_action = models.CharField(max_length=20, blank=True, choices=[("revise", "Revise"), ("verify", "Verify first"), ("strategy", "Strategy choice")])
     opponent_argument = models.TextField()
     why_it_matters = models.TextField(blank=True)
     brief_currently_says = models.TextField(blank=True)
