@@ -17,6 +17,12 @@ updates:
 - package-ecosystem: npm
   directories:
   - /frontend
+  # Lexical packages share editor state and must use the same release.
+  groups:
+    lexical:
+      patterns:
+      - lexical
+      - "@lexical/*"
   schedule:
     interval: weekly
   open-pull-requests-limit: 10
