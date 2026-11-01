@@ -1,5 +1,5 @@
 # Stage 1: Build Frontend
-FROM node:26.12.1-slim AS frontend
+FROM node:26.13.0-slim AS frontend
 
 # eMudhra certificate incident: refresh each stage's system trust store.
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
@@ -11,7 +11,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Python dependencies, built and slimmed in a stage that is thrown away
-FROM python:3.12-slim AS pydeps
+FROM python:3.15-slim AS pydeps
 
 # eMudhra certificate incident: refresh each stage's system trust store.
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
@@ -39,7 +39,7 @@ RUN python -m venv /opt/venv \
     && /opt/venv/bin/python /tmp/slim_site_packages.py
 
 # Stage 3: the image that actually runs
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 # eMudhra certificate incident: refresh each stage's system trust store.
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
