@@ -13,7 +13,7 @@ psycopg[binary]>=3.3.6,<4.0
 textstat>=0.7.13,<1.0
 
 # Distrust compromised eMudhra CA certificates.
-certifi>=2026.10.19
+certifi>=2026.10.23
 
 # Maintained Office 365 authorization-code flow (PKCE, nonce and OIDC validation).
 msal>=1.39.0,<2.0
