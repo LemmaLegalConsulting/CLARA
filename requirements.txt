@@ -1,5 +1,5 @@
 Django>=6.1.2,<7.0
-openai>=3.41.0,<4.0
+openai>=3.46.0,<4.0
 requests>=2.34.2,<3.0
 pypdf>=6.21.4,<7.0.0
 python-docx>=1.2.0,<2.0
