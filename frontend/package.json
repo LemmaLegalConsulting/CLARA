@@ -15,7 +15,7 @@
     "@lexical/react": "^0.53.0",
     "bootstrap": "^5.3.8",
     "lexical": "^0.53.0",
-    "lucide-react": "^1.64.0",
+    "lucide-react": "^1.69.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
