@@ -923,9 +923,12 @@ Optional extraction backends must fit these same limits; temporary files are pri
 and removed after conversion. These limits do not replace deployment-wide quotas.
 
 The deployment workflow uses the `production` environment and job-scoped OIDC.
-Configure required environment reviewers, reviewed PRs, required status checks and
-push/force-push/deletion restrictions in GitHub; the workflow alone does not enforce
-those repository settings. Check Azure's federated trust matches the environment.
+PRs require passing, up-to-date CI and resolved conversations, but no formal
+approvals or code-owner sign-off. Auto-merge is available for individual PRs,
+including Dependabot updates. Production deploys automatically after tests pass
+on main, without an environment approval. Keep branch protection and
+force-push/deletion restrictions configured in GitHub; the workflow alone does
+not enforce those settings. See [merge policy](docs/DEPLOYMENT.md#merge-and-deployment-policy). Check Azure's federated trust matches the environment.
 Do not treat passing local tests as verification of the deployed image or controls.
 
 ### Argument Gym annotated downloads
