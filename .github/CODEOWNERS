@@ -1,5 +1,5 @@
-# Security-sensitive boundaries require review by an existing repository administrator.
-# Multiple owners preserve independent approval when an owner authors a change.
+# Suggested reviewers for security-sensitive boundaries.
+# Reviews are optional; main requires passing CI and resolved conversations.
 /.github/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
 /backend/config/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer
 /backend/apps/core/ @nonprofittechy @BryceStevenWilley @RamiLorca @jpagh @KelizaMcGuire @ll-jgraszer

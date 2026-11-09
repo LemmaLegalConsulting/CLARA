@@ -391,13 +391,41 @@ Two federated credentials exist:
 - `gh-main` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:ref:refs/heads/main`, used by
   the previous workflow. Retire this branch-only credential after the protected-environment workflow is deployed.
 - `gh-env-production` — `repo:LemmaLegalConsulting@83832478/CLARA@1279505923:environment:production`,
-  used by the protected `production` deployment job. The environment requires approval from `nonprofittechy` and permits protected branches only. Main requires the `test` status check, including for administrators. PR approval is required by default; `nonprofittechy` has an explicit review-bypass allowance so the operator can merge their own PRs. This exception does not bypass required status checks. Verify these external settings before each release-policy change.
+  used by the `production` deployment job. The environment permits protected branches only and has no required reviewers or wait timer. The workflow additionally restricts deployment to `main`.
 
 To also re-upload the caselaw corpus (slow — thousands of small files, and only
 necessary when the corpus itself changes):
 
 ```bash
 SYNC_CASELAW=true ./scripts/deploy_azure_containerapps.sh
+```
+
+## Merge and deployment policy
+
+GitHub settings enforce this policy for CLARA, including repository administrators:
+
+- Changes enter `main` through a PR. No approving review, code-owner sign-off,
+  or approval of the latest push is required. CODEOWNERS suggests reviewers;
+  owners and other collaborators with merge permission can merge their own PRs.
+- The GitHub Actions `test` check must pass against an up-to-date branch.
+  Review conversations must be resolved. Force pushes and branch deletion stay
+  disabled.
+- Repository auto-merge is enabled. Select **Enable auto-merge** on an individual
+  PR (including Dependabot), or run `gh pr merge NUMBER --auto --squash`, to
+  merge once the remaining requirements pass. This is opt-in per PR; enabling
+  the repository setting does not merge every dependency update.
+- A merge to `main` starts the deployment workflow, which runs tests again,
+  then migrations/content ingestion, deployment, and health checks.
+  The `production` environment has no manual approval or wait timer.
+  Deployments remain serialized and use environment-scoped Azure OIDC.
+
+These are repository/environment settings, not settings enforced by this file.
+Inspect them before changing release policy:
+
+```bash
+gh api repos/LemmaLegalConsulting/CLARA/branches/main/protection
+gh api repos/LemmaLegalConsulting/CLARA/environments/production
+gh api repos/LemmaLegalConsulting/CLARA --jq '{allow_auto_merge, allow_update_branch}'
 ```
 
 ## Verifying a deployment

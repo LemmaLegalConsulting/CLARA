@@ -1,6 +1,6 @@
 name: Deploy to Azure
 
-# Production requires branch protection and environment reviewers configured in GitHub.
+# Production deploys automatically after tests; GitHub branch protection requires PR CI.
 on:
   push:
     branches: [main]
@@ -11,7 +11,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-# PR checks have their own queues so production approval cannot block testing.
+# PR checks have their own queues so production deployment cannot block testing.
 # Serialize deploys. Two merges in quick succession must not race to update the
 # same revision, and cancel-in-progress would be wrong here: a half-finished
 # deploy that has run migrations but not yet rolled the app is worse than a slow
