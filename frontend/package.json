@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@lexical/react": "^0.53.0",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^5.3.9",
     "lexical": "^0.53.0",
-    "lucide-react": "^1.69.0",
+    "lucide-react": "^1.72.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",
-    "@vitejs/plugin-react": "^6.2.1",
-    "sass": "^1.107.1",
-    "vite": "^8.3.6"
+    "@vitejs/plugin-react": "^6.3.0",
+    "sass": "^1.108.2",
+    "vite": "^8.3.8"
   }
 }
