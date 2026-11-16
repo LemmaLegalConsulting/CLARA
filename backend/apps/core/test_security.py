@@ -103,6 +103,48 @@ class OAuthSecurityTests(TestCase):
         app.return_value.acquire_token_by_auth_code_flow.side_effect = ValueError('invalid nonce/audience/expiry')
         self.assertEqual(self.callback('next').status_code, 400)
 
+    @override_settings(OFFICE365_TENANT_ID='organizations')
+    @patch('apps.core.oidc.application')
+    def test_multi_tenant_allows_approved_principal_from_any_tenant_and_rejects_unapproved(self, app):
+        other_tenant = '44444444-4444-4444-4444-444444444444'
+        other_object = '55555555-5555-5555-5555-555555555555'
+        other_user = get_user_model().objects.create_user('external', 'external@other.invalid')
+        Office365Principal.objects.create(user=other_user, tenant_id=other_tenant, object_id=other_object)
+
+        self.transaction('mt-ok')
+        app.return_value.acquire_token_by_auth_code_flow.return_value = {
+            'id_token_claims': {'tid': other_tenant, 'oid': other_object},
+            'expires_in': 3600,
+        }
+        self.claims.return_value = {'tid': other_tenant, 'oid': other_object}
+        self.assertEqual(self.callback('mt-ok').status_code, 302)
+        self.assertEqual(int(self.client.session['_auth_user_id']), other_user.pk)
+
+        self.transaction('mt-unapproved')
+        self.claims.return_value = {'tid': other_tenant, 'oid': '66666666-6666-6666-6666-666666666666'}
+        self.assertEqual(self.callback('mt-unapproved').status_code, 403)
+
+
+@override_settings(OFFICE365_TENANT_ID='organizations', OFFICE365_CLIENT_ID='client')
+class MultiTenantOIDCTests(TestCase):
+    @patch('apps.core.oidc.signing_keys')
+    @patch('apps.core.oidc.jwt.decode')
+    def test_multi_tenant_validated_claims_requires_matching_issuer_and_tid(self, jwt_decode, signing_keys):
+        other_tenant = '44444444-4444-4444-4444-444444444444'
+        signing_keys.return_value.get_signing_key_from_jwt.return_value = Mock(key='pub')
+        jwt_decode.return_value = {
+            'tid': other_tenant,
+            'iss': f'https://login.microsoftonline.com/{other_tenant}/v2.0',
+        }
+        self.assertEqual(oidc.validated_claims('tok')['tid'], other_tenant)
+
+        jwt_decode.return_value = {
+            'tid': other_tenant,
+            'iss': f'https://login.microsoftonline.com/{TENANT}/v2.0',
+        }
+        with self.assertRaises(ValueError):
+            oidc.validated_claims('tok')
+
 
 @override_settings(LEGALSERVER_SUPERUSER_ROLES=['Administrator'])
 class LegalServerSecurityTests(TestCase):

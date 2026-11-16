@@ -308,7 +308,7 @@ def office365_callback(request):
         claims = oidc.validated_claims(token_payload.get("id_token", ""))
         tenant = str(UUID(claims.get("tid", "")))
         object_id = UUID(claims.get("oid", ""))
-        if "error" in token_payload or tenant != oidc.tenant_id():
+        if "error" in token_payload or (not oidc.is_multi_tenant() and tenant != oidc.tenant_id()):
             raise ValueError("Unapproved tenant")
     except (ValueError, TypeError, requests.RequestException):
         return JsonResponse({"error": "Office 365 authentication failed"}, status=400)
