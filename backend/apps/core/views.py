@@ -23,7 +23,7 @@ from apps.core.return_paths import safe_return_path
 from apps.matters.seed import seed_matters
 from apps.matters.legalserver_delivery import delivery_defaults
 from apps.matters.services import legalserver_account_status
-from apps.sources.models import UserOAuthConnection
+from apps.sources.models import UserOAuthConnection, UserSourceIdentity
 from apps.sources.registry import connector_registry
 from apps.templates_app.seed import seed_templates
 from apps.templates_app.content_library import sync_prepared_templates
@@ -357,6 +357,28 @@ def office365_callback(request):
             "expires_at": timezone.now() + timedelta(seconds=int(token_payload.get("expires_in", 0))),
         },
     )
+    upn = (
+        claims.get("upn")
+        or claims.get("preferred_username")
+        or claims.get("email")
+        or user.email
+        or ""
+    ).strip()
+    if upn and "@" in upn:
+        if not user.email:
+            user.email = upn
+            user.save(update_fields=["email"])
+        allowed_domains = {
+            d.strip().casefold()
+            for d in getattr(settings, "LEGALSERVER_AUTO_CONNECT_DOMAINS", ()) or ()
+            if d and d.strip()
+        }
+        if upn.rsplit("@", 1)[-1].casefold() in allowed_domains:
+            UserSourceIdentity.objects.get_or_create(
+                user=user,
+                provider="legalserver",
+                defaults={"identifier": upn, "enabled": True, "is_verified": True},
+            )
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
     return_path = safe_return_path(request.session.pop("office365_return_path", ""))
     return redirect(f"{settings.FRONTEND_SITE_URL.rstrip('/')}{return_path}" if return_path else settings.FRONTEND_SITE_URL)

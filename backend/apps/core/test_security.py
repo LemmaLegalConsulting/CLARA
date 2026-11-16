@@ -157,6 +157,46 @@ class OAuthSecurityTests(TestCase):
         self.claims.return_value = {'tid': disallowed_tenant, 'oid': new_oid}
         self.assertEqual(self.callback('allow-denied').status_code, 403)
 
+    @override_settings(
+        OFFICE365_TENANT_ID='organizations',
+        OFFICE365_ALLOWED_TENANT_IDS=['44444444-4444-4444-4444-444444444444'],
+        LEGALSERVER_AUTO_CONNECT_DOMAINS=['example.invalid'],
+    )
+    @patch('apps.core.oidc.application')
+    def test_office365_login_auto_connects_matching_legalserver_domain_only(self, app):
+        self.transaction('ls-auto')
+        app.return_value.acquire_token_by_auth_code_flow.return_value = {
+            'id_token_claims': {'tid': TENANT, 'oid': OBJECT, 'upn': 'person@example.invalid'},
+            'expires_in': 3600,
+        }
+        self.claims.return_value = {'tid': TENANT, 'oid': OBJECT, 'upn': 'person@example.invalid'}
+        self.assertEqual(self.callback('ls-auto').status_code, 302)
+        identity = UserSourceIdentity.objects.get(user=self.user, provider='legalserver')
+        self.assertEqual(identity.identifier, 'person@example.invalid')
+        self.assertTrue(identity.enabled)
+        self.assertTrue(identity.is_verified)
+
+        # Admin disabling the mapping is preserved across subsequent Office 365 logins.
+        identity.enabled = False
+        identity.save(update_fields=['enabled'])
+        self.transaction('ls-preserve')
+        self.assertEqual(self.callback('ls-preserve').status_code, 302)
+        identity.refresh_from_db()
+        self.assertFalse(identity.enabled)
+
+        # Other allowed-tenant domains not in LEGALSERVER_AUTO_CONNECT_DOMAINS are not auto-connected.
+        other_tenant = '44444444-4444-4444-4444-444444444444'
+        other_oid = '99999999-9999-9999-9999-999999999999'
+        self.transaction('ls-other-domain')
+        self.claims.return_value = {'tid': other_tenant, 'oid': other_oid, 'upn': 'guest@other.invalid'}
+        self.assertEqual(self.callback('ls-other-domain').status_code, 302)
+        other_user = Office365Principal.objects.get(tenant_id=other_tenant, object_id=other_oid).user
+        self.assertEqual(UserSourceIdentity.identifier_for(other_user, 'legalserver'), '')
+
+        # Manually created users without an Office 365 login remain unconnected.
+        manual = get_user_model().objects.create_user('manual-user', 'manual@example.invalid')
+        self.assertEqual(UserSourceIdentity.identifier_for(manual, 'legalserver'), '')
+
 
 @override_settings(OFFICE365_TENANT_ID='organizations', OFFICE365_CLIENT_ID='client')
 class MultiTenantOIDCTests(TestCase):
