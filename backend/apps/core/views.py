@@ -12,7 +12,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db import OperationalError, ProgrammingError
+from django.db import IntegrityError, OperationalError, ProgrammingError, transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -290,6 +290,27 @@ def office365_start(request):
     return JsonResponse({"configured": True, "authUrl": flow["auth_uri"]})
 
 
+def _provision_allowed_tenant_user(tenant, object_id, claims):
+    User = get_user_model()
+    preferred = (claims.get("preferred_username") or claims.get("email") or "").strip()
+    fallback = f"o365-{str(tenant)[:8]}-{object_id}"
+    email = preferred if "@" in preferred else ""
+    try:
+        with transaction.atomic():
+            username = (
+                preferred
+                if preferred and len(preferred) <= 150 and not User.objects.filter(username=preferred).exists()
+                else fallback
+            )
+            user = User.objects.create_user(username=username, email=email, password=None)
+            Office365Principal.objects.create(user=user, tenant_id=tenant, object_id=object_id, enabled=True)
+            return user
+    except IntegrityError:
+        return Office365Principal.objects.select_related("user").get(
+            tenant_id=tenant, object_id=object_id,
+        ).user
+
+
 def office365_callback(request):
     flow = request.session.pop("office365_flow", {})
     received = request.GET.get("state", "")
@@ -313,11 +334,16 @@ def office365_callback(request):
     except (ValueError, TypeError, requests.RequestException):
         return JsonResponse({"error": "Office 365 authentication failed"}, status=400)
     principal = Office365Principal.objects.select_related("user").filter(
-        tenant_id=tenant, object_id=object_id, enabled=True, user__is_active=True,
+        tenant_id=tenant, object_id=object_id,
     ).first()
-    if principal is None:
+    if principal is not None:
+        if not principal.enabled or not principal.user.is_active:
+            return JsonResponse({"error": "This Office 365 principal has not been approved"}, status=403)
+        user = principal.user
+    elif oidc.tenant_is_allowed(tenant):
+        user = _provision_allowed_tenant_user(tenant, object_id, claims)
+    else:
         return JsonResponse({"error": "This Office 365 principal has not been approved"}, status=403)
-    user = principal.user
     UserOAuthConnection.objects.update_or_create(
         user=user,
         provider="office365",

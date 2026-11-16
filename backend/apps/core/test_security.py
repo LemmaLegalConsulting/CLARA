@@ -124,6 +124,39 @@ class OAuthSecurityTests(TestCase):
         self.claims.return_value = {'tid': other_tenant, 'oid': '66666666-6666-6666-6666-666666666666'}
         self.assertEqual(self.callback('mt-unapproved').status_code, 403)
 
+    @override_settings(
+        OFFICE365_TENANT_ID='organizations',
+        OFFICE365_ALLOWED_TENANT_IDS=['44444444-4444-4444-4444-444444444444'],
+    )
+    @patch('apps.core.oidc.application')
+    def test_allowed_tenant_auto_provisions_without_hijacking_existing_email(self, app):
+        allowed_tenant = '44444444-4444-4444-4444-444444444444'
+        new_oid = '77777777-7777-7777-7777-777777777777'
+        disallowed_tenant = '88888888-8888-8888-8888-888888888888'
+
+        self.transaction('allow-ok')
+        app.return_value.acquire_token_by_auth_code_flow.return_value = {
+            'id_token_claims': {'tid': allowed_tenant, 'oid': new_oid, 'email': self.user.email},
+            'expires_in': 3600,
+        }
+        self.claims.return_value = {'tid': allowed_tenant, 'oid': new_oid, 'email': self.user.email}
+        self.assertEqual(self.callback('allow-ok').status_code, 302)
+        provisioned_id = int(self.client.session['_auth_user_id'])
+        self.assertNotEqual(provisioned_id, self.user.pk)
+        principal = Office365Principal.objects.get(tenant_id=allowed_tenant, object_id=new_oid)
+        self.assertEqual(principal.user_id, provisioned_id)
+
+        # Explicitly disabling the principal blocks future logins even in an allowed tenant.
+        principal.enabled = False
+        principal.save(update_fields=['enabled'])
+        self.transaction('allow-disabled')
+        self.assertEqual(self.callback('allow-disabled').status_code, 403)
+
+        # Disallowed tenants remain rejected.
+        self.transaction('allow-denied')
+        self.claims.return_value = {'tid': disallowed_tenant, 'oid': new_oid}
+        self.assertEqual(self.callback('allow-denied').status_code, 403)
+
 
 @override_settings(OFFICE365_TENANT_ID='organizations', OFFICE365_CLIENT_ID='client')
 class MultiTenantOIDCTests(TestCase):

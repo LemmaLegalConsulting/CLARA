@@ -21,6 +21,17 @@ def tenant_id():
     return str(UUID(settings.OFFICE365_TENANT_ID))
 
 
+def allowed_tenant_ids():
+    raw = getattr(settings, "OFFICE365_ALLOWED_TENANT_IDS", ()) or ()
+    if isinstance(raw, str):
+        raw = [item.strip() for item in raw.split(",") if item.strip()]
+    return {str(UUID(str(item).strip())) for item in raw if str(item).strip()}
+
+
+def tenant_is_allowed(tenant):
+    return str(UUID(str(tenant))) in allowed_tenant_ids()
+
+
 def application():
     return msal.ConfidentialClientApplication(
         settings.OFFICE365_CLIENT_ID,
