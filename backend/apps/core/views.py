@@ -12,7 +12,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db import OperationalError, ProgrammingError
+from django.db import IntegrityError, OperationalError, ProgrammingError, transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -23,7 +23,7 @@ from apps.core.return_paths import safe_return_path
 from apps.matters.seed import seed_matters
 from apps.matters.legalserver_delivery import delivery_defaults
 from apps.matters.services import legalserver_account_status
-from apps.sources.models import UserOAuthConnection
+from apps.sources.models import UserOAuthConnection, UserSourceIdentity
 from apps.sources.registry import connector_registry
 from apps.templates_app.seed import seed_templates
 from apps.templates_app.content_library import sync_prepared_templates
@@ -290,6 +290,27 @@ def office365_start(request):
     return JsonResponse({"configured": True, "authUrl": flow["auth_uri"]})
 
 
+def _provision_allowed_tenant_user(tenant, object_id, claims):
+    User = get_user_model()
+    preferred = (claims.get("preferred_username") or claims.get("email") or "").strip()
+    fallback = f"o365-{str(tenant)[:8]}-{object_id}"
+    email = preferred if "@" in preferred else ""
+    try:
+        with transaction.atomic():
+            username = (
+                preferred
+                if preferred and len(preferred) <= 150 and not User.objects.filter(username=preferred).exists()
+                else fallback
+            )
+            user = User.objects.create_user(username=username, email=email, password=None)
+            Office365Principal.objects.create(user=user, tenant_id=tenant, object_id=object_id, enabled=True)
+            return user
+    except IntegrityError:
+        return Office365Principal.objects.select_related("user").get(
+            tenant_id=tenant, object_id=object_id,
+        ).user
+
+
 def office365_callback(request):
     flow = request.session.pop("office365_flow", {})
     received = request.GET.get("state", "")
@@ -308,16 +329,21 @@ def office365_callback(request):
         claims = oidc.validated_claims(token_payload.get("id_token", ""))
         tenant = str(UUID(claims.get("tid", "")))
         object_id = UUID(claims.get("oid", ""))
-        if "error" in token_payload or tenant != oidc.tenant_id():
+        if "error" in token_payload or (not oidc.is_multi_tenant() and tenant != oidc.tenant_id()):
             raise ValueError("Unapproved tenant")
     except (ValueError, TypeError, requests.RequestException):
         return JsonResponse({"error": "Office 365 authentication failed"}, status=400)
     principal = Office365Principal.objects.select_related("user").filter(
-        tenant_id=tenant, object_id=object_id, enabled=True, user__is_active=True,
+        tenant_id=tenant, object_id=object_id,
     ).first()
-    if principal is None:
+    if principal is not None:
+        if not principal.enabled or not principal.user.is_active:
+            return JsonResponse({"error": "This Office 365 principal has not been approved"}, status=403)
+        user = principal.user
+    elif oidc.tenant_is_allowed(tenant):
+        user = _provision_allowed_tenant_user(tenant, object_id, claims)
+    else:
         return JsonResponse({"error": "This Office 365 principal has not been approved"}, status=403)
-    user = principal.user
     UserOAuthConnection.objects.update_or_create(
         user=user,
         provider="office365",
@@ -331,6 +357,28 @@ def office365_callback(request):
             "expires_at": timezone.now() + timedelta(seconds=int(token_payload.get("expires_in", 0))),
         },
     )
+    upn = (
+        claims.get("upn")
+        or claims.get("preferred_username")
+        or claims.get("email")
+        or user.email
+        or ""
+    ).strip()
+    if upn and "@" in upn:
+        if not user.email:
+            user.email = upn
+            user.save(update_fields=["email"])
+        allowed_domains = {
+            d.strip().casefold()
+            for d in getattr(settings, "LEGALSERVER_AUTO_CONNECT_DOMAINS", ()) or ()
+            if d and d.strip()
+        }
+        if upn.rsplit("@", 1)[-1].casefold() in allowed_domains:
+            UserSourceIdentity.objects.get_or_create(
+                user=user,
+                provider="legalserver",
+                defaults={"identifier": upn, "enabled": True, "is_verified": True},
+            )
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
     return_path = safe_return_path(request.session.pop("office365_return_path", ""))
     return redirect(f"{settings.FRONTEND_SITE_URL.rstrip('/')}{return_path}" if return_path else settings.FRONTEND_SITE_URL)

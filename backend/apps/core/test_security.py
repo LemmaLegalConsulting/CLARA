@@ -103,6 +103,121 @@ class OAuthSecurityTests(TestCase):
         app.return_value.acquire_token_by_auth_code_flow.side_effect = ValueError('invalid nonce/audience/expiry')
         self.assertEqual(self.callback('next').status_code, 400)
 
+    @override_settings(OFFICE365_TENANT_ID='organizations')
+    @patch('apps.core.oidc.application')
+    def test_multi_tenant_allows_approved_principal_from_any_tenant_and_rejects_unapproved(self, app):
+        other_tenant = '44444444-4444-4444-4444-444444444444'
+        other_object = '55555555-5555-5555-5555-555555555555'
+        other_user = get_user_model().objects.create_user('external', 'external@other.invalid')
+        Office365Principal.objects.create(user=other_user, tenant_id=other_tenant, object_id=other_object)
+
+        self.transaction('mt-ok')
+        app.return_value.acquire_token_by_auth_code_flow.return_value = {
+            'id_token_claims': {'tid': other_tenant, 'oid': other_object},
+            'expires_in': 3600,
+        }
+        self.claims.return_value = {'tid': other_tenant, 'oid': other_object}
+        self.assertEqual(self.callback('mt-ok').status_code, 302)
+        self.assertEqual(int(self.client.session['_auth_user_id']), other_user.pk)
+
+        self.transaction('mt-unapproved')
+        self.claims.return_value = {'tid': other_tenant, 'oid': '66666666-6666-6666-6666-666666666666'}
+        self.assertEqual(self.callback('mt-unapproved').status_code, 403)
+
+    @override_settings(
+        OFFICE365_TENANT_ID='organizations',
+        OFFICE365_ALLOWED_TENANT_IDS=['44444444-4444-4444-4444-444444444444'],
+    )
+    @patch('apps.core.oidc.application')
+    def test_allowed_tenant_auto_provisions_without_hijacking_existing_email(self, app):
+        allowed_tenant = '44444444-4444-4444-4444-444444444444'
+        new_oid = '77777777-7777-7777-7777-777777777777'
+        disallowed_tenant = '88888888-8888-8888-8888-888888888888'
+
+        self.transaction('allow-ok')
+        app.return_value.acquire_token_by_auth_code_flow.return_value = {
+            'id_token_claims': {'tid': allowed_tenant, 'oid': new_oid, 'email': self.user.email},
+            'expires_in': 3600,
+        }
+        self.claims.return_value = {'tid': allowed_tenant, 'oid': new_oid, 'email': self.user.email}
+        self.assertEqual(self.callback('allow-ok').status_code, 302)
+        provisioned_id = int(self.client.session['_auth_user_id'])
+        self.assertNotEqual(provisioned_id, self.user.pk)
+        principal = Office365Principal.objects.get(tenant_id=allowed_tenant, object_id=new_oid)
+        self.assertEqual(principal.user_id, provisioned_id)
+
+        # Explicitly disabling the principal blocks future logins even in an allowed tenant.
+        principal.enabled = False
+        principal.save(update_fields=['enabled'])
+        self.transaction('allow-disabled')
+        self.assertEqual(self.callback('allow-disabled').status_code, 403)
+
+        # Disallowed tenants remain rejected.
+        self.transaction('allow-denied')
+        self.claims.return_value = {'tid': disallowed_tenant, 'oid': new_oid}
+        self.assertEqual(self.callback('allow-denied').status_code, 403)
+
+    @override_settings(
+        OFFICE365_TENANT_ID='organizations',
+        OFFICE365_ALLOWED_TENANT_IDS=['44444444-4444-4444-4444-444444444444'],
+        LEGALSERVER_AUTO_CONNECT_DOMAINS=['example.invalid'],
+    )
+    @patch('apps.core.oidc.application')
+    def test_office365_login_auto_connects_matching_legalserver_domain_only(self, app):
+        self.transaction('ls-auto')
+        app.return_value.acquire_token_by_auth_code_flow.return_value = {
+            'id_token_claims': {'tid': TENANT, 'oid': OBJECT, 'upn': 'person@example.invalid'},
+            'expires_in': 3600,
+        }
+        self.claims.return_value = {'tid': TENANT, 'oid': OBJECT, 'upn': 'person@example.invalid'}
+        self.assertEqual(self.callback('ls-auto').status_code, 302)
+        identity = UserSourceIdentity.objects.get(user=self.user, provider='legalserver')
+        self.assertEqual(identity.identifier, 'person@example.invalid')
+        self.assertTrue(identity.enabled)
+        self.assertTrue(identity.is_verified)
+
+        # Admin disabling the mapping is preserved across subsequent Office 365 logins.
+        identity.enabled = False
+        identity.save(update_fields=['enabled'])
+        self.transaction('ls-preserve')
+        self.assertEqual(self.callback('ls-preserve').status_code, 302)
+        identity.refresh_from_db()
+        self.assertFalse(identity.enabled)
+
+        # Other allowed-tenant domains not in LEGALSERVER_AUTO_CONNECT_DOMAINS are not auto-connected.
+        other_tenant = '44444444-4444-4444-4444-444444444444'
+        other_oid = '99999999-9999-9999-9999-999999999999'
+        self.transaction('ls-other-domain')
+        self.claims.return_value = {'tid': other_tenant, 'oid': other_oid, 'upn': 'guest@other.invalid'}
+        self.assertEqual(self.callback('ls-other-domain').status_code, 302)
+        other_user = Office365Principal.objects.get(tenant_id=other_tenant, object_id=other_oid).user
+        self.assertEqual(UserSourceIdentity.identifier_for(other_user, 'legalserver'), '')
+
+        # Manually created users without an Office 365 login remain unconnected.
+        manual = get_user_model().objects.create_user('manual-user', 'manual@example.invalid')
+        self.assertEqual(UserSourceIdentity.identifier_for(manual, 'legalserver'), '')
+
+
+@override_settings(OFFICE365_TENANT_ID='organizations', OFFICE365_CLIENT_ID='client')
+class MultiTenantOIDCTests(TestCase):
+    @patch('apps.core.oidc.signing_keys')
+    @patch('apps.core.oidc.jwt.decode')
+    def test_multi_tenant_validated_claims_requires_matching_issuer_and_tid(self, jwt_decode, signing_keys):
+        other_tenant = '44444444-4444-4444-4444-444444444444'
+        signing_keys.return_value.get_signing_key_from_jwt.return_value = Mock(key='pub')
+        jwt_decode.return_value = {
+            'tid': other_tenant,
+            'iss': f'https://login.microsoftonline.com/{other_tenant}/v2.0',
+        }
+        self.assertEqual(oidc.validated_claims('tok')['tid'], other_tenant)
+
+        jwt_decode.return_value = {
+            'tid': other_tenant,
+            'iss': f'https://login.microsoftonline.com/{TENANT}/v2.0',
+        }
+        with self.assertRaises(ValueError):
+            oidc.validated_claims('tok')
+
 
 @override_settings(LEGALSERVER_SUPERUSER_ROLES=['Administrator'])
 class LegalServerSecurityTests(TestCase):
