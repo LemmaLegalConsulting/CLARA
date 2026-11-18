@@ -135,6 +135,14 @@ def identifying_phrases(brief_text, matter_context=None):
         for word in words:
             if word[0].isupper() and word.casefold() not in vocabulary and len(word) > 2:
                 phrases.add(word)
+    # A caption sets the parties in capitals ("RIVERBEND METROPOLITAN HOUSING
+    # AUTHORITY, Plaintiff"), and the body then calls them "Plaintiff", so a
+    # name can appear nowhere in title case. Read runs of two or more capitalized
+    # words; a lone acronym ("the CARES Act", "HUD") is a term, not a name.
+    for match in re.finditer(r"\b[A-Z][A-Z'.&-]+(?:[ \t]+[A-Z][A-Z'.&-]+)+\b", brief_text or ""):
+        for word in re.findall(r"[A-Z]{3,}", match.group(0)):
+            if word.casefold() not in vocabulary:
+                phrases.update({word, word.title()})
     context = matter_context or {}
     for value in [context.get("client"), context.get("id"), *(context.get("details") or {}).values()]:
         value = str(value or "").strip()
