@@ -24,7 +24,10 @@ content/                       # public, safe-to-commit defaults
 ├── document-templates/       # generated from filing-templates/; public slugs only
 ├── docx-snippets/<slug>/     # generated block snippets for those public templates
 ├── statutes/
-│   └── ohio-revised-code/    # configured official-code scope and generated section index
+│   ├── ohio-revised-code/    # configured official-code scope and generated section index
+│   ├── ohio-administrative-code/  # agency rules implementing those chapters; same shape
+│   └── federal-housing-law/  # selected U.S. Code, 24 C.F.R., and 7 C.F.R.; same shape
+├── web-research/             # trust tiers and search policy for the gym's web lookup
 ├── court-rules/              # one YAML per court: identity and filing-format requirements
 ├── legal-rules/              # one YAML per legal rule: how it is invoked and what it requires
 ├── ordinances/               # municipal codes and local court rules, by municipality
@@ -214,6 +217,51 @@ frequent cadence. The command exits nonzero when any selected section could not
 be fetched or parsed, so the scheduler should alert and retry rather than
 publishing a partial refresh as successful.
 
+### Federal housing law
+
+`statutes/federal-housing-law/scope.yaml` selects the federal statutes and
+regulations an eviction defence in assisted housing turns on. Ring 1 is the
+core: the CARES Act notice section (15 U.S.C. 9058) and the definitions it
+depends on (the VAWA list of covered housing programs at 34 U.S.C. 12491, the
+rural voucher program), public housing and Section 8 (42 U.S.C. 1437d, 1437f),
+and the 24 C.F.R. parts that implement them (5 subpart L, 247, 880, 884, 886,
+966, 982, 983). Ring 2 is federal law reaching the same tenancies from another
+direction: the rest of 24 C.F.R. part 5 (definitions, income, NSPIRE, crime-
+related screening and eviction), the Fair Housing Act and 24 C.F.R. part 100,
+Section 504 and 24 C.F.R. part 8, ADA Title II, the low-income housing tax
+credit (26 U.S.C. 42), USDA rural rental housing (42 U.S.C. 1484-1490p-2 and
+7 C.F.R. part 3560), the other programs on the VAWA list (Sections 202, 236,
+811, HOME, Housing Trust Fund, HOPWA, ESG, Continuum of Care), tenant
+participation and utility allowances, the Servicemembers Civil Relief Act
+eviction section, and the Fair Credit Reporting Act provisions on tenant
+screening.
+A rule is only checkable if the text that says whom it covers is here too, so
+add the definitions a section cross-references along with the section.
+
+Run `python scripts/ingest_federal_housing_law.py --all` (or `--ring 1`,
+`--cfr-part 966`, `--cfr-part 7:3560`, `--usc 15:9058`). U.S. Code sections come from GovInfo's
+annual edition and keep the edition and "current through" date it states; CFR
+parts come from the eCFR versioner API as of the date eCFR reports itself
+current, and keep that date and any eCFR notice of a published-but-pending
+amendment (for example a delayed change to 24 C.F.R. 966.4). Editorial notes are
+not law and are not ingested; a section's source credit or amendment history is
+kept. A complete `--all` refresh prunes sections that left the scope only when
+every target was read. The generated files are not hand-edited. The research
+source ID is `federal-housing-law`.
+
+### Ohio Administrative Code
+
+`statutes/ohio-administrative-code/scope.yaml` selects the agency rules that
+implement Revised Code chapters already in the corpus: the Civil Rights
+Commission's discrimination rules (4112-5, including housing and reasonable
+accommodation), manufactured home parks (4781-12), lead poisoning prevention
+(3701-32), and, in ring 2, the Attorney General's consumer sales practices rules
+(109:4-3). Run `python scripts/ingest_ohio_administrative_code.py --all` (or
+`--chapter 4112-5`); it reads one official chapter page per chapter and keeps
+each rule's effective date and authenticated PDF link. It is searched with the
+Revised Code under the `ohio-statutes` research source, and the citation parser
+reads `Ohio Adm.Code`, `O.A.C.`, and `OAC` spellings.
+
 ## Triage rubrics
 
 One YAML file represents one default rubric. Required fields are `slug`, `name`,
@@ -272,6 +320,26 @@ These elements are substantive law, and a wrong element list tells an advocate
 their pleading is complete when it is not. Seeded by `sync_content_library`,
 which skips anything edited in admin; `--update-legal-rules` applies changed
 files. See [`legal-rules/README.md`](legal-rules/README.md).
+
+A profile is an addition, not the mechanism by which the gym checks whether a
+rule applies. The gym's applicability check reads every statute and regulation a
+brief relies on against its own scope and definition text in the library,
+whether or not a profile exists; a profile adds elements an office has reviewed
+and, through `contradiction_patterns`, wording that rules an element out.
+
+## Web research
+
+`web-research/trusted-domains.yaml` is the reviewed policy for the Argument
+Gym's web lookup (on by default in every session, which an author can turn off,
+and able to run only where `AI_WEB_SEARCH_ENABLED` allows web search): whether search is open with preferences (`prefer`, the
+default) or restricted to listed domains (`restrict`), which domains are
+blocked, and the trust tier of every source. The incorporated library is rank 1
+and no web tier may claim it; official government sites (any `.gov`) are rank 2;
+legal aid and nonprofit legal references rank 3; anything else rank 4. A web
+finding resting only on rank 3 or 4 is a lead to check. Web search is off unless
+`AI_WEB_SEARCH_ENABLED` is set: on Azure OpenAI it runs on Grounding with Bing,
+outside the Azure data boundary, so only de-identified legal questions are ever
+sent, and the gym shows exactly which questions left.
 
 ## Drafting and language checks
 
@@ -360,6 +428,9 @@ repository path.
 [`argument-gym/`](argument-gym/README.md) holds maintained synthetic minimal pairs
 and gold proposition-to-source spans for deterministic benchmark grading. These
 fixtures are evaluation material only and must not be ingested as legal authority.
+`argument-gym/seeded-flaws.yaml` holds synthetic briefs carrying one known legal
+error each, with a control; `scripts/benchmark_seeded_flaws.py` runs them
+through the gym with each fix on and off.
 
 ### Filling templates without AI
 

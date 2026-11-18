@@ -724,19 +724,20 @@ class AutomaticSourceSelectionTests(TestCase):
     def test_hud_question_explains_specialized_routing(self):
         selection = automatic_source_selection("What HUD voucher termination rules apply?")
 
-        self.assertEqual(selection["source_ids"], ["hud-handbook"])
+        # The handbook explains; the regulation it explains is searched beside it.
+        self.assertEqual(selection["source_ids"], ["hud-handbook", "federal-housing-law"])
         self.assertEqual(selection["annotations"][0]["reason"], "The question concerns federally assisted housing or HUD Handbook 4350.3.")
 
     def test_hud_source_auto_selects_expanded_terms(self):
         for query in ["subsidized rent", "tenant rent calculation", "interim recertification", "termination of assistance"]:
             with self.subTest(query=query):
                 selection = automatic_source_selection(query)
-                self.assertEqual(selection["source_ids"], ["hud-handbook"])
+                self.assertEqual(selection["source_ids"][0], "hud-handbook")
 
     def test_public_housing_question_routes_to_green_book(self):
         selection = automatic_source_selection("What rules govern a public housing authority homeownership program?")
 
-        self.assertEqual(selection["source_ids"], ["green-book"])
+        self.assertEqual(selection["source_ids"], ["green-book", "federal-housing-law"])
         self.assertIn("Green Book", selection["annotations"][0]["reason"])
 
 

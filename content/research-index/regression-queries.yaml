@@ -40,6 +40,75 @@ queries:
       top_result_id: "content:ohio-revised-code:orc-5321-04-01"
       top_result_corpus: statutes
 
+  - id: cares-act-section-by-citation
+    query: "15 U.S.C. 9058"
+    why: >-
+      The CARES Act notice section, looked up by its code citation. A brief
+      that relies on the CARES Act has to be checked against this text.
+    requires: [statutes]
+    expect:
+      top_result_id: "content:federal-housing-law:usc-15-9058-01"
+      top_result_corpus: statutes
+
+  - id: cares-act-coverage-reaches-its-definitions
+    query: "CARES Act covered property sourceType:statutes"
+    why: >-
+      Whether the CARES Act applies to a building turns on "covered property",
+      which 15 U.S.C. 9058 defines by pointing to the VAWA list of covered
+      housing programs in 34 U.S.C. 12491. A search that finds the section but
+      not the definition it depends on cannot answer the coverage question;
+      the Argument Gym once missed a brief applying the CARES Act to housing it
+      does not cover. Restricted to enacted law: across every corpus the
+      treatise's discussion of the CARES Act rightly ranks alongside it.
+    requires: [statutes]
+    expect:
+      contains_ids:
+        - "content:federal-housing-law:usc-15-9058-01"
+        - "content:federal-housing-law:usc-34-12491-01"
+      within: 5
+
+  - id: public-housing-lease-regulation-by-citation
+    query: "24 C.F.R. 966.4"
+    why: The public housing lease regulation, including its termination-notice periods.
+    requires: [statutes]
+    expect:
+      top_result_id: "content:federal-housing-law:cfr-24-966-4-01"
+      top_result_corpus: statutes
+
+  - id: fair-housing-act-by-citation
+    query: "42 U.S.C. 3604"
+    why: The Fair Housing Act's core prohibition, including the reasonable-accommodation duty in (f)(3)(B).
+    requires: [statutes]
+    expect:
+      top_result_corpus: statutes
+      contains_ids: ["content:federal-housing-law:usc-42-3604-01"]
+      within: 3
+
+  - id: lihtc-good-cause-by-name
+    query: "low-income housing tax credit extended use good cause sourceType:statutes"
+    why: >-
+      The tax credit's extended-use agreement is where a LIHTC tenant's
+      good-cause protection comes from (26 U.S.C. 42(h)(6)); a search by the
+      program's name has to reach the statute.
+    requires: [statutes]
+    expect:
+      contains_ids: ["content:federal-housing-law:usc-26-42-09"]
+      within: 10
+
+  - id: usda-rural-rental-termination-by-citation
+    query: "7 C.F.R. 3560.159"
+    why: USDA Section 515 housing's own lease-termination rule, distinct from HUD's.
+    requires: [statutes]
+    expect:
+      top_result_id: "content:federal-housing-law:cfr-7-3560-159-01"
+
+  - id: ohio-admin-code-fair-housing-by-citation
+    query: "Ohio Adm.Code 4112-5-07"
+    why: The Civil Rights Commission's rule on disability discrimination in housing, cited the way briefs cite it.
+    requires: [statutes]
+    expect:
+      top_result_id: "content:ohio-administrative-code:oac-4112-5-07-01"
+
   - id: eviction-notice-statute-by-citation
     query: "R.C. 1923.04"
     why: The notice statute, looked up the way a lawyer writes it in a brief.

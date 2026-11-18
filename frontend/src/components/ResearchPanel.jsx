@@ -56,7 +56,8 @@ const SOURCE_GROUPS = [
   {
     title: "Statutes",
     options: [
-      { id: "ohio-statutes", label: "Ohio Statutes", kind: "rag", icon: FileText },
+      { id: "ohio-statutes", label: "Ohio Statutes and Administrative Code", kind: "rag", icon: FileText },
+      { id: "federal-housing-law", label: "Federal housing law (U.S.C. and 24 C.F.R.)", kind: "rag", icon: FileText },
     ],
   },
   {

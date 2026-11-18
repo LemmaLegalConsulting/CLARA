@@ -178,6 +178,15 @@ class QueryParsingTests(SimpleTestCase):
         self.assertEqual(citation.normalized, "R.C. 5321.04(A)(2)")
         self.assertIn("5321.04", citation.variants)
 
+    def test_an_administrative_code_rule_is_recognized_in_its_common_spellings(self):
+        for text in ("Ohio Adm.Code 4112-5-07", "Ohio Admin. Code 4112-5-07", "O.A.C. 4112-5-07", "OAC 4112-5-07"):
+            self.assertEqual([c.normalized for c in find_citations(text)], ["Ohio Adm.Code 4112-5-07"], text)
+        self.assertEqual(find_citations("O.A.C. 109:4-3-02(B)")[0].normalized, "Ohio Adm.Code 109:4-3-02")
+
+    def test_the_code_s_own_cross_reference_form_is_a_federal_citation(self):
+        citation = find_citations("as defined in section 12491(a) of title 34")[0]
+        self.assertEqual((citation.kind, citation.normalized, citation.subdivision), ("federal_code", "34 U.S.C. 12491", "(a)"))
+
 
 class SnippetTests(SimpleTestCase):
     """Spans have to index into the string the caller is handed."""
