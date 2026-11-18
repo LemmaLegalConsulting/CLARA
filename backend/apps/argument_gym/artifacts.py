@@ -50,6 +50,8 @@ def prep_sheet_rows(run):
             {
                 "challengeId": challenge.id,
                 "category": challenge.get_category_display(),
+                "basis": challenge.basis,
+                "basisLabel": challenge.get_basis_display(),
                 "target": challenge.target,
                 "finding": challenge.finding,
                 "reviewAction": challenge.review_action,
@@ -70,7 +72,9 @@ def narrative_summary(run, *, llm_client=None, refresh=False):
     """Write the run's orientation paragraph once, then reuse it."""
     if run.summary and not refresh:
         return run.summary
-    challenges = list(run.challenges.all())
+    # The orientation paragraph speaks for the library-grounded review. Web
+    # findings are reported beside it, never folded into it.
+    challenges = list(run.challenges.filter(basis=GymChallenge.LIBRARY))
     if not challenges or not ai_enabled():
         return run.summary
     coverage = (challenges[0].research_coverage or {}) if challenges else {}
@@ -125,7 +129,9 @@ def opposition_prep_sheet(run, *, llm_client=None):
 
 
 def stress_test_report(run, *, llm_client=None):
-    challenges = list(run.challenges.all())
+    all_challenges = list(run.challenges.all())
+    challenges = [challenge for challenge in all_challenges if challenge.basis == GymChallenge.LIBRARY]
+    web_challenges = [challenge for challenge in all_challenges if challenge.basis == GymChallenge.WEB]
     coverage = (challenges[0].research_coverage or {}) if challenges else {}
     vulnerabilities = []
     handled = []
@@ -167,8 +173,28 @@ def stress_test_report(run, *, llm_client=None):
         "checkResults": run.check_results or {},
         "ruleAudit": run.rule_audit or [],
         "checklistResults": run.checklist_results or {},
+        "applicability": run.applicability or {},
         "vulnerabilities": vulnerabilities,
         "handledWell": handled,
+        # Reported apart, with its own status, because it rests on web search.
+        "webLookup": {
+            **(run.web_lookup or {}),
+            "challenges": [
+                {
+                    "challengeId": challenge.id,
+                    "basisLabel": challenge.get_basis_display(),
+                    "severity": challenge.severity,
+                    "confidence": challenge.confidence,
+                    "target": challenge.target,
+                    "finding": challenge.finding,
+                    "argument": challenge.opponent_argument,
+                    "whyItMatters": challenge.why_it_matters,
+                    "sources": challenge.legal_sources,
+                    "disposition": challenge.disposition,
+                }
+                for challenge in web_challenges
+            ],
+        },
         "researchGaps": coverage.get("gaps", []),
         "unresolvedNotes": [
             {"challengeId": challenge.id, "note": (challenge.research_coverage or {}).get("note", "")}
@@ -191,6 +217,9 @@ def revision_plan(run, *, challenge_ids=None):
     selected = run.challenges.all()
     if challenge_ids:
         selected = selected.filter(id__in=challenge_ids)
+    else:
+        # A web finding reaches the plan only when the advocate picks it.
+        selected = selected.filter(basis=GymChallenge.LIBRARY)
     by_block = {}
     unscoped = []
     for challenge in selected:

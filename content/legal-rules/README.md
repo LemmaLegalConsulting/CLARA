@@ -78,5 +78,16 @@ elements:
     needs_record_support: true   # an assertion alone does not satisfy it
     patterns:                    # suggest the brief pleads this element
       - "served .{0,40}notice"
+    contradiction_patterns:      # the brief's own words ruling the element out
+      - "no notice was (served|given)"
     note: Anything a reader should know about how this element is usually met.
 ```
+
+`contradiction_patterns` are the opposite of `patterns`. A pleading pattern
+that fails to match proves nothing; a contradiction pattern that matches is the
+brief describing facts the element excludes -- "a market-rate unit with no
+federal subsidy" in a brief relying on the CARES Act -- and is reported as a
+finding even when a model read the element as pleaded.
+
+A profile whose `jurisdiction` is `United States` (or `Federal`) is federal law
+and is checked in a brief filed anywhere.

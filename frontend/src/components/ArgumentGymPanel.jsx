@@ -21,6 +21,13 @@ import { api } from "../api/client.js";
 import { saveResponseAsFile } from "./downloadFile.js";
 import { useModalDismiss } from "../hooks/useModalDismiss.js";
 import {
+  applicabilityView,
+  checkDefaultsStatus,
+  checkKindLabel,
+  isWebSource,
+  sourceTrustLabel,
+  splitChallengesByBasis,
+  webLookupView,
   CASE_CONTEXT_CHOICES,
   COURT_RULE_MODES,
   JURISDICTION_MODES,
@@ -379,7 +386,8 @@ function ChecklistEditor({ checklists, activeId, busy, onSave, onDelete, onSelec
   );
 }
 
-function CheckSelector({ catalog, selected, checklists, checklistId, busy, onToggle, onChecklist, onManageChecklists, onManagePassive }) {
+function CheckSelector({ catalog, selected, checklists, checklistId, busy, onToggle, onChecklist, onManageChecklists, onManagePassive, defaults = [], savedDefaults = false, onSaveDefaults, onResetDefaults }) {
+  const defaultsStatus = checkDefaultsStatus(selected, defaults, savedDefaults);
   return (
     <div className="gym-checks">
       <div className="gym-checks-body">
@@ -397,7 +405,7 @@ function CheckSelector({ catalog, selected, checklists, checklistId, busy, onTog
                 />
                 <span className="gym-check-line">
                   <strong>{check.label}</strong>
-                  {check.kind === "model" && <span className="gym-check-kind">AI</span>}
+                  {checkKindLabel(check.kind) && <span className={`gym-check-kind${check.kind === "web" ? " gym-check-kind-web" : ""}`}>{checkKindLabel(check.kind)}</span>}
                   <InfoHint text={check.description} label={`What "${check.label}" checks`} />
                   {check.id === "custom_checklist" && (
                     <button
@@ -446,6 +454,23 @@ function CheckSelector({ catalog, selected, checklists, checklistId, busy, onTog
               ))}
             </select>
           </label>
+        )}
+        {onSaveDefaults && (
+          <div className="gym-check-defaults">
+            <p className="muted" id="gym-check-defaults-help">
+              {defaultsStatus.text} Saving makes this whole selection, including what is off, the starting point for
+              every session that has not chosen its own checks.
+            </p>
+            <button className="btn btn-light btn-inline" type="button" disabled={busy || (defaultsStatus.matches && savedDefaults)}
+              aria-describedby="gym-check-defaults-help" onClick={() => onSaveDefaults(selected)}>
+              Save these checks as my default
+            </button>
+            {savedDefaults && (
+              <button className="text-link-button" type="button" disabled={busy} onClick={onResetDefaults}>
+                Go back to CLARA's defaults
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>
@@ -528,6 +553,7 @@ function AuditSummary({ run, catalog, onOpenArtifact, actionsDisabled }) {
     <section className="gym-audit" aria-label="Filing and document review">
       <h4>Filing and document review</h4>
       <p className="muted">{checkStatusSummary(run.checksRun) || "Check execution was not recorded for this run."}</p>
+      <ApplicabilitySection run={run} />
       {!compliance.checked && <p className="muted">{compliance.reason || "Filing-format rules were not applied."}</p>}
       {compliance.checked && compliance.total === 0 && <p className="muted">Filing format: no findings from the rules checked.</p>}
 
@@ -658,7 +684,7 @@ function SourceList({ sources = [], emptyLabel }) {
       {sources.map((source, index) => (
         <li key={`${source.externalId || source.title}-${index}`}>
           <strong>{source.citation || source.title}</strong>
-          {source.sourceLabel && <span className="muted"> · {source.sourceLabel}</span>}
+          {sourceTrustLabel(source) && <span className={isWebSource(source) ? "gym-web-label" : "muted"}> · {sourceTrustLabel(source)}</span>}
           {source.snippet && <p className="gym-source-snippet">{source.snippet}</p>}
           {source.url && (
             <a href={source.url} target="_blank" rel="noreferrer">
@@ -727,6 +753,7 @@ function ChallengeCard({ challenge, busy, queued, onDisposition, onResearch, onQ
       <header className="gym-challenge-header">
         <span className="gym-severity-dot" aria-hidden="true" />
         <span className="gym-category">{challenge.categoryLabel}</span>
+        {challenge.basis === "web" && <span className="gym-web-label">Web search · less reliable</span>}
         {target && <span className="gym-target">{target}</span>}
         <span className="gym-severity-word">{challenge.severity}</span>
         {challenge.disposition !== "open" && <span className="gym-disposition">{challenge.disposition}</span>}
@@ -735,6 +762,12 @@ function ChallengeCard({ challenge, busy, queued, onDisposition, onResearch, onQ
 
       <p className="gym-category">{priorityForChallenge(challenge).label}</p>
       <h3 className="gym-finding-title">{challengePreview(challenge).title}</h3>
+      {challenge.basis === "web" && (
+        <p className="gym-web-notice">
+          {challenge.researchCoverage?.trustNote || "Found by web search, not in CLARA's library. Confirm every source before relying on it."}
+          {challenge.researchCoverage?.libraryCandidate && ` Candidate to add to CLARA's library: ${challenge.researchCoverage.libraryCandidate}.`}
+        </p>
+      )}
       {challenge.whyItMatters && <p><strong>Why it matters:</strong> {challenge.whyItMatters}</p>}
       {challenge.briefCurrentlySays && <blockquote className="gym-quote">{challenge.briefCurrentlySays}</blockquote>}
       <div className="gym-fix">
@@ -796,6 +829,85 @@ function ChallengeCard({ challenge, busy, queued, onDisposition, onResearch, onQ
         </button>
       </details>
     </article>
+  );
+}
+
+function ApplicabilitySection({ run }) {
+  const view = applicabilityView(run);
+  if (view.status === "unknown") return null;
+  if (view.status !== "ran") {
+    return <p className="muted">Applicability — {view.status === "off" ? "off" : `could not run: ${view.reason || "no reason recorded"}`}</p>;
+  }
+  return (
+    <details className="gym-audit-detail" open={view.rows.some((row) => row.verdict === "does_not_apply")}>
+      <summary>Does each authority reach these facts</summary>
+      {view.summary && <p className="muted">{view.summary}</p>}
+      {view.rows.length > 0 && (
+        <ul className="gym-finding-lines">
+          {view.rows.map((row) => (
+            <li key={row.authority} className={`tone-${row.tone}`}>
+              <span className="gym-finding-target">{row.authority}</span>
+              <strong>{row.verdictLabel}</strong>{row.unconfirmed && <span className="muted"> (a reading that could not be confirmed against the text)</span>}
+              {row.condition && <p>{row.condition}</p>}
+              {row.briefFacts && <p><span className="gym-context-label">The brief says</span>{row.briefFacts}</p>}
+              {row.quote && <blockquote>{row.quote}{row.source && <footer className="muted">{row.source}, from CLARA's library</footer>}</blockquote>}
+            </li>
+          ))}
+        </ul>
+      )}
+      {view.notInLibrary.length > 0 && (
+        <p className="muted">Not in CLARA's library, so not checked against its text: {view.notInLibrary.join("; ")}.</p>
+      )}
+    </details>
+  );
+}
+
+function WebLookupSection({ run, challenges, renderCard }) {
+  const view = webLookupView(run, challenges);
+  if (view.state === "off") return null;
+  return (
+    <section className="gym-web-lookup" aria-label="Web lookup, less reliable">
+      <h3>Web lookup <span className="gym-web-label">less reliable than CLARA's library</span></h3>
+      <p className="muted">{view.summary}</p>
+      <p className="muted">
+        These findings come from web search, are kept apart from the review above, and do not count toward its
+        assessment. Each source is labelled by how far it is trusted; confirm the text before relying on any of it.
+      </p>
+      {challenges.map((challenge) => renderCard(challenge))}
+      {view.corroborations.length > 0 && (
+        <details className="gym-audit-detail">
+          <summary>Points the web sources support ({view.corroborations.length})</summary>
+          <ul className="gym-finding-lines">
+            {view.corroborations.map((item, index) => (
+              <li key={index}>
+                <strong>{item.finding}</strong>
+                <p>{item.argument}</p>
+                <SourceList sources={(item.sources || []).map((source) => ({ ...source, basis: "web", sourceLabel: source.trustLabel, citation: source.title || source.url }))} emptyLabel="No source recorded." />
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {(view.searches.length > 0 || view.withheld.length > 0) && (
+        <details className="gym-audit-detail">
+          <summary>What was sent to web search</summary>
+          <p className="muted">Only these questions left CLARA. Names, addresses, dates, amounts, and text from the brief are never sent.</p>
+          <ul className="gym-plain-list">
+            {view.searches.map((search, index) => (
+              <li key={index}>
+                {search.question}
+                {search.status === "failed" && <span className="muted"> — search failed: {search.error}</span>}
+              </li>
+            ))}
+          </ul>
+          {view.withheld.length > 0 && (
+            <p className="muted">
+              Withheld before sending ({view.withheld.length}): {view.withheld.map((item) => item.reason).join(" ")}
+            </p>
+          )}
+        </details>
+      )}
+    </section>
   );
 }
 
@@ -1228,6 +1340,7 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
   const [uploadNote, setUploadNote] = useState("");
   const [checkCatalog, setCheckCatalog] = useState([]);
   const [checkDefaults, setCheckDefaults] = useState([]);
+  const [savedCheckDefaults, setSavedCheckDefaults] = useState(false);
   const [checklists, setChecklists] = useState([]);
   const [editingChecklistId, setEditingChecklistId] = useState("");
   const [checklistModalOpen, setChecklistModalOpen] = useState(false);
@@ -1265,6 +1378,7 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
       .then((response) => {
         setCheckCatalog(response.checks || []);
         setCheckDefaults(response.defaults || []);
+        setSavedCheckDefaults(Boolean(response.savedDefaults));
       })
       .catch((err) => setError(err.message));
   }, [loadChecklists]);
@@ -1469,6 +1583,28 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
 
   const changeChecks = async (checkId) => {
     await patchWorkspace({ enabledChecks: toggleCheck(selectedChecks, checkId) });
+  };
+
+  const applyCheckDefaults = (response, message) => {
+    setCheckDefaults(response.defaults || []);
+    setSavedCheckDefaults(Boolean(response.savedDefaults));
+    setNotice(message);
+  };
+  const saveCheckDefaults = async (selection) => {
+    setError("");
+    try {
+      applyCheckDefaults(await api.saveGymCheckDefaults(selection), "Saved these checks as your default for new sessions.");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  const resetCheckDefaults = async () => {
+    setError("");
+    try {
+      applyCheckDefaults(await api.resetGymCheckDefaults(), "Your sessions will start from CLARA's default checks.");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const saveChecklist = async ({ id, title, items }) => {
@@ -1680,14 +1816,16 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
     }
   };
 
-  const challenges = run?.challenges || [];
+  const allChallenges = run?.challenges || [];
+  // Web findings are listed apart from the main review, never ranked among it.
+  const { library: challenges, web: webChallenges } = splitChallengesByBasis(allChallenges);
   const readiness = canStartRun({
     briefDocument: brief,
     caseContext,
     caseMaterials,
     matterId: selectedMatterId,
   });
-  const { canRevise } = revisionTargets(challenges, queued);
+  const { canRevise } = revisionTargets(allChallenges, queued);
   // A prep sheet built from half a run is worse than no prep sheet.
   const actionsDisabled = runActionsDisabled({ run, busy });
   const filters = availableFilters(challenges, filter);
@@ -1817,6 +1955,8 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
               onChecklist={(value) => patchWorkspace({ checklistId: value ? Number(value) : null })}
               onManageChecklists={() => setChecklistModalOpen(true)}
               onManagePassive={() => setPassiveModalOpen(true)}
+              defaults={checkDefaults} savedDefaults={savedCheckDefaults}
+              onSaveDefaults={saveCheckDefaults} onResetDefaults={resetCheckDefaults}
             />
           </details>
 
@@ -1935,6 +2075,21 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
               onDisposition={setDisposition} onResearch={researchChallenge} onCopy={copyChallenge} onEvidence={setEvidenceChallenge}
               onQueueRevision={(item) => setQueued((current) => current.includes(item.id) ? current.filter((id) => id !== item.id) : [...current, item.id])}
             />
+            <WebLookupSection
+              run={run}
+              challenges={webChallenges}
+              renderCard={(challenge) => (
+                <ChallengeCard
+                  key={challenge.id}
+                  challenge={challenge}
+                  busy={busyChallengeId === challenge.id}
+                  queued={queued.includes(challenge.id)}
+                  onDisposition={setDisposition} onResearch={researchChallenge} onCopy={copyChallenge}
+                  onEvidence={setEvidenceChallenge}
+                  onQueueRevision={(item) => setQueued((current) => current.includes(item.id) ? current.filter((id) => id !== item.id) : [...current, item.id])}
+                />
+              )}
+            />
             <AuditSummary key={run.id} run={run} catalog={checkCatalog} onOpenArtifact={openArtifact} actionsDisabled={actionsDisabled} />
           </div>
           </div>
@@ -1954,6 +2109,8 @@ export function ArgumentGymPanel({ matter = null, cases = [], focusRun = null, o
               onChecklist={(value) => patchWorkspace({ checklistId: value ? Number(value) : null })}
               onManageChecklists={() => setChecklistModalOpen(true)}
               onManagePassive={() => setPassiveModalOpen(true)}
+              defaults={checkDefaults} savedDefaults={savedCheckDefaults}
+              onSaveDefaults={saveCheckDefaults} onResetDefaults={resetCheckDefaults}
             />
             <JurisdictionControls
               workspace={workspace}

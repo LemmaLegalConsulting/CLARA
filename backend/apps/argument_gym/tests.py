@@ -215,6 +215,7 @@ class StandalonePipelineTests(TestCase):
                 "research",
                 "opponent",
                 "rule_elements",
+                "applicability",
                 "judge",
                 "coach",
                 "assessment",

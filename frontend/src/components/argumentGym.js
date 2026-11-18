@@ -304,9 +304,115 @@ export function truncationNotice(document = {}) {
 
 export const CHECK_CATEGORY_LABELS = {
   argument: "Argument",
+  web: "Web lookup (less reliable than CLARA's library)",
   form: "Form of the filing",
   language: "Language",
 };
+
+// Whether this session's checks are the person's defaults, and whose defaults
+// those are. Saved defaults cover every check, including the ones left off.
+export function checkDefaultsStatus(selected = [], defaults = [], savedDefaults = false) {
+  const same = selected.length === defaults.length && selected.every((id) => defaults.includes(id));
+  const whose = savedDefaults ? "your saved defaults" : "CLARA's defaults";
+  return { matches: same, text: same ? `These are ${whose}.` : `These differ from ${whose}.` };
+}
+
+// What produced a check's findings, as the selector badges it. A web check is
+// named as such everywhere it appears: a reader must never have to infer that
+// a finding came from web search.
+export function checkKindLabel(kind) {
+  if (kind === "model") return "AI";
+  if (kind === "web") return "AI + web search";
+  return "";
+}
+
+// Challenges grounded in the library and record, and those resting on web
+// search. The two are listed apart and only the first counts toward the
+// run's assessment.
+export function splitChallengesByBasis(challenges = []) {
+  return {
+    library: challenges.filter((challenge) => (challenge.basis || "library") !== "web"),
+    web: challenges.filter((challenge) => challenge.basis === "web"),
+  };
+}
+
+export function isWebSource(source = {}) {
+  return source.basis === "web" || source.sourceKind === "web";
+}
+
+export function sourceTrustLabel(source = {}) {
+  if (!isWebSource(source)) return source.sourceLabel || "";
+  return `Web search · ${source.sourceLabel || "unreviewed website"}`;
+}
+
+const WEB_STATUS_TEXT = {
+  ran: "",
+  unavailable: "Could not run",
+  failed: "Could not run",
+};
+
+// The web lookup's report, in the three states every check keeps apart: off,
+// could not run, and ran (with or without findings).
+export function webLookupView(run = {}, webChallenges = []) {
+  const report = run.webLookup || {};
+  const plan = (run.checksRun || []).find((check) => check.id === "web_lookup");
+  if (!plan || plan.status === "off") {
+    return { state: "off", summary: "Web lookup was off for this run.", questions: [], withheld: [], corroborations: [], searches: [] };
+  }
+  if (plan.status === "unavailable") {
+    return { state: "unavailable", summary: `Web lookup could not run: ${plan.reason || "no reason recorded"}`, questions: [], withheld: [], corroborations: [], searches: [] };
+  }
+  const state = report.status === "ran" ? "ran" : "unavailable";
+  return {
+    state,
+    statusText: WEB_STATUS_TEXT[report.status] || "",
+    summary: report.summary || (state === "ran" ? "Web lookup ran." : "Web lookup could not run; no reason recorded."),
+    questions: (report.questions || []).map((item) => item.question).filter(Boolean),
+    withheld: report.withheld || [],
+    searches: (report.searches || []).map((search) => ({
+      question: search.question,
+      status: search.status,
+      answer: search.answer || "",
+      citations: search.citations || [],
+      error: search.error || "",
+    })),
+    corroborations: (report.findings || []).filter((finding) => finding.kind === "corroborates"),
+    challengeCount: webChallenges.length,
+  };
+}
+
+const VERDICT_LABELS = {
+  applies: "Appears to apply",
+  does_not_apply: "May not reach these facts",
+  unclear_on_facts: "Turns on a fact the brief does not settle",
+  not_assessed: "Not assessed",
+};
+
+export function applicabilityView(run = {}) {
+  const report = run.applicability || {};
+  const plan = (run.checksRun || []).find((check) => check.id === "applicability");
+  const status = !plan ? "unknown" : plan.status === "on" ? "ran" : plan.status;
+  const rows = (report.assessments || []).map((item) => ({
+    authority: item.authority,
+    verdict: item.verdict,
+    verdictLabel: VERDICT_LABELS[item.verdict] || item.verdict,
+    tone: item.verdict === "does_not_apply" ? "warning" : item.verdict === "unclear_on_facts" ? "info" : "neutral",
+    condition: item.condition || "",
+    briefFacts: item.briefFacts || "",
+    quote: item.grounded ? item.quote || "" : "",
+    // A reading whose quote was not in the scope text is said to be unconfirmed, not hidden.
+    unconfirmed: Boolean(item.ungroundedVerdict),
+    source: item.source?.citation || "",
+    explanation: item.explanation || "",
+  }));
+  return {
+    status,
+    reason: plan?.reason || "",
+    summary: report.summary || "",
+    rows,
+    notInLibrary: (report.authorities || []).filter((entry) => !entry.held).map((entry) => entry.authority),
+  };
+}
 
 export function groupChecks(catalog = []) {
   const groups = [];
@@ -765,7 +871,7 @@ export function elementMatrix(ruleAudit = [], materials = []) {
 // are findings, not scores; no recorded result is not a passed check.
 export function overviewLenses(run = {}, catalog = []) {
   const countLabel = (count, unit) => `${count} ${unit}${count === 1 ? "" : "s"}`;
-  const challenges = rankedChallenges(run.challenges || []);
+  const challenges = rankedChallenges(splitChallengesByBasis(run.challenges || []).library);
   const record = challenges.filter((item) => ["factual_support", "record_conflict"].includes(item.category));
   const groups = reviewCheckGroups(run, catalog);
   const compliance = complianceGroups(run.compliance || {});

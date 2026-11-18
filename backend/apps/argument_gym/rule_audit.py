@@ -48,6 +48,25 @@ def pleading_state(element, brief_text):
     return "unknown", ""
 
 
+def contradiction_state(element, brief_text):
+    """The brief's own words that say this element is not met, or nothing.
+
+    Distinct from a pleading miss. A pattern that fails to match proves
+    nothing; a contradiction pattern that matches is the brief describing facts
+    the element excludes, and the advocate should hear about it whatever a
+    model concluded.
+    """
+    for pattern in element.get("contradictionPatterns") or []:
+        try:
+            match = re.search(pattern, brief_text, flags=re.IGNORECASE)
+        except re.error:
+            continue
+        if match:
+            start = max(match.start() - 120, 0)
+            return re.sub(r"\s+", " ", brief_text[start : match.end() + 160]).strip()
+    return ""
+
+
 def support_state(element, excerpts):
     """Weak deterministic support check: does any material share this element's words."""
     if not element.get("needsRecordSupport"):
@@ -173,7 +192,12 @@ def run_rule_audit(brief_text, excerpts, *, jurisdiction="", llm_client=None, pr
             result = by_id.get(element["id"], {})
             pled = result.get("pled", "partial")
             supported = result.get("supported", "nothing_supplied")
-            unmet = pled in UNMET_PLED or (element.get("needsRecordSupport") and supported in UNMET_SUPPORT)
+            contradiction = contradiction_state(element, brief_text)
+            unmet = (
+                bool(contradiction)
+                or pled in UNMET_PLED
+                or (element.get("needsRecordSupport") and supported in UNMET_SUPPORT)
+            )
             audited.append(
                 {
                     **element,
@@ -182,6 +206,7 @@ def run_rule_audit(brief_text, excerpts, *, jurisdiction="", llm_client=None, pr
                     "explanation": result.get("explanation", ""),
                     "quote": result.get("quote", ""),
                     "materialIds": result.get("materialIds", []),
+                    "contradiction": contradiction,
                     "unmet": unmet,
                     "severity": element_severity(element, profile),
                 }
@@ -215,6 +240,34 @@ def run_rule_audit(brief_text, excerpts, *, jurisdiction="", llm_client=None, pr
     return audits, traces
 
 
+def _verification_note(audit):
+    return (
+        ""
+        if audit["verification"] == CourtProfile.VERIFIED
+        else " (from an unverified element list, so confirm the element before relying on this)"
+    )
+
+
+def _contradiction_attack(audit, element):
+    return {
+        "elementId": element["id"],
+        "ruleSlug": audit["slug"],
+        "severity": element["severity"],
+        "argument": (
+            f"{audit['label']} requires {element['label'].lower()}, and the brief's own description "
+            f"points the other way: \u201c{element['contradiction']}\u201d. "
+            f"{element.get('requirement', '')}"
+        ).strip(),
+        "whyItMatters": (
+            f"The brief relies on {audit['citation']}. If the facts it states fall outside what the rule "
+            f"covers, the rule does not help the client and opposing counsel will say so first"
+            f"{_verification_note(audit)}."
+        ),
+        "quote": element["contradiction"],
+        "materialIds": element.get("materialIds", []),
+    }
+
+
 def challenges_from_audit(audits, *, limit=4):
     """Turn unmet elements into the same kind of challenge everything else produces.
 
@@ -228,6 +281,9 @@ def challenges_from_audit(audits, *, limit=4):
             continue
         for element in audit["elements"]:
             if not element["unmet"]:
+                continue
+            if element.get("contradiction"):
+                attacks.append(_contradiction_attack(audit, element))
                 continue
             # Missing input and an inconclusive pattern check remain visible in
             # the audit, but must not become adverse assertions about the brief.

@@ -34,6 +34,7 @@ from apps.ai.case_chat import compact_case_context
 from apps.ai.openai_client import OpenAIBackendError, OpenAICompatibleClient
 from apps.ai.prompt_catalog import PromptCatalogError, render_prompt
 from apps.ai.tool_loop import ToolEvaluation, run_tool_with_repair
+from apps.ai.web_search import web_search_enabled
 from apps.argument_gym import checks as check_catalog
 from apps.argument_gym import ingestion, record
 from apps.argument_gym.models import GymChallenge, GymDocument, GymRun, GymWorkspace
@@ -1095,6 +1096,109 @@ def compare_with_previous(run, challenges):
     }
 
 
+def web_lookup_stage(
+    run, units, argument_map, brief_text, challenges, applicability_report, *, jurisdiction, matter_context,
+    llm_client, note_stage, search_client=None,
+):
+    """The web lookup check, after everything else. Its findings never feed the verdict.
+
+    A failure here is reported on the check and the run still completes: the
+    least reliable check must never cost an advocate the reliable ones.
+    """
+    from apps.argument_gym import web_lookup
+
+    if not applicability_report:
+        # Applicability was off: the web still needs to know what the library lacks.
+        from apps.argument_gym.applicability import authority_inventory
+
+        try:
+            applicability_report = {"authorities": authority_inventory(brief_text, argument_map), "assessments": []}
+        except Exception:  # noqa: BLE001 - without an inventory the planner works from the argument map alone
+            applicability_report = {}
+    rule_audit = run.rule_audit or []
+    try:
+        report, findings = web_lookup.run_web_lookup(
+            units,
+            argument_map,
+            brief_text,
+            web_lookup.summarize_main_findings(challenges, rule_audit),
+            jurisdiction=jurisdiction,
+            matter_context=matter_context,
+            applicability_report=applicability_report,
+            llm_client=llm_client,
+            search_client=search_client,
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Web lookup failed")
+        report, findings = {"status": "failed", "basis": "web", "summary": f"Web lookup could not run: {exc}"}, []
+    run.web_lookup = report
+    note_stage(
+        {
+            "stage": "web_lookup",
+            "method": "web" if report.get("status") == "ran" else report.get("status", "failed"),
+            "count": len(findings),
+            "trace": report.get("stages", []),
+        }
+    )
+
+    units_by_id = {unit["id"]: unit for unit in units}
+    created = []
+    ordinal = len(challenges)
+    for finding in findings:
+        if finding["kind"] not in {"challenge", "library_conflict"}:
+            continue
+        unit = units_by_id.get(finding["unitId"]) or anchor_unit(units, finding["argument"])
+        if not unit:
+            continue
+        ordinal += 1
+        target = _target_for(unit, units_by_id)
+        label = "Conflicts with CLARA's library" if finding["kind"] == "library_conflict" else "Web lookup"
+        created.append(
+            GymChallenge.objects.create(
+                run=run,
+                ordinal=ordinal,
+                basis=GymChallenge.WEB,
+                category=GymChallenge.LEGAL_AUTHORITY,
+                fingerprint=challenge_fingerprint("web", target, finding["argument"]),
+                target=target,
+                finding=clean(finding["finding"], limit=160),
+                review_action="verify",
+                opponent_argument=finding["argument"],
+                why_it_matters=f"{finding['whyItMatters']} {finding['trustNote']}".strip(),
+                brief_currently_says=unit["text"][:600],
+                legal_sources=[
+                    {
+                        "id": f"w{index}",
+                        "title": source["title"] or source["domain"],
+                        "citation": source["title"] or source["url"],
+                        "snippet": "",
+                        "sourceKind": "web",
+                        "sourceLabel": source["trustLabel"],
+                        "url": source["url"],
+                        "basis": "web",
+                        "trustTier": source["trustTier"],
+                        "trustRank": source["trustRank"],
+                    }
+                    for index, source in enumerate(finding["sources"], start=1)
+                ],
+                judge_assessment=label,
+                judge_verdict="lead to check" if finding["leadOnly"] else "verify",
+                suggested_response=finding["suggestedResponse"],
+                severity=finding["severity"],
+                importance=40 if finding["leadOnly"] else 55,
+                confidence=finding["confidence"],
+                research_coverage={
+                    "basis": "web",
+                    "question": finding["question"],
+                    "trustNote": finding["trustNote"],
+                    "leadOnly": finding["leadOnly"],
+                    "libraryCandidate": finding["libraryCandidate"],
+                },
+            )
+        )
+    return created
+
+
 def execute_run(run, *, user=None, request=None, llm_client=None, connector_registry=None):
     """Run every stage and persist the challenges. Never raises into the view."""
     run.status = GymRun.RUNNING
@@ -1142,7 +1246,9 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
                 "court_profile": court is not None,
                 "case_record": bool(available_materials),
                 "checklist": workspace.checklist_id is not None,
+                "web_search": web_search_enabled(),
             },
+            defaults=check_catalog.defaults_for(workspace.owner),
         )
         run.checks_run = plan
 
@@ -1282,6 +1388,47 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
                 }
             )
             attacks.extend(attacks_from_rule_audit(audits, units, len(attacks) + 1))
+
+        # Whether each authority reaches the brief's facts, read from the
+        # authority's own scope text. Its passages join the legal sources so
+        # the judge and coach weigh the same words the reading quoted.
+        applicability_report = {}
+        if check_catalog.will_run(plan, "applicability"):
+            from apps.argument_gym.applicability import applicability_attacks, run_applicability
+
+            try:
+                applicability_report, assessments_read, scope_excerpts = run_applicability(
+                    units, argument_map, brief_text, jurisdiction=jurisdiction, llm_client=llm_client
+                )
+            except Exception as exc:  # noqa: BLE001 - one check failing must not cost the run
+                logger.exception("Applicability check failed")
+                applicability_report = {
+                    "status": "could_not_run",
+                    "summary": f"Applicability could not run: {exc}",
+                    "authorities": [],
+                    "assessments": [],
+                }
+                assessments_read, scope_excerpts = [], {}
+            run.applicability = applicability_report
+            legal_sources.extend(
+                {
+                    "id": excerpt["id"],
+                    "title": excerpt["heading"] or excerpt["citation"],
+                    "citation": excerpt["citation"],
+                    "snippet": excerpt["text"][:600],
+                    "sourceKind": "rag",
+                    "sourceLabel": "CLARA library (scope text)",
+                    "url": excerpt["url"],
+                    "externalId": excerpt["recordId"],
+                    "queries": [],
+                }
+                for excerpt in scope_excerpts.values()
+            )
+            trace = applicability_report.get("trace") or {"stage": "applicability", "method": "none", "count": 0, "trace": []}
+            note_stage({**trace, "count": len(assessments_read)})
+            attacks.extend(
+                applicability_attacks(assessments_read, units, len(attacks) + 1, anchor=anchor_unit)
+            )
 
         if check_catalog.will_run(plan, "custom_checklist"):
             from apps.argument_gym.checklist import apply_checklist
@@ -1432,6 +1579,22 @@ def execute_run(run, *, user=None, request=None, llm_client=None, connector_regi
         if assessment:
             run.assessment = assessment[0]["assessment"]
             run.assessment_verdict = assessment[0]["verdict"]
+
+        if check_catalog.will_run(plan, "web_lookup"):
+            challenges.extend(
+                web_lookup_stage(
+                    run,
+                    units,
+                    argument_map,
+                    brief_text,
+                    challenges,
+                    applicability_report,
+                    jurisdiction=jurisdiction,
+                    matter_context=compact_case_context(matter) if matter else None,
+                    llm_client=llm_client,
+                    note_stage=note_stage,
+                )
+            )
 
         run.materials = [record.public_material(material) for material in selected_materials]
         run.research_trace = research_trace

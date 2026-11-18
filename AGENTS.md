@@ -229,6 +229,24 @@ Do not replace reviewable workflow steps with a single free-form agent flow.
   document -- a challenge reaches the draft only through an
   `apps.validation.revision` plan a human applied. Report challenges, coverage,
   and dispositions; never a numeric score for a brief.
+- Decide whether a rule reaches a brief's facts from the rule's own scope text,
+  not from a model's memory and not with code written for one statute.
+  `apps.argument_gym.applicability` reads each authority against its
+  applicability and definition sections in the library, one cross-reference
+  deep, and keeps a reading only when its quote is in that text. A brief can
+  cite the CARES Act correctly for a building it does not cover; if the
+  definitions are missing from the corpus, add them to the statute scope rather
+  than special-casing the rule.
+- Keep web search the least-trusted source and say so everywhere it appears.
+  It is a default-on gym check -- the author can turn it off, and an
+  installation must allow web search at all -- that searches only for what the
+  main review left open, runs after it, never feeds the
+  opponent, judge, or verdict, and stores its findings with `basis="web"` and a
+  trust tier from `content/web-research/trusted-domains.yaml`. Send it only
+  de-identified legal questions: on Azure the search runs on Bing outside the
+  data boundary, so `apps.argument_gym.web_lookup.privacy_check` withholds any
+  question carrying a name, address, date, amount, or the brief's own words, and
+  the run shows exactly what was sent.
 Preserve human review points for facts, template choices, source support,
 validation, and export.
 

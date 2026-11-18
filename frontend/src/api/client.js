@@ -268,6 +268,9 @@ export const api = {
     return request(`/argument-gym/workspaces/${search ? `?${search}` : ""}`);
   },
   gymChecks: () => request("/argument-gym/checks/"),
+  saveGymCheckDefaults: (enabledChecks) =>
+    request("/argument-gym/checks/defaults/", { method: "PUT", body: JSON.stringify({ enabledChecks }) }),
+  resetGymCheckDefaults: () => request("/argument-gym/checks/defaults/", { method: "DELETE" }),
   gymLegalRules: () => request("/argument-gym/legal-rules/"),
   gymChecklists: () => request("/argument-gym/checklists/"),
   createGymChecklist: (payload) =>

@@ -729,12 +729,54 @@ def workspace_court_detection(request, workspace_id):
     )
 
 
+def _check_defaults_payload(user):
+    from apps.argument_gym.models import GymCheckDefaults
+
+    return {
+        "checks": check_catalog.catalog(),
+        "defaults": check_catalog.defaults_for(user),
+        "catalogDefaults": check_catalog.DEFAULT_CHECK_IDS,
+        "savedDefaults": GymCheckDefaults.objects.filter(user=user).exists(),
+    }
+
+
 @api_login_required
 def check_catalog_view(request):
-    """Every check the gym can run, so the author can choose among them."""
+    """Every check the gym can run, and this person's defaults among them."""
     if request.method != "GET":
         return method_not_allowed(["GET"])
-    return JsonResponse({"checks": check_catalog.catalog(), "defaults": check_catalog.DEFAULT_CHECK_IDS})
+    return JsonResponse(_check_defaults_payload(request.user))
+
+
+@api_login_required
+def check_defaults_view(request):
+    """Save the current selection of checks as this person's default, or go back to the catalog's.
+
+    The saved choice applies to every session that has not made its own, and
+    to every check: the selection is stored whole, including what was off.
+    """
+    from apps.argument_gym.models import GymCheckDefaults
+
+    if request.method == "DELETE":
+        GymCheckDefaults.objects.filter(user=request.user).delete()
+        return JsonResponse(_check_defaults_payload(request.user))
+    if request.method != "PUT":
+        return method_not_allowed(["PUT", "DELETE"])
+    body = json_body(request)
+    selected = body.get("enabledChecks") if isinstance(body, dict) else None
+    if not isinstance(selected, list):
+        return JsonResponse({"error": "enabledChecks must be a list of check ids."}, status=400)
+    unknown = [str(item) for item in selected if str(item) not in check_catalog.CHECKS_BY_ID]
+    if unknown:
+        return JsonResponse({"error": f"Unknown check(s): {', '.join(sorted(unknown))}."}, status=400)
+    GymCheckDefaults.objects.update_or_create(
+        user=request.user,
+        defaults={
+            "enabled_checks": [str(item) for item in dict.fromkeys(selected)],
+            "catalog_at_save": list(check_catalog.CHECKS_BY_ID),
+        },
+    )
+    return JsonResponse(_check_defaults_payload(request.user))
 
 
 @api_login_required
