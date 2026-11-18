@@ -1,5 +1,6 @@
 import json
 import re
+import tempfile
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
@@ -499,9 +500,25 @@ class AccessTests(TestCase):
         self.assertEqual(titles, ["Uploaded brief"])
 
 
+
+def use_scratch_storage(test):
+    """Point document storage at a temporary directory for one test.
+
+    An upload stores the original in the configured document store, which in a
+    checkout is private-content/storage; without this every run of the suite
+    leaves its fixture briefs among an advocate's real documents.
+    """
+    scratch = tempfile.TemporaryDirectory()
+    test.addCleanup(scratch.cleanup)
+    storage = override_settings(DOCUMENT_STORAGE_BACKEND="filesystem", DOCUMENT_STORAGE_ROOT=scratch.name)
+    storage.enable()
+    test.addCleanup(storage.disable)
+
+
 @override_settings(ARGUMENT_GYM_BACKGROUND_RUNS=False, AI_DRAFTING_ENABLED=False)
 class UploadApiTests(TestCase):
     def setUp(self):
+        use_scratch_storage(self)
         self.user = User.objects.create_user("advocate", password="secret")
         self.client.force_login(self.user)
         self.workspace = GymWorkspace.objects.create(owner=self.user, title="Uploaded brief")
@@ -928,6 +945,7 @@ class ExhibitUploadTests(TestCase):
     """A filing uploaded with its exhibits is split before anything reads it."""
 
     def setUp(self):
+        use_scratch_storage(self)
         self.user = User.objects.create_user("advocate", password="secret")
         self.client.force_login(self.user)
         self.workspace = GymWorkspace.objects.create(owner=self.user, title="Filing")
