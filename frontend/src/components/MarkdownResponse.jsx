@@ -6,6 +6,10 @@ import { ExternalLink, FileText, Loader2, Maximize2, Minimize2, Search, X } from
 import { api } from "../api/client.js";
 import { useModalDismiss } from "../hooks/useModalDismiss.js";
 
+// Content-library documents whose chunks are enacted law, so a citation to one
+// offers secondary sources rather than more statutes.
+const STATUTE_SLUGS = new Set(["ohio-revised-code", "ohio-administrative-code", "federal-housing-law"]);
+
 function citationMap(citations) {
   return new Map((citations || []).map((citation, index) => [String(index + 1), citation]));
 }
@@ -65,20 +69,20 @@ function relatedActionsFor(citation, current) {
     ].join(" ");
     return [
       { label: "Secondary sources mentioning this case", payload: { query: caseQuery, sourceMode: "manual", sourceKinds: ["rag"], sourceIds: ["treatise", "hud-handbook", "green-book"], useAi: false } },
-      ...(statutes ? [{ label: "Statutes and regulations cited", payload: { query: statutes, sourceMode: "manual", sourceKinds: ["rag"], sourceIds: ["ohio-statutes"], useAi: false } }] : []),
+      ...(statutes ? [{ label: "Statutes and regulations cited", payload: { query: statutes, sourceMode: "manual", sourceKinds: ["rag"], sourceIds: ["ohio-statutes", "federal-housing-law"], useAi: false } }] : []),
     ];
   }
   if (isContentLibraryCitation(citation)) {
     const citationText = current?.citation || citation.citation || current?.heading || citation.title;
-    const sourceIds = current?.documentSlug === "ohio-revised-code"
+    const sourceIds = STATUTE_SLUGS.has(current?.documentSlug)
       ? ["treatise", "hud-handbook", "green-book"]
       : ["ohio-cases"];
-    const label = current?.documentSlug === "ohio-revised-code"
+    const label = STATUTE_SLUGS.has(current?.documentSlug)
       ? "Secondary sources discussing this statute"
       : "Cases mentioning this section";
     return [
-      { label, payload: { query: citationText, sourceMode: "manual", sourceKinds: current?.documentSlug === "ohio-revised-code" ? ["rag"] : ["local_cases"], sourceIds, useAi: false } },
-      ...(current?.documentSlug !== "ohio-revised-code" ? [{ label: "Statutes related to this section", payload: { query: `${citationText} ${citation.snippet || ""}`, sourceMode: "manual", sourceKinds: ["rag"], sourceIds: ["ohio-statutes"], useAi: false } }] : []),
+      { label, payload: { query: citationText, sourceMode: "manual", sourceKinds: STATUTE_SLUGS.has(current?.documentSlug) ? ["rag"] : ["local_cases"], sourceIds, useAi: false } },
+      ...(!STATUTE_SLUGS.has(current?.documentSlug) ? [{ label: "Statutes related to this section", payload: { query: `${citationText} ${citation.snippet || ""}`, sourceMode: "manual", sourceKinds: ["rag"], sourceIds: ["ohio-statutes", "federal-housing-law"], useAi: false } }] : []),
     ];
   }
   return [];
@@ -397,7 +401,7 @@ export function ContentLibrarySourceModal({ citation, onClose, onOpenSource }) {
     hasPdf: Boolean(citation.metadata?.sourcePath),
   };
   const page = current.pdfPages?.[0];
-  const isStatute = current.documentSlug === "ohio-revised-code";
+  const isStatute = STATUTE_SLUGS.has(current.documentSlug);
 
   return (
     <div className="modal-backdrop case-source-backdrop" role="presentation" onMouseDown={onClose}>

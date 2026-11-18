@@ -106,7 +106,7 @@ def _facet_values(results):
 def _default_rag_source_ids():
     available = source_guidance()["sources"]
     return [
-        source_id for source_id in ["ohio-statutes", "treatise", "ohio-ordinances", "hud-handbook", "green-book"]
+        source_id for source_id in ["ohio-statutes", "federal-housing-law", "treatise", "ohio-ordinances", "hud-handbook", "green-book"]
         if source_id in available
     ]
 

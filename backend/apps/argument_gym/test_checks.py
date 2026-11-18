@@ -30,7 +30,7 @@ class CatalogTests(TestCase):
         self.assertIn("passive_voice", ids)
         self.assertIn("rule_elements", ids)
         for check in catalog:
-            self.assertIn(check["kind"], {"deterministic", "model"})
+            self.assertIn(check["kind"], {"deterministic", "model", "web"})
             self.assertTrue(check["description"])
 
     def test_an_empty_selection_means_the_defaults(self):
@@ -273,3 +273,51 @@ class ChecklistApiTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 404)
+
+
+class SavedCheckDefaultsTests(TestCase):
+    """A person's saved default checks: every check, and only where a session made no choice."""
+
+    def setUp(self):
+        from django.contrib.auth.models import User
+
+        self.user = User.objects.create_user("defaults-owner", password="secret")
+        self.client.force_login(self.user)
+
+    def save(self, enabled):
+        return self.client.put(
+            "/api/argument-gym/checks/defaults/", data=json.dumps({"enabledChecks": enabled}), content_type="application/json"
+        )
+
+    def test_web_lookup_is_a_default_check_that_an_installation_can_still_rule_out(self):
+        self.assertIn("web_lookup", checks.DEFAULT_CHECK_IDS)
+        plan = checks.plan_checks([], {"web_search": False})
+        entry = next(item for item in plan if item["id"] == "web_lookup")
+        self.assertEqual(entry["status"], "unavailable")
+
+    def test_saved_defaults_apply_to_a_session_that_made_no_choice_and_keep_what_was_off(self):
+        response = self.save(["adversarial", "grammar"])
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["savedDefaults"])
+        defaults = checks.defaults_for(self.user)
+        self.assertEqual(set(defaults), {"adversarial", "grammar"})
+        plan = checks.plan_checks([], {"web_search": True}, defaults=defaults)
+        self.assertEqual(next(item for item in plan if item["id"] == "web_lookup")["status"], "off")
+        # A session's own choice still wins over the saved defaults.
+        explicit = checks.plan_checks(["web_lookup"], {"web_search": True}, defaults=defaults)
+        self.assertEqual(next(item for item in explicit if item["id"] == "web_lookup")["status"], "on")
+
+    def test_a_check_added_after_the_defaults_were_saved_takes_its_catalog_default(self):
+        seen_without_applicability = [check_id for check_id in checks.CHECKS_BY_ID if check_id != "applicability"]
+        resolved = checks.saved_defaults(["adversarial"], seen_without_applicability)
+        self.assertIn("applicability", resolved)
+        self.assertNotIn("grammar", resolved)
+
+    def test_resetting_returns_to_the_catalog_defaults(self):
+        self.save(["grammar"])
+        response = self.client.delete("/api/argument-gym/checks/defaults/")
+        self.assertFalse(response.json()["savedDefaults"])
+        self.assertEqual(response.json()["defaults"], checks.DEFAULT_CHECK_IDS)
+
+    def test_an_unknown_check_is_refused(self):
+        self.assertEqual(self.save(["no_such_check"]).status_code, 400)

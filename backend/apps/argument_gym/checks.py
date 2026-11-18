@@ -13,6 +13,14 @@ one result that must never look like a clean bill.
 * ``court_profile`` -- a court's filing rules are selected or detected.
 * ``case_record`` -- there are case materials to check the brief against.
 * ``checklist`` -- the author attached one of their own checklists.
+* ``web_search`` -- this installation has web search turned on
+  (``AI_WEB_SEARCH_ENABLED``) and a reviewed trust policy to search under.
+
+``kind`` says what produced a check's findings, and the interface shows it:
+``deterministic`` rules, a ``model`` reading the library and the record, or
+``web`` -- a model reading web search results, the least reliable of the three,
+whose findings are reported apart from the rest and never count toward the
+run's verdict.
 """
 
 from dataclasses import dataclass, field
@@ -20,6 +28,7 @@ from dataclasses import dataclass, field
 
 DETERMINISTIC = "deterministic"
 MODEL = "model"
+WEB = "web"
 
 
 @dataclass(frozen=True)
@@ -76,6 +85,19 @@ CHECK_CATALOG = (
         category="argument",
     ),
     CheckDefinition(
+        id="applicability",
+        label="Does each authority reach these facts",
+        description=(
+            "Reads each statute and regulation the brief relies on against its own applicability "
+            "and definition sections in CLARA's library -- who, what property, which programs, "
+            "what period it covers -- and asks whether the facts the brief states fall inside it. "
+            "Every reading quotes the text it rests on, and one whose quote is not in that text "
+            "is reported as unsettled."
+        ),
+        kind=MODEL,
+        category="argument",
+    ),
+    CheckDefinition(
         id="custom_checklist",
         label="Custom checklist",
         description=(
@@ -87,6 +109,23 @@ CHECK_CATALOG = (
         category="argument",
         default_enabled=False,
         requires=("checklist",),
+    ),
+    CheckDefinition(
+        id="web_lookup",
+        label="Web lookup (less reliable)",
+        description=(
+            "Runs after every other check. Asks the web what CLARA's library could not settle -- "
+            "authorities it does not hold, and whether a rule reaches the kind of facts the brief "
+            "describes -- in general terms that never include names, addresses, dates, or text "
+            "from the brief. Findings are labelled by how far each website is trusted, kept "
+            "separate from the main findings, and never counted in the overall assessment."
+        ),
+        kind=WEB,
+        category="web",
+        # On by default: it searches only when the main review leaves a
+        # question open, and an author can turn it off. Whether this
+        # installation may search at all is a separate, administrative switch.
+        requires=("web_search",),
     ),
     CheckDefinition(
         id="court_formatting",
@@ -170,6 +209,10 @@ REQUIREMENT_REASONS = {
     "court_profile": "No court is selected for this session, so there are no filing rules to apply.",
     "case_record": "No case materials are in scope for this session.",
     "checklist": "No checklist is attached to this session.",
+    "web_search": (
+        "Web search is not turned on for this installation. An administrator enables it with "
+        "AI_WEB_SEARCH_ENABLED after reviewing content/web-research/trusted-domains.yaml."
+    ),
 }
 
 
@@ -177,23 +220,53 @@ def catalog():
     return [check.to_dict() for check in CHECK_CATALOG]
 
 
-def normalize_selection(selected):
+def normalize_selection(selected, defaults=None):
     """The author's explicit choice, keeping only checks that exist.
 
-    An empty selection means the catalog defaults. It never means "run
-    everything": widening a choice the author made is the same error as
-    narrowing it.
+    An empty selection means the defaults -- the author's saved defaults when
+    given, otherwise the catalog's. It never means "run everything": widening a
+    choice the author made is the same error as narrowing it.
     """
     if selected and NONE_SELECTED in selected:
         return []
     if not selected:
-        return list(DEFAULT_CHECK_IDS)
+        return list(DEFAULT_CHECK_IDS if defaults is None else defaults)
     return [check_id for check_id in dict.fromkeys(selected) if check_id in CHECKS_BY_ID]
 
 
-def plan_checks(selected, capabilities):
+def saved_defaults(enabled, seen):
+    """A person's saved default checks, read against today's catalog.
+
+    ``seen`` is every check that existed when the defaults were saved. A check
+    added since then was never chosen or refused, so it takes its catalog
+    default rather than being silently off.
+    """
+    if enabled is None:
+        return list(DEFAULT_CHECK_IDS)
+    chosen = set(enabled)
+    seen = set(seen or [])
+    return [
+        check.id
+        for check in CHECK_CATALOG
+        if check.id in chosen or (check.id not in seen and check.default_enabled)
+    ]
+
+
+def defaults_for(user):
+    """The default checks for a person: their saved choice, or the catalog's."""
+    if user is None or not getattr(user, "pk", None):
+        return list(DEFAULT_CHECK_IDS)
+    from apps.argument_gym.models import GymCheckDefaults
+
+    saved = GymCheckDefaults.objects.filter(user=user).first()
+    if not saved:
+        return list(DEFAULT_CHECK_IDS)
+    return saved_defaults(saved.enabled_checks, saved.catalog_at_save)
+
+
+def plan_checks(selected, capabilities, defaults=None):
     """Decide, before anything runs, which checks will run and why the rest will not."""
-    chosen = set(normalize_selection(selected))
+    chosen = set(normalize_selection(selected, defaults))
     plan = []
     for check in CHECK_CATALOG:
         if check.id not in chosen:

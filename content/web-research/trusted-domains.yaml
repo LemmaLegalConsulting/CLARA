@@ -1,0 +1,105 @@
+# How a web lookup searches the web, and how far each source is trusted.
+#
+# Maintained by hand and reviewed like any other legal content.
+#
+# `mode` decides how the lists below are used:
+#
+#   prefer    (default) The search is not restricted. The model is told to
+#             prefer the listed sources, and they are named to it as examples.
+#             `blocked_domains` are excluded outright. Every URL that comes
+#             back is still tiered, and a site on no list is "other website":
+#             shown, usable as a lead, never as the sole basis of anything more
+#             than a low-severity lead to check.
+#   restrict  Only listed domains are searched (the provider's allow-list;
+#             Azure OpenAI and OpenAI accept at most 100). A URL from anywhere
+#             else is "unlisted" and never used.
+#
+# Trust is ordered, and the order is the point:
+#
+#   rank 1  The incorporated library (content/statutes, ordinances, treatises,
+#           case law). Not web search at all: text with recorded provenance,
+#           read from our own copy. No web source outranks it, and the loader
+#           refuses a tier that claims to.
+#   rank 2  official_government -- a government publisher's own website. The
+#           page may be the law, but we did not ingest it, cannot show when it
+#           was read, and the model chose what to quote from it.
+#   rank 3  legal_aid -- Ohio Legal Help, legal aid providers, and nonprofit
+#           legal references. Reliable explanations and copies, not the
+#           publisher's text.
+#   rank 4  other_web -- anything else the search found (prefer mode only).
+#
+# A finding resting only on rank-3 or rank-4 sources is a lead to check.
+# Domain matching includes subdomains: "ohio.gov" covers codes.ohio.gov.
+# `domain_suffixes` matches by ending, so ".gov" places every U.S. government
+# site -- federal, any state, any court -- in the official tier.
+schema_version: 1
+mode: prefer
+
+# Excluded in both modes. Sources that are anonymous, user-edited, or written to
+# rank rather than to inform; extend as the lookups show what turns up.
+blocked_domains:
+  - reddit.com
+  - quora.com
+  - answers.com
+  - wikipedia.org
+  - avvo.com
+  - justanswer.com
+  - medium.com
+
+tiers:
+  official_government:
+    rank: 2
+    label: Official government website (web search)
+    reader_note: >-
+      Read from a government website during this run, not from CLARA's library.
+      Confirm the text and its currency at the source before relying on it.
+    domain_suffixes: [".gov", ".mil"]
+    domains:
+      # Federal law and regulation
+      - ecfr.gov
+      - govinfo.gov
+      - federalregister.gov
+      - uscode.house.gov
+      - congress.gov
+      # Federal agencies administering housing programs
+      - hud.gov
+      - hudexchange.info
+      - rd.usda.gov
+      - consumerfinance.gov
+      - justice.gov
+      # Ohio: ohio.gov covers codes.ohio.gov, supremecourt.ohio.gov, and the
+      # state agencies.
+      - ohio.gov
+      - ohioattorneygeneral.gov
+      - ohiohome.org    # Ohio Housing Finance Agency (administers LIHTC in Ohio)
+
+  legal_aid:
+    rank: 3
+    label: Legal aid or nonprofit legal reference website (web search)
+    reader_note: >-
+      An explanation published by a legal aid organization, found by web search.
+      Useful for spotting an issue; not authority. Find the statute, regulation,
+      or case it relies on before citing anything.
+    domains:
+      - ohiolegalhelp.org
+      - lasclev.org           # Legal Aid Society of Cleveland
+      - communitylegalaid.org # Community Legal Aid (Akron and northeast Ohio)
+      - lasco.org             # Legal Aid of Southeast and Central Ohio (formerly LASC and SEOLS)
+      - lascinti.org          # Legal Aid Society of Southwest Ohio
+      - lawolaw.org           # Legal Aid of Western Ohio
+      - ablelaw.org           # Advocates for Basic Legal Equality
+      - nhlp.org              # National Housing Law Project (national support center for housing advocates)
+      # Nonprofit legal reference: reproductions of primary law and opinions.
+      # Useful, but a copy we did not make, so it does not rank with the publisher.
+      - law.cornell.edu       # Legal Information Institute
+      - courtlistener.com     # Free Law Project
+
+  other_web:
+    rank: 4
+    # The catch-all for prefer mode: any site on no list above.
+    catch_all: true
+    label: Other website, not reviewed (web search)
+    reader_note: >-
+      Found by web search on a site CLARA has no review of. Treat as a lead at
+      most: find the governing statute, regulation, or case before relying on it.
+    domains: []

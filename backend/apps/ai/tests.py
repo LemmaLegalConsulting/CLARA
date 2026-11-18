@@ -173,6 +173,9 @@ class PromptCatalogTests(TestCase):
                 "argument_gym.judge",
                 "argument_gym.coach",
                 "argument_gym.prep_sheet",
+                "argument_gym.applicability",
+                "argument_gym.web_questions",
+                "argument_gym.web_review",
             },
         )
 

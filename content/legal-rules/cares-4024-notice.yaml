@@ -1,0 +1,102 @@
+schema_version: 1
+slug: cares-4024-notice
+name: CARES Act 30-day notice to vacate
+citation: 15 U.S.C. 9058 (CARES Act § 4024)
+rule_type: statute
+jurisdiction: United States
+summary: >-
+  The lessor of a "covered dwelling" may not require the tenant to vacate until
+  30 days after giving a notice to vacate (15 U.S.C. 9058(c)). The rule reaches
+  only a dwelling on a "covered property": one that participates in a covered
+  housing program listed in 34 U.S.C. 12491(a)(3) or the rural housing voucher
+  program (42 U.S.C. 1490r), or that has a federally backed mortgage or
+  multifamily mortgage loan (15 U.S.C. 9058(a)(2), (4), (5)). A brief that
+  relies on the notice period has to show the property is covered; asserting it
+  is not enough, and naming a program the definition does not list does not
+  carry it.
+
+# The popular name is how briefs cite this section, so it counts as a citation,
+# not a phrase: a brief that says "the CARES Act requires" has invoked the rule.
+citation_patterns:
+  - "15\\s*U\\.?\\s*S\\.?\\s*C\\.?\\s*(§+\\s*)?9058"
+  - "CARES\\s+Act"
+  - "Pub(lic)?\\.?\\s*L(aw)?\\.?\\s*(No\\.?\\s*)?116[-–]136"
+  - "§\\s*4024\\b"
+aliases:
+  - federal 30-day notice to vacate
+
+verification: unverified
+source: "15 U.S.C. 9058; 34 U.S.C. 12491(a)(3) (content/statutes/federal-housing-law, U.S.C. 2024 ed., current through 2025-01-06)"
+source_url: https://www.govinfo.gov/link/uscode/15/9058
+verified_on: ""
+notes: >-
+  Unverified. The element list below was read from the statutory text in the
+  federal-housing-law corpus, not from the cases construing it. Check first:
+  (1) whether, and how, Ohio courts have held that the § 4024(c) notice
+  requirement survives the expiry of the 120-day moratorium in § 4024(b) --
+  the question is litigated and the answer may decide the defence; (2) how a
+  tenant proves a federally backed mortgage when the landlord does not
+  disclose it; and (3) for public housing and project-based Section 8, the
+  separate 30-day nonpayment notice HUD added at 24 C.F.R. 966.4 and 247.4,
+  which may be the better authority and has its own amendment history.
+
+elements:
+  - id: covered_property
+    label: The property is a "covered property" under 15 U.S.C. 9058(a)(2)
+    requirement: >-
+      The brief identifies a basis the definition actually lists: participation
+      in a covered housing program under 34 U.S.C. 12491(a)(3) -- including
+      public housing and Section 8 under 42 U.S.C. 1437d and 1437f (tenant-based
+      vouchers, project-based vouchers, and project-based rental assistance),
+      Section 202 and 811 housing, HOME, HOPWA, McKinney-Vento programs, the
+      low-income housing tax credit (26 U.S.C. 42), USDA rural housing under
+      42 U.S.C. 1484, 1485, 1486, 1490m, 1490p-2, and 1490r, and the Housing
+      Trust Fund -- or a federally backed (FHA, VA, USDA, Fannie Mae, Freddie
+      Mac) single-family or multifamily mortgage. Asserting that the CARES Act
+      applies does not meet this element. Housing funded only by a state or
+      municipality, a market-rate unit with private financing, or a building
+      owned by a housing authority but not assisted under a listed program is
+      not covered on that basis alone.
+    severity: error
+    needs_record_support: true
+    patterns:
+      - "covered (property|dwelling)"
+      - "federally[- ]backed"
+      - "(FHA|Fannie Mae|Freddie Mac|FNMA|FHLMC|HUD)[- ](insured|backed|financed|guaranteed|mortgage)"
+      - "(Section 8|housing choice voucher|project[- ]based (voucher|rental assistance|section 8)|PBV|PBRA)"
+      - "low[- ]income housing tax credit|LIHTC"
+      - "public housing"
+    contradiction_patterns:
+      - "(no|without( any)?|not (receive|receiving|participate|participating in)( any)?) federal(ly)? (subsid|assist|fund|financ|program|backed)"
+      - "market[- ]rate (unit|apartment|building|housing|property)"
+      - "(state|city|county|locally|municipally)[- ](only )?funded (public )?housing"
+      - "(not|no longer) (subsidized|assisted|in (the )?section 8)"
+      - "privately (financed|held mortgage|owned and financed)"
+    note: >-
+      The VAWA list is long and is amended; read 34 U.S.C. 12491(a)(3) as it
+      stands rather than relying on the summary above.
+  - id: notice_to_vacate_timing
+    label: The lessor required the tenant to vacate less than 30 days after a notice to vacate
+    requirement: >-
+      The brief gives the date of the notice to vacate and the date the tenant
+      was required to leave (or the complaint was filed), and the interval is
+      under 30 days.
+    severity: error
+    needs_record_support: true
+    patterns:
+      - "(three|3)[- ]day notice"
+      - "notice to (vacate|leave the premises)"
+      - "fewer than (thirty|30) days"
+      - "(thirty|30)[- ]day notice"
+  - id: occupied_by_tenant
+    label: The dwelling is occupied by a tenant under a residential lease or a tenancy terminable under state law
+    requirement: >-
+      The brief establishes a residential tenancy (15 U.S.C. 9058(a)(1)(A)); a
+      sub-tenant, a mortgagor in foreclosure, or a commercial occupant is a
+      different case.
+    severity: warning
+    needs_record_support: false
+    patterns:
+      - "(residential )?lease"
+      - "month[- ]to[- ]month"
+      - "tenan(t|cy)"

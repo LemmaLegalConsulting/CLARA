@@ -28,6 +28,11 @@ VERIFICATIONS = {choice for choice, _label in CourtProfile.VERIFICATION_CHOICES}
 ELEMENT_SEVERITIES = {"error", "warning", "info"}
 
 
+# Normalized spellings (see apps.sources.jurisdiction.normalize) of a profile
+# jurisdiction that means "federal law, applicable wherever the brief is filed".
+FEDERAL_JURISDICTIONS = {"unitedstates", "federal", "us"}
+
+
 def _string_list(value):
     if not isinstance(value, list):
         return []
@@ -69,6 +74,12 @@ def _clean_elements(payload, path):
                 "severity": severity if severity in ELEMENT_SEVERITIES else "error",
                 "needsRecordSupport": bool(element.get("needs_record_support", False)),
                 "patterns": _string_list(element.get("patterns")),
+                # Wording that, in a brief invoking this rule, says the element
+                # is *not* met -- "a market-rate building with no federal
+                # subsidy" under the CARES Act. A match is the brief's own
+                # words pointing the other way, so it is reported even when a
+                # model read the element as pleaded.
+                "contradictionPatterns": _string_list(element.get("contradiction_patterns")),
                 "note": str(element.get("note", "")).strip(),
                 "origin": "profile",
             }
@@ -260,10 +271,14 @@ def detect_invoked_rules(text, *, profiles=None, jurisdiction=""):
             # happens to share a phrase.
             from apps.sources.jurisdiction import normalize
 
+            # Federal law binds in every state, so a federal rule is never
+            # filtered out by the filing jurisdiction.
             profiles = [
                 profile
                 for profile in profiles
-                if not profile.jurisdiction or normalize(profile.jurisdiction) in normalize(jurisdiction)
+                if not profile.jurisdiction
+                or normalize(profile.jurisdiction) in FEDERAL_JURISDICTIONS
+                or normalize(profile.jurisdiction) in normalize(jurisdiction)
             ]
     invoked = []
     for profile in profiles:

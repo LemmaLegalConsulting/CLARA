@@ -5055,6 +5055,33 @@ button:disabled {
   padding: 1px 8px;
 }
 
+/* Anything resting on web search carries the same marking wherever it appears:
+   the check selector, a challenge card, a source line. */
+.gym-check-kind-web,
+.gym-web-label {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: 999px;
+  color: var(--warn-text);
+  font-size: var(--fs-xs);
+  padding: 1px 8px;
+}
+
+.gym-web-notice {
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn-line);
+  color: var(--warn-text);
+  padding: var(--space-2) var(--space-3);
+}
+
+.gym-web-lookup {
+  border-top: 1px dashed var(--warn-line);
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+}
+
 
 
 .gym-check-result summary,
@@ -6804,4 +6831,19 @@ div.disclosure-body {
 @media (max-width: 760px) {
   .gym-lens-layout { grid-template-columns: minmax(0, 1fr); }
   .gym-lenses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.gym-check-defaults {
+  align-items: center;
+  border-top: 1px solid var(--bux-gray-light-80);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+}
+
+.gym-check-defaults p {
+  flex: 1 1 100%;
+  margin: 0;
 }

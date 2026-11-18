@@ -1,0 +1,4234 @@
+schema_version: 1
+document_slug: ohio-administrative-code
+document_title: Ohio Administrative Code
+jurisdiction: Ohio
+content_kind: statute
+source_name: Ohio Administrative Code
+publisher: Ohio Legislative Service Commission
+source_base_url: https://codes.ohio.gov/ohio-administrative-code
+generated_at: '2026-11-17T21:44:28+00:00'
+generator: scripts/ingest_ohio_administrative_code.py
+section_count: 97
+chunk_count: 124
+sections:
+- rule: 109:4-3-01
+  title: Construction and purpose of rules; severability; definitions.
+  citation: Ohio Adm.Code 109:4-3-01
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-01
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-01_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 3bdafce0c6fa93ce266586e301e7c341bca0844269d2b0d6da1f6c0cf327dc2b
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-01.md
+  chunks:
+  - &id001
+    id: oac-109-4-3-01-01
+    file: chunks/oac-109-4-3-01-01.md
+    heading: Ohio Adm.Code 109:4-3-01 — Construction and purpose of rules; severability;
+      definitions.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-01
+    content_kind: regulation-section
+    section: 109:4-3-01
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-01
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-02
+  title: Exclusions and limitations in advertisements.
+  citation: Ohio Adm.Code 109:4-3-02
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-02
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-02_20200403.pdf
+  effective_date: April 3, 2020
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: abddd82a6394799fd9b741adf25e5332c8a390fa9748428b40bc8fe1f111cb11
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-02.md
+  chunks:
+  - &id002
+    id: oac-109-4-3-02-01
+    file: chunks/oac-109-4-3-02-01.md
+    heading: Ohio Adm.Code 109:4-3-02 — Exclusions and limitations in advertisements.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-02
+    content_kind: regulation-section
+    section: 109:4-3-02
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-02
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-02
+    effective_date: April 3, 2020
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-03
+  title: Bait advertising/unavailability of goods.
+  citation: Ohio Adm.Code 109:4-3-03
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-03
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-03_20050314.pdf
+  effective_date: March 14, 2005
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 00d1af377c549dd91744b5789df496d4f8154909ade03636c4e3b15c5bbfb1e0
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-03.md
+  chunks:
+  - &id003
+    id: oac-109-4-3-03-01
+    file: chunks/oac-109-4-3-03-01.md
+    heading: Ohio Adm.Code 109:4-3-03 — Bait advertising/unavailability of goods.
+      (A)–(C)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-03
+    content_kind: regulation-section
+    section: 109:4-3-03
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-03
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-03
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id004
+    id: oac-109-4-3-03-02
+    file: chunks/oac-109-4-3-03-02.md
+    heading: Ohio Adm.Code 109:4-3-03 — Bait advertising/unavailability of goods.
+      (C)–(D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-03
+    content_kind: regulation-section
+    section: 109:4-3-03
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-03
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-03
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-04
+  title: Use of word "free" etc.
+  citation: Ohio Adm.Code 109:4-3-04
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-04
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-04_20050314.pdf
+  effective_date: March 14, 2005
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 2ed36c0ebd5f862a641bda691c792c8308d4297ed87409cd8f95e377ed5fad19
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-04.md
+  chunks:
+  - &id005
+    id: oac-109-4-3-04-01
+    file: chunks/oac-109-4-3-04-01.md
+    heading: Ohio Adm.Code 109:4-3-04 — Use of word "free" etc. (A)–(I)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-04
+    content_kind: regulation-section
+    section: 109:4-3-04
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-04
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-04
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id006
+    id: oac-109-4-3-04-02
+    file: chunks/oac-109-4-3-04-02.md
+    heading: Ohio Adm.Code 109:4-3-04 — Use of word "free" etc. (I)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-04
+    content_kind: regulation-section
+    section: 109:4-3-04
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-04
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-04
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-05
+  title: Repairs or services.
+  citation: Ohio Adm.Code 109:4-3-05
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-05
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-05_20150605.pdf
+  effective_date: June 5, 2015
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: e1a40785823a3fe8ad31b68652f2d4190e7548e081c30cfed43d785f5ddfee41
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-05.md
+  chunks:
+  - &id007
+    id: oac-109-4-3-05-01
+    file: chunks/oac-109-4-3-05-01.md
+    heading: Ohio Adm.Code 109:4-3-05 — Repairs or services. (A)–(D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-05
+    content_kind: regulation-section
+    section: 109:4-3-05
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-05
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-05
+    effective_date: June 5, 2015
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id008
+    id: oac-109-4-3-05-02
+    file: chunks/oac-109-4-3-05-02.md
+    heading: Ohio Adm.Code 109:4-3-05 — Repairs or services. (D)–(H)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-05
+    content_kind: regulation-section
+    section: 109:4-3-05
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-05
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-05
+    effective_date: June 5, 2015
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-06
+  title: Prizes.
+  citation: Ohio Adm.Code 109:4-3-06
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-06
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-06_20250515.pdf
+  effective_date: May 15, 2025
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 16188b558171821c01c7664f0029434f7a7377cada1eb1e6b74e026b66a8540a
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-06.md
+  chunks:
+  - &id009
+    id: oac-109-4-3-06-01
+    file: chunks/oac-109-4-3-06-01.md
+    heading: Ohio Adm.Code 109:4-3-06 — Prizes.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-06
+    content_kind: regulation-section
+    section: 109:4-3-06
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-06
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-06
+    effective_date: May 15, 2025
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-07
+  title: Deposits.
+  citation: Ohio Adm.Code 109:4-3-07
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-07
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-07_20250515.pdf
+  effective_date: May 15, 2025
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 8f50616342b048452736345a43ed39ffb593c93bbda13fadf3d0406ccdcb5039
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-07.md
+  chunks:
+  - &id010
+    id: oac-109-4-3-07-01
+    file: chunks/oac-109-4-3-07-01.md
+    heading: Ohio Adm.Code 109:4-3-07 — Deposits.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-07
+    content_kind: regulation-section
+    section: 109:4-3-07
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-07
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-07
+    effective_date: May 15, 2025
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-08
+  title: New for used.
+  citation: Ohio Adm.Code 109:4-3-08
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-08
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-08_20050314.pdf
+  effective_date: March 14, 2005
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 77a0ca027ed2f68a749a559423e2a283643488724199aa4917b5d5a594b8a2a7
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-08.md
+  chunks:
+  - &id011
+    id: oac-109-4-3-08-01
+    file: chunks/oac-109-4-3-08-01.md
+    heading: Ohio Adm.Code 109:4-3-08 — New for used.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-08
+    content_kind: regulation-section
+    section: 109:4-3-08
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-08
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-09
+  title: Failure to deliver; substitution of goods or services.
+  citation: Ohio Adm.Code 109:4-3-09
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-09
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-09_20200517.pdf
+  effective_date: May 17, 2020
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 958e4bcdf641e014b38615ae9024ebe844248d20342a445616438babd26c4f50
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-09.md
+  chunks:
+  - &id012
+    id: oac-109-4-3-09-01
+    file: chunks/oac-109-4-3-09-01.md
+    heading: Ohio Adm.Code 109:4-3-09 — Failure to deliver; substitution of goods
+      or services.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-09
+    content_kind: regulation-section
+    section: 109:4-3-09
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-09
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-09
+    effective_date: May 17, 2020
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-10
+  title: Substantiation of claims in advertising.
+  citation: Ohio Adm.Code 109:4-3-10
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-10
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-10_20050314.pdf
+  effective_date: March 14, 2005
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 4974061b1fd78ade392773b7caf2f4ad266ae078cacdef23c2c538570ba80aea
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-10.md
+  chunks:
+  - &id013
+    id: oac-109-4-3-10-01
+    file: chunks/oac-109-4-3-10-01.md
+    heading: Ohio Adm.Code 109:4-3-10 — Substantiation of claims in advertising.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-10
+    content_kind: regulation-section
+    section: 109:4-3-10
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-10
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-10
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-11
+  title: Direct solicitations.
+  citation: Ohio Adm.Code 109:4-3-11
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-11
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-11_20260321.pdf
+  effective_date: March 21, 2026
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 28e7966288c14e635796ea0aba7af9b3a3d92cd5ead56e5c18e467b07e021118
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-11.md
+  chunks:
+  - &id014
+    id: oac-109-4-3-11-01
+    file: chunks/oac-109-4-3-11-01.md
+    heading: Ohio Adm.Code 109:4-3-11 — Direct solicitations.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-11
+    content_kind: regulation-section
+    section: 109:4-3-11
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-11
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-11
+    effective_date: March 21, 2026
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-12
+  title: Price comparisons.
+  citation: Ohio Adm.Code 109:4-3-12
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-12
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-12_20200517.pdf
+  effective_date: May 17, 2020
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: c6cfb2c528eb7b089a7943fbcfb5c372f7d80a66d3ed76a974effd91525d1220
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-12.md
+  chunks:
+  - &id015
+    id: oac-109-4-3-12-01
+    file: chunks/oac-109-4-3-12-01.md
+    heading: Ohio Adm.Code 109:4-3-12 — Price comparisons. (A)–(E)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-12
+    content_kind: regulation-section
+    section: 109:4-3-12
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-12
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-12
+    effective_date: May 17, 2020
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id016
+    id: oac-109-4-3-12-02
+    file: chunks/oac-109-4-3-12-02.md
+    heading: Ohio Adm.Code 109:4-3-12 — Price comparisons. (E)–(I)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-12
+    content_kind: regulation-section
+    section: 109:4-3-12
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-12
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-12
+    effective_date: May 17, 2020
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-13
+  title: Motor vehicle repairs or services.
+  citation: Ohio Adm.Code 109:4-3-13
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-13
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-13_20260321.pdf
+  effective_date: March 21, 2026
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: ee77ca7c8cc7545bd964f4d36a114d3001691fb7445022fbe65232024598a9ca
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-13.md
+  chunks:
+  - &id017
+    id: oac-109-4-3-13-01
+    file: chunks/oac-109-4-3-13-01.md
+    heading: Ohio Adm.Code 109:4-3-13 — Motor vehicle repairs or services. (A)–(C)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-13
+    content_kind: regulation-section
+    section: 109:4-3-13
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-13
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-13
+    effective_date: March 21, 2026
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id018
+    id: oac-109-4-3-13-02
+    file: chunks/oac-109-4-3-13-02.md
+    heading: Ohio Adm.Code 109:4-3-13 — Motor vehicle repairs or services. (C)–(J)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-13
+    content_kind: regulation-section
+    section: 109:4-3-13
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-13
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-13
+    effective_date: March 21, 2026
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-14
+  title: Insulation.
+  citation: Ohio Adm.Code 109:4-3-14
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-14
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-14_20250612.pdf
+  effective_date: June 12, 2025
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 30dc9ea6e896374f211fcbf54074d85a97f5177270b49ba9a77723b5cf35815d
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-14.md
+  chunks:
+  - &id019
+    id: oac-109-4-3-14-01
+    file: chunks/oac-109-4-3-14-01.md
+    heading: Ohio Adm.Code 109:4-3-14 — Insulation. (A)–(C)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-14
+    content_kind: regulation-section
+    section: 109:4-3-14
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-14
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-14
+    effective_date: June 12, 2025
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id020
+    id: oac-109-4-3-14-02
+    file: chunks/oac-109-4-3-14-02.md
+    heading: Ohio Adm.Code 109:4-3-14 — Insulation. (C)–(E)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-14
+    content_kind: regulation-section
+    section: 109:4-3-14
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-14
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-14
+    effective_date: June 12, 2025
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id021
+    id: oac-109-4-3-14-03
+    file: chunks/oac-109-4-3-14-03.md
+    heading: Ohio Adm.Code 109:4-3-14 — Insulation. (E)–(G)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-14
+    content_kind: regulation-section
+    section: 109:4-3-14
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-14
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-14
+    effective_date: June 12, 2025
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-15
+  title: Motor vehicle rust inhibitors.
+  citation: Ohio Adm.Code 109:4-3-15
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-15
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-15_20150323.pdf
+  effective_date: March 23, 2015
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 5a09b131e49bc9289dc574b982aca8585d9d3b7e30919733439a479b721ee2a5
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-15.md
+  chunks:
+  - &id022
+    id: oac-109-4-3-15-01
+    file: chunks/oac-109-4-3-15-01.md
+    heading: Ohio Adm.Code 109:4-3-15 — Motor vehicle rust inhibitors.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-15
+    content_kind: regulation-section
+    section: 109:4-3-15
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-15
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-15
+    effective_date: March 23, 2015
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-16
+  title: Advertisement and sale of motor vehicles.
+  citation: Ohio Adm.Code 109:4-3-16
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-16
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-16_20170918.pdf
+  effective_date: September 18, 2017
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 2dd79fe58ba54a401c3765f0e695b15c511b45e133ed0e67ecca3b9663ab5054
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-16.md
+  chunks:
+  - &id023
+    id: oac-109-4-3-16-01
+    file: chunks/oac-109-4-3-16-01.md
+    heading: Ohio Adm.Code 109:4-3-16 — Advertisement and sale of motor vehicles.
+      (A)–(B)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-16
+    content_kind: regulation-section
+    section: 109:4-3-16
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-16
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-16
+    effective_date: September 18, 2017
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id024
+    id: oac-109-4-3-16-02
+    file: chunks/oac-109-4-3-16-02.md
+    heading: Ohio Adm.Code 109:4-3-16 — Advertisement and sale of motor vehicles.
+      (B)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-16
+    content_kind: regulation-section
+    section: 109:4-3-16
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-16
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-16
+    effective_date: September 18, 2017
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id025
+    id: oac-109-4-3-16-03
+    file: chunks/oac-109-4-3-16-03.md
+    heading: Ohio Adm.Code 109:4-3-16 — Advertisement and sale of motor vehicles.
+      (B)–(D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-16
+    content_kind: regulation-section
+    section: 109:4-3-16
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-16
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-16
+    effective_date: September 18, 2017
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+  - &id026
+    id: oac-109-4-3-16-04
+    file: chunks/oac-109-4-3-16-04.md
+    heading: Ohio Adm.Code 109:4-3-16 — Advertisement and sale of motor vehicles.
+      (D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-16
+    content_kind: regulation-section
+    section: 109:4-3-16
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-16
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-16
+    effective_date: September 18, 2017
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-17
+  title: Distress sale.
+  citation: Ohio Adm.Code 109:4-3-17
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-17
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-17_20050314.pdf
+  effective_date: March 14, 2005
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 7842615473ff18a3ef267828aaa4e675435ba6ab7f298d0662ad87d9cab22701
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-17.md
+  chunks:
+  - &id027
+    id: oac-109-4-3-17-01
+    file: chunks/oac-109-4-3-17-01.md
+    heading: Ohio Adm.Code 109:4-3-17 — Distress sale.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-17
+    content_kind: regulation-section
+    section: 109:4-3-17
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-17
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-17
+    effective_date: March 14, 2005
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-18
+  title: Sale and labeling of gasoline which contains alcohol.
+  citation: Ohio Adm.Code 109:4-3-18
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-18
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-18_20100528.pdf
+  effective_date: May 28, 2010
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: a1e2fe7c076e422f4f7b721a0692ab94fd3e4c1c41e73b52bdd1dd21fe7ba415
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-18.md
+  chunks:
+  - &id028
+    id: oac-109-4-3-18-01
+    file: chunks/oac-109-4-3-18-01.md
+    heading: Ohio Adm.Code 109:4-3-18 — Sale and labeling of gasoline which contains
+      alcohol.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-18
+    content_kind: regulation-section
+    section: 109:4-3-18
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-18
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-18
+    effective_date: May 28, 2010
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-19
+  title: Determining a consumer's ability to repay a residential mortgage loan.
+  citation: Ohio Adm.Code 109:4-3-19
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-19
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-19_20120330.pdf
+  effective_date: March 30, 2012
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 6e5b9005eb610293334e8bb076c32f4703e313deb281b9c2882a21a451a57cd7
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-19.md
+  chunks:
+  - &id029
+    id: oac-109-4-3-19-01
+    file: chunks/oac-109-4-3-19-01.md
+    heading: Ohio Adm.Code 109:4-3-19 — Determining a consumer's ability to repay
+      a residential mortgage loan.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-19
+    content_kind: regulation-section
+    section: 109:4-3-19
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-19
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-19
+    effective_date: March 30, 2012
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-20
+  title: Refinancing a low rate mortgage.
+  citation: Ohio Adm.Code 109:4-3-20
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-20
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-20_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 02704e67c872defdfba0ae0c3a0b2313d66fb13c8c7f751434de7f383cfcb183
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-20.md
+  chunks:
+  - &id030
+    id: oac-109-4-3-20-01
+    file: chunks/oac-109-4-3-20-01.md
+    heading: Ohio Adm.Code 109:4-3-20 — Refinancing a low rate mortgage.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-20
+    content_kind: regulation-section
+    section: 109:4-3-20
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-20
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-20
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-21
+  title: Instructing consumer to ignore information.
+  citation: Ohio Adm.Code 109:4-3-21
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-21
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-21_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 5626962dcbc2b7faa946e62d46d3bda1b57c833167990c401654454a58bcb4e7
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-21.md
+  chunks:
+  - &id031
+    id: oac-109-4-3-21-01
+    file: chunks/oac-109-4-3-21-01.md
+    heading: Ohio Adm.Code 109:4-3-21 — Instructing consumer to ignore information.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-21
+    content_kind: regulation-section
+    section: 109:4-3-21
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-21
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-21
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-22
+  title: Recommending default.
+  citation: Ohio Adm.Code 109:4-3-22
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-22
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-22_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 20371f391b10add754747d100cc7e62a9aff74e016e69a852df203e98d1f24db
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-22.md
+  chunks:
+  - &id032
+    id: oac-109-4-3-22-01
+    file: chunks/oac-109-4-3-22-01.md
+    heading: Ohio Adm.Code 109:4-3-22 — Recommending default.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-22
+    content_kind: regulation-section
+    section: 109:4-3-22
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-22
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-22
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-23
+  title: Required disclosure at closing.
+  citation: Ohio Adm.Code 109:4-3-23
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-23
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-23_20170720.pdf
+  effective_date: July 20, 2017
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: f74047a795a29bdb797bd0aa86ddca1b687f84004ca4fd66f06547c39b89172b
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-23.md
+  chunks:
+  - &id033
+    id: oac-109-4-3-23-01
+    file: chunks/oac-109-4-3-23-01.md
+    heading: Ohio Adm.Code 109:4-3-23 — Required disclosure at closing.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-23
+    content_kind: regulation-section
+    section: 109:4-3-23
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-23
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-23
+    effective_date: July 20, 2017
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-24
+  title: Improperly influencing appraiser.
+  citation: Ohio Adm.Code 109:4-3-24
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-24
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-24_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: fcbece2d6831ed7ec00fe7c9a23d633753d167e7140a031891c5e2385c2c8e9c
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-24.md
+  chunks:
+  - &id034
+    id: oac-109-4-3-24-01
+    file: chunks/oac-109-4-3-24-01.md
+    heading: Ohio Adm.Code 109:4-3-24 — Improperly influencing appraiser.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-24
+    content_kind: regulation-section
+    section: 109:4-3-24
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-24
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-24
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-25
+  title: Debt collection agreements.
+  citation: Ohio Adm.Code 109:4-3-25
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-25
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-25_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: f334cb3745ae2d14b99d9bdbe4f06db8d5646a964639fbca7b22d239962e198d
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-25.md
+  chunks:
+  - &id035
+    id: oac-109-4-3-25-01
+    file: chunks/oac-109-4-3-25-01.md
+    heading: Ohio Adm.Code 109:4-3-25 — Debt collection agreements.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-25
+    content_kind: regulation-section
+    section: 109:4-3-25
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-25
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-25
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-26
+  title: Reasonable, tangible net benefit.
+  citation: Ohio Adm.Code 109:4-3-26
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-26
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-26_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 1c9279deda2e81279d8abe453b197ad11bfd3af7ef362ff424cbbf1e45e9c868
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-26.md
+  chunks:
+  - &id036
+    id: oac-109-4-3-26-01
+    file: chunks/oac-109-4-3-26-01.md
+    heading: Ohio Adm.Code 109:4-3-26 — Reasonable, tangible net benefit.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-26
+    content_kind: regulation-section
+    section: 109:4-3-26
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-26
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-26
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-27
+  title: No reasonable probability of payment.
+  citation: Ohio Adm.Code 109:4-3-27
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-27
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-27_20120330.pdf
+  effective_date: March 30, 2012
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: e71406c129b9f6d01542942dcb62ebd27237a58102b4dac32becb44dfeacad7b
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-27.md
+  chunks:
+  - &id037
+    id: oac-109-4-3-27-01
+    file: chunks/oac-109-4-3-27-01.md
+    heading: Ohio Adm.Code 109:4-3-27 — No reasonable probability of payment.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-27
+    content_kind: regulation-section
+    section: 109:4-3-27
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-27
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-27
+    effective_date: March 30, 2012
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-28
+  title: Unconscionable terms in home mortgage loans.
+  citation: Ohio Adm.Code 109:4-3-28
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-28
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-28_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 81d4d8ef88b31d3b291bd34f7207a3d6029870971fa9d31a1ab62cf44dd3b1ec
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-28.md
+  chunks:
+  - &id038
+    id: oac-109-4-3-28-01
+    file: chunks/oac-109-4-3-28-01.md
+    heading: Ohio Adm.Code 109:4-3-28 — Unconscionable terms in home mortgage loans.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-28
+    content_kind: regulation-section
+    section: 109:4-3-28
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-28
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-28
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-29
+  title: Distribution and receipt of home mortgage loan informational document.
+  citation: Ohio Adm.Code 109:4-3-29
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-29
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-29_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: cde4889294bc5825a302ffc79b9bd64b524b5d5cb5c508e476aee4065b60cec4
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-29.md
+  chunks:
+  - &id039
+    id: oac-109-4-3-29-01
+    file: chunks/oac-109-4-3-29-01.md
+    heading: Ohio Adm.Code 109:4-3-29 — Distribution and receipt of home mortgage
+      loan informational document.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-29
+    content_kind: regulation-section
+    section: 109:4-3-29
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-29
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-29
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-30
+  title: Limitation on advance payments.
+  citation: Ohio Adm.Code 109:4-3-30
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-30
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-30_20070107.pdf
+  effective_date: January 7, 2007
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 25503171e9e8561006702a14035097c1939453819efd66f944b6675a712b8cf3
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-30.md
+  chunks:
+  - &id040
+    id: oac-109-4-3-30-01
+    file: chunks/oac-109-4-3-30-01.md
+    heading: Ohio Adm.Code 109:4-3-30 — Limitation on advance payments.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-30
+    content_kind: regulation-section
+    section: 109:4-3-30
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-30
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-30
+    effective_date: January 7, 2007
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: 109:4-3-31
+  title: Consent and solicitation of signature.
+  citation: Ohio Adm.Code 109:4-3-31
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-31
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-109:4-3
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/109/4/3/109$4-3-31_20250411.pdf
+  effective_date: April 11, 2025
+  raw_html_sha256: 577f2192c2254ef54ffb3b321f026b40cc4d63f1071ef606c3fb9666f13ed1b2
+  normalized_text_sha256: 866d5ec1312af52d3d9475eff87aca74e44f558f06b1b6b265214969ce590824
+  fetched_at: '2026-11-17T21:44:27+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Attorney General consumer sales practices rules (implements R.C. Chapter
+    1345)
+  record_path: sections/oac-109-4-3-31.md
+  chunks:
+  - &id041
+    id: oac-109-4-3-31-01
+    file: chunks/oac-109-4-3-31-01.md
+    heading: Ohio Adm.Code 109:4-3-31 — Consent and solicitation of signature.
+    path:
+    - Ohio Administrative Code
+    - Chapter 109:4-3
+    - Ohio Adm.Code 109:4-3-31
+    content_kind: regulation-section
+    section: 109:4-3-31
+    chapter: Chapter 109:4-3
+    citation: Ohio Adm.Code 109:4-3-31
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-109:4-3-31
+    effective_date: April 11, 2025
+    retrieval_hints:
+    - Consumer Sales Practices Act
+    - CSPA
+    - unfair or deceptive
+- rule: '3701-32-01'
+  title: Definitions.
+  citation: Ohio Adm.Code 3701-32-01
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-01
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-01_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 4145d19dac4ea44d763224d0f5fd388cd3a269e2333cfeff86042453daf78c08
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-01.md
+  chunks:
+  - &id042
+    id: oac-3701-32-01-01
+    file: chunks/oac-3701-32-01-01.md
+    heading: Ohio Adm.Code 3701-32-01 — Definitions. (A)–(BB)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-01
+    content_kind: regulation-section
+    section: '3701-32-01'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-01
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id043
+    id: oac-3701-32-01-02
+    file: chunks/oac-3701-32-01-02.md
+    heading: Ohio Adm.Code 3701-32-01 — Definitions. (CC)–(ZZ)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-01
+    content_kind: regulation-section
+    section: '3701-32-01'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-01
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id044
+    id: oac-3701-32-01-03
+    file: chunks/oac-3701-32-01-03.md
+    heading: Ohio Adm.Code 3701-32-01 — Definitions. (ZZ)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-01
+    content_kind: regulation-section
+    section: '3701-32-01'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-01
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-02'
+  title: Scope and applicability of rules.
+  citation: Ohio Adm.Code 3701-32-02
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-02
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-02_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: bf1d8969baf0da16dd27380a7e9c94cb1d87e4d5dfb5cefa4de171806a471c55
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-02.md
+  chunks:
+  - &id045
+    id: oac-3701-32-02-01
+    file: chunks/oac-3701-32-02-01.md
+    heading: Ohio Adm.Code 3701-32-02 — Scope and applicability of rules.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-02
+    content_kind: regulation-section
+    section: '3701-32-02'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-02
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-02
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-03'
+  title: General provisions and prohibitions.
+  citation: Ohio Adm.Code 3701-32-03
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-03
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-03_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: a2e4208d84ec7ed3ba31dd992e42dfd8a63b1f08e0f3b3196b2d454c183c274a
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-03.md
+  chunks:
+  - &id046
+    id: oac-3701-32-03-01
+    file: chunks/oac-3701-32-03-01.md
+    heading: Ohio Adm.Code 3701-32-03 — General provisions and prohibitions.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-03
+    content_kind: regulation-section
+    section: '3701-32-03'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-03
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-03
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-04'
+  title: General application procedures, provisions, and qualifications for clearance
+    technician, lead inspector, lead risk assessor, lead abatement contractor, lead
+    abatement worker or lead abatement project designer.
+  citation: Ohio Adm.Code 3701-32-04
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-04
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-04_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: cd8c1e7ea427b158cb415980e536855d3d764a87d73be8dc913db567be4c8b79
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-04.md
+  chunks:
+  - &id047
+    id: oac-3701-32-04-01
+    file: chunks/oac-3701-32-04-01.md
+    heading: Ohio Adm.Code 3701-32-04 — General application procedures, provisions,
+      and qualifications for clearance technician, lead inspector, lead risk assessor,
+      lead abatement contractor, lead abatement worker or lead abatement project designer.
+      (A)–(G)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-04
+    content_kind: regulation-section
+    section: '3701-32-04'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-04
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-04
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id048
+    id: oac-3701-32-04-02
+    file: chunks/oac-3701-32-04-02.md
+    heading: Ohio Adm.Code 3701-32-04 — General application procedures, provisions,
+      and qualifications for clearance technician, lead inspector, lead risk assessor,
+      lead abatement contractor, lead abatement worker or lead abatement project designer.
+      (G)–(N)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-04
+    content_kind: regulation-section
+    section: '3701-32-04'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-04
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-04
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-05'
+  title: Clearance technician scope of practice and standards of conduct.
+  citation: Ohio Adm.Code 3701-32-05
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-05
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-05_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: b7b5da31c643e945c5d088bf8feece85cfd2c012b6a3031a0dcb0056706217b3
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-05.md
+  chunks:
+  - &id049
+    id: oac-3701-32-05-01
+    file: chunks/oac-3701-32-05-01.md
+    heading: Ohio Adm.Code 3701-32-05 — Clearance technician scope of practice and
+      standards of conduct.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-05
+    content_kind: regulation-section
+    section: '3701-32-05'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-05
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-05
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-06'
+  title: Lead inspector scope of practice and standards of conduct.
+  citation: Ohio Adm.Code 3701-32-06
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-06
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-06_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 12158f19938ea2a47263d3691bbbc29159733935d5c34e8dacd0d9a16c8050b8
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-06.md
+  chunks:
+  - &id050
+    id: oac-3701-32-06-01
+    file: chunks/oac-3701-32-06-01.md
+    heading: Ohio Adm.Code 3701-32-06 — Lead inspector scope of practice and standards
+      of conduct.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-06
+    content_kind: regulation-section
+    section: '3701-32-06'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-06
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-06
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-07'
+  title: Lead risk assessor scope of practice and standards of conduct.
+  citation: Ohio Adm.Code 3701-32-07
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-07
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-07_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 335226c9b1f39407557f23109d577d8fa01220c4071342e3aaaea3886d75bbe4
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-07.md
+  chunks:
+  - &id051
+    id: oac-3701-32-07-01
+    file: chunks/oac-3701-32-07-01.md
+    heading: Ohio Adm.Code 3701-32-07 — Lead risk assessor scope of practice and standards
+      of conduct. (A)–(F)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-07
+    content_kind: regulation-section
+    section: '3701-32-07'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-07
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-07
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id052
+    id: oac-3701-32-07-02
+    file: chunks/oac-3701-32-07-02.md
+    heading: Ohio Adm.Code 3701-32-07 — Lead risk assessor scope of practice and standards
+      of conduct. (F)–(G)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-07
+    content_kind: regulation-section
+    section: '3701-32-07'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-07
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-07
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id053
+    id: oac-3701-32-07-03
+    file: chunks/oac-3701-32-07-03.md
+    heading: Ohio Adm.Code 3701-32-07 — Lead risk assessor scope of practice and standards
+      of conduct. (G)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-07
+    content_kind: regulation-section
+    section: '3701-32-07'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-07
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-07
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-08'
+  title: Lead abatement contractor scope of practice and standards of conduct.
+  citation: Ohio Adm.Code 3701-32-08
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-08
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-08_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 551cbd15a08e28c1fe992bc90027aca13fa6a7b8d05b77ce9141878ffed113a3
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-08.md
+  chunks:
+  - &id054
+    id: oac-3701-32-08-01
+    file: chunks/oac-3701-32-08-01.md
+    heading: Ohio Adm.Code 3701-32-08 — Lead abatement contractor scope of practice
+      and standards of conduct. (A)–(E)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-08
+    content_kind: regulation-section
+    section: '3701-32-08'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-08
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id055
+    id: oac-3701-32-08-02
+    file: chunks/oac-3701-32-08-02.md
+    heading: Ohio Adm.Code 3701-32-08 — Lead abatement contractor scope of practice
+      and standards of conduct. (E)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-08
+    content_kind: regulation-section
+    section: '3701-32-08'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-08
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-09'
+  title: Lead abatement worker scope of practice and standards of conduct.
+  citation: Ohio Adm.Code 3701-32-09
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-09
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-09_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 150d8cd450df9646b6143376b05028df4d0ff8d3975b244e9c4a47be0fc6c6f4
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-09.md
+  chunks:
+  - &id056
+    id: oac-3701-32-09-01
+    file: chunks/oac-3701-32-09-01.md
+    heading: Ohio Adm.Code 3701-32-09 — Lead abatement worker scope of practice and
+      standards of conduct.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-09
+    content_kind: regulation-section
+    section: '3701-32-09'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-09
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-09
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-10'
+  title: Lead abatement project designer scope of practice and standards of conduct.
+  citation: Ohio Adm.Code 3701-32-10
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-10
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-10_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: bec38ffcd8a7fd272ffecc21e86bffce5b2297abd10aa34858107ddc5deab93f
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-10.md
+  chunks:
+  - &id057
+    id: oac-3701-32-10-01
+    file: chunks/oac-3701-32-10-01.md
+    heading: Ohio Adm.Code 3701-32-10 — Lead abatement project designer scope of practice
+      and standards of conduct. (A)–(E)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-10
+    content_kind: regulation-section
+    section: '3701-32-10'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-10
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-10
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id058
+    id: oac-3701-32-10-02
+    file: chunks/oac-3701-32-10-02.md
+    heading: Ohio Adm.Code 3701-32-10 — Lead abatement project designer scope of practice
+      and standards of conduct. (E)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-10
+    content_kind: regulation-section
+    section: '3701-32-10'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-10
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-10
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-12'
+  title: Clearance examinations.
+  citation: Ohio Adm.Code 3701-32-12
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-12
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-12_20220417.pdf
+  effective_date: April 17, 2022
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: b7518afc79d33d411df7a965c1ca0c1b5c24b286232ea2d6a25fee5804bb8592
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-12.md
+  chunks:
+  - &id059
+    id: oac-3701-32-12-01
+    file: chunks/oac-3701-32-12-01.md
+    heading: Ohio Adm.Code 3701-32-12 — Clearance examinations. (A)–(G)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-12
+    content_kind: regulation-section
+    section: '3701-32-12'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-12
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-12
+    effective_date: April 17, 2022
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+  - &id060
+    id: oac-3701-32-12-02
+    file: chunks/oac-3701-32-12-02.md
+    heading: Ohio Adm.Code 3701-32-12 — Clearance examinations. (G)–(H)
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-12
+    content_kind: regulation-section
+    section: '3701-32-12'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-12
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-12
+    effective_date: April 17, 2022
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-13'
+  title: Encapsulant requirements.
+  citation: Ohio Adm.Code 3701-32-13
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-13
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-13_20140804.pdf
+  effective_date: August 4, 2014
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 2ba5fd6b9d987aa8ecdce514b09312334381ad0c06e4adc4e5bdf801178376fd
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-13.md
+  chunks:
+  - &id061
+    id: oac-3701-32-13-01
+    file: chunks/oac-3701-32-13-01.md
+    heading: Ohio Adm.Code 3701-32-13 — Encapsulant requirements.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-13
+    content_kind: regulation-section
+    section: '3701-32-13'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-13
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-13
+    effective_date: August 4, 2014
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-14'
+  title: Record keeping and reporting requirements for environmental lead analytical
+    and clinical laboratories.
+  citation: Ohio Adm.Code 3701-32-14
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-14
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-14_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: ec88455e0a372427af25bedad4f3192c0c2275454fde5959864f59e28d1d20af
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-14.md
+  chunks:
+  - &id062
+    id: oac-3701-32-14-01
+    file: chunks/oac-3701-32-14-01.md
+    heading: Ohio Adm.Code 3701-32-14 — Record keeping and reporting requirements
+      for environmental lead analytical and clinical laboratories.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-14
+    content_kind: regulation-section
+    section: '3701-32-14'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-14
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-14
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-15'
+  title: Record keeping and reporting requirements for clearance technicians, lead
+    inspectors, lead risk assessors, lead abatement contractors and lead abatement
+    project designers.
+  citation: Ohio Adm.Code 3701-32-15
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-15
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-15_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 86c43d4e3b5174f7f922415bcd553a9b3bbecb808d8bc1525d1b4a0b5fada539
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-15.md
+  chunks:
+  - &id063
+    id: oac-3701-32-15-01
+    file: chunks/oac-3701-32-15-01.md
+    heading: Ohio Adm.Code 3701-32-15 — Record keeping and reporting requirements
+      for clearance technicians, lead inspectors, lead risk assessors, lead abatement
+      contractors and lead abatement project designers.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-15
+    content_kind: regulation-section
+    section: '3701-32-15'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-15
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-15
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-18'
+  title: Variances.
+  citation: Ohio Adm.Code 3701-32-18
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-18
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-18_20140804.pdf
+  effective_date: August 4, 2014
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 5bc0d738833a8c671553cde4d7a3bcde597ac11a7426b5f96596df4948749b08
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-18.md
+  chunks:
+  - &id064
+    id: oac-3701-32-18-01
+    file: chunks/oac-3701-32-18-01.md
+    heading: Ohio Adm.Code 3701-32-18 — Variances.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-18
+    content_kind: regulation-section
+    section: '3701-32-18'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-18
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-18
+    effective_date: August 4, 2014
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: '3701-32-19'
+  title: Levels of lead hazardous to human health and clearance examination standards.
+  citation: Ohio Adm.Code 3701-32-19
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-19
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-3701-32
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/3701/0/32/3701-32-19_20211201.pdf
+  effective_date: December 1, 2021
+  raw_html_sha256: 20f8a94d2f68319984093432280114cf9d1ddd2cd75eba30bf7d3ea558a50605
+  normalized_text_sha256: 6125b6e1ec0659874ecf2a5f7cdb50bf5cd8919a8b8c61095dc630bb531ddeb0
+  fetched_at: '2026-11-17T21:44:26+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Lead poisoning prevention, including lead hazard control orders (implements
+    R.C. Chapter 3742)
+  record_path: sections/oac-3701-32-19.md
+  chunks:
+  - &id065
+    id: oac-3701-32-19-01
+    file: chunks/oac-3701-32-19-01.md
+    heading: Ohio Adm.Code 3701-32-19 — Levels of lead hazardous to human health and
+      clearance examination standards.
+    path:
+    - Ohio Administrative Code
+    - Chapter 3701-32
+    - Ohio Adm.Code 3701-32-19
+    content_kind: regulation-section
+    section: '3701-32-19'
+    chapter: Chapter 3701-32
+    citation: Ohio Adm.Code 3701-32-19
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-3701-32-19
+    effective_date: December 1, 2021
+    retrieval_hints:
+    - lead
+    - lead hazard
+    - lead-based paint
+    - lead poisoning
+    - lead hazard control order
+- rule: 4112-5-01
+  title: Purpose.
+  citation: Ohio Adm.Code 4112-5-01
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-01
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-01_20240902.pdf
+  effective_date: September 2, 2024
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: 65a6c90aac8cb3d4cd870753149ff07c2c9a3387011be497c2b5b71248594d55
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-01.md
+  chunks:
+  - &id066
+    id: oac-4112-5-01-01
+    file: chunks/oac-4112-5-01-01.md
+    heading: Ohio Adm.Code 4112-5-01 — Purpose.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-01
+    content_kind: regulation-section
+    section: 4112-5-01
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-01
+    effective_date: September 2, 2024
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-02
+  title: Definitions.
+  citation: Ohio Adm.Code 4112-5-02
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-02
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-02_20230914.pdf
+  effective_date: September 14, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: 8d01b640ca275ebc5069e5d0f7d0f6b80b002f3c26fb4245e56d912c18ec166c
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-02.md
+  chunks:
+  - &id067
+    id: oac-4112-5-02-01
+    file: chunks/oac-4112-5-02-01.md
+    heading: Ohio Adm.Code 4112-5-02 — Definitions.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-02
+    content_kind: regulation-section
+    section: 4112-5-02
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-02
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-02
+    effective_date: September 14, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-04
+  title: Record keeping.
+  citation: Ohio Adm.Code 4112-5-04
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-04
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-04_20230411.pdf
+  effective_date: April 11, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: 081405a831041d7a73e64566f8b3d7f3e5639cace6c52b4563917d90f04f6df4
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-04.md
+  chunks:
+  - &id068
+    id: oac-4112-5-04-01
+    file: chunks/oac-4112-5-04-01.md
+    heading: Ohio Adm.Code 4112-5-04 — Record keeping.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-04
+    content_kind: regulation-section
+    section: 4112-5-04
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-04
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-04
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-05
+  title: Sex discrimination.
+  citation: Ohio Adm.Code 4112-5-05
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-05
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-05_20230411.pdf
+  effective_date: April 11, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: dcb0238bc021694950c48d0f8984434199967fc7acf2ca4b167c4855b7c98409
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-05.md
+  chunks:
+  - &id069
+    id: oac-4112-5-05-01
+    file: chunks/oac-4112-5-05-01.md
+    heading: Ohio Adm.Code 4112-5-05 — Sex discrimination. (A)–(I)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-05
+    content_kind: regulation-section
+    section: 4112-5-05
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-05
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-05
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+  - &id070
+    id: oac-4112-5-05-02
+    file: chunks/oac-4112-5-05-02.md
+    heading: Ohio Adm.Code 4112-5-05 — Sex discrimination. (I)–(J)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-05
+    content_kind: regulation-section
+    section: 4112-5-05
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-05
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-05
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-06
+  title: Discrimination against the disabled in places of public accommodation.
+  citation: Ohio Adm.Code 4112-5-06
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-06
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-06_20230411.pdf
+  effective_date: April 11, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: d9dda7900582ead1b3c5a193e8fae26b0a63f3b9709d535d628227957e0a14f1
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-06.md
+  chunks:
+  - &id071
+    id: oac-4112-5-06-01
+    file: chunks/oac-4112-5-06-01.md
+    heading: Ohio Adm.Code 4112-5-06 — Discrimination against the disabled in places
+      of public accommodation. (A)–(J)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-06
+    content_kind: regulation-section
+    section: 4112-5-06
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-06
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-06
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+  - &id072
+    id: oac-4112-5-06-02
+    file: chunks/oac-4112-5-06-02.md
+    heading: Ohio Adm.Code 4112-5-06 — Discrimination against the disabled in places
+      of public accommodation. (J)–(K)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-06
+    content_kind: regulation-section
+    section: 4112-5-06
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-06
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-06
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-07
+  title: Discrimination against the disabled in private housing accommodations.
+  citation: Ohio Adm.Code 4112-5-07
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-07
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-07_20230411.pdf
+  effective_date: April 11, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: d8e2a0706220127af6d68cdabdf6d2982db59ac9950f7093dd89ef32c275c26e
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-07.md
+  chunks:
+  - &id073
+    id: oac-4112-5-07-01
+    file: chunks/oac-4112-5-07-01.md
+    heading: Ohio Adm.Code 4112-5-07 — Discrimination against the disabled in private
+      housing accommodations.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-07
+    content_kind: regulation-section
+    section: 4112-5-07
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-07
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-07
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-08
+  title: Discrimination in the employment of the disabled.
+  citation: Ohio Adm.Code 4112-5-08
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-08
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-08_20230411.pdf
+  effective_date: April 11, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: c1ee6a211d5548b29e417d22e02b82cdf1460e3d33f2db7c406e414196249234
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-08.md
+  chunks:
+  - &id074
+    id: oac-4112-5-08-01
+    file: chunks/oac-4112-5-08-01.md
+    heading: Ohio Adm.Code 4112-5-08 — Discrimination in the employment of the disabled.
+      (A)–(D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-08
+    content_kind: regulation-section
+    section: 4112-5-08
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-08
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+  - &id075
+    id: oac-4112-5-08-02
+    file: chunks/oac-4112-5-08-02.md
+    heading: Ohio Adm.Code 4112-5-08 — Discrimination in the employment of the disabled.
+      (D)–(H)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-08
+    content_kind: regulation-section
+    section: 4112-5-08
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-08
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+  - &id076
+    id: oac-4112-5-08-03
+    file: chunks/oac-4112-5-08-03.md
+    heading: Ohio Adm.Code 4112-5-08 — Discrimination in the employment of the disabled.
+      (H)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-08
+    content_kind: regulation-section
+    section: 4112-5-08
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-08
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: 4112-5-09
+  title: Discrimination against the disabled in institutions of higher education.
+  citation: Ohio Adm.Code 4112-5-09
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-09
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4112-5
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4112/0/5/4112-5-09_20230411.pdf
+  effective_date: April 11, 2023
+  raw_html_sha256: 15c464ccc602f0f2b1d0323a27d4bd2e18459cc4c786ed83c328e85a56f2fb6f
+  normalized_text_sha256: 20a3c0174ce1af1266328a7220adfcaea8cdd490bd239ca14d8b81a09efbf1ee
+  fetched_at: '2026-11-17T21:44:23+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Ohio Civil Rights Commission -- discrimination, including housing (implements
+    R.C. Chapter 4112)
+  record_path: sections/oac-4112-5-09.md
+  chunks:
+  - &id077
+    id: oac-4112-5-09-01
+    file: chunks/oac-4112-5-09-01.md
+    heading: Ohio Adm.Code 4112-5-09 — Discrimination against the disabled in institutions
+      of higher education. (A)–(D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-09
+    content_kind: regulation-section
+    section: 4112-5-09
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-09
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-09
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+  - &id078
+    id: oac-4112-5-09-02
+    file: chunks/oac-4112-5-09-02.md
+    heading: Ohio Adm.Code 4112-5-09 — Discrimination against the disabled in institutions
+      of higher education. (D)–(G)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4112-5
+    - Ohio Adm.Code 4112-5-09
+    content_kind: regulation-section
+    section: 4112-5-09
+    chapter: Chapter 4112-5
+    citation: Ohio Adm.Code 4112-5-09
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4112-5-09
+    effective_date: April 11, 2023
+    retrieval_hints:
+    - Ohio Civil Rights Commission
+    - fair housing
+    - reasonable accommodation
+    - housing discrimination
+- rule: '4781-12-01'
+  title: Manufactured home park definitions.
+  citation: Ohio Adm.Code 4781-12-01
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-01
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-01_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 54daf94d7e5b215fd4589c4f9ea679a2ea1358d733ec998be1ade776e2e92508
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-01.md
+  chunks:
+  - &id079
+    id: oac-4781-12-01-01
+    file: chunks/oac-4781-12-01-01.md
+    heading: Ohio Adm.Code 4781-12-01 — Manufactured home park definitions. (A)–(W)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-01
+    content_kind: regulation-section
+    section: '4781-12-01'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-01
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+  - &id080
+    id: oac-4781-12-01-02
+    file: chunks/oac-4781-12-01-02.md
+    heading: Ohio Adm.Code 4781-12-01 — Manufactured home park definitions. (X)–(KK)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-01
+    content_kind: regulation-section
+    section: '4781-12-01'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-01
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-01
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-02'
+  title: Application of rules; license for manufactured home parks.
+  citation: Ohio Adm.Code 4781-12-02
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-02
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-02_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 1ce49a5d7242a94489376b0c5d76482f4ec382351d59148909f649cb703f5dae
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-02.md
+  chunks:
+  - &id081
+    id: oac-4781-12-02-01
+    file: chunks/oac-4781-12-02-01.md
+    heading: Ohio Adm.Code 4781-12-02 — Application of rules; license for manufactured
+      home parks.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-02
+    content_kind: regulation-section
+    section: '4781-12-02'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-02
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-02
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-03'
+  title: Manufactured home park license, contents of.
+  citation: Ohio Adm.Code 4781-12-03
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-03
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-03_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: cbd44f9c41e8e8c5a5747185c23a0d95cd36521a0a0e36cb4d7b832e10881725
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-03.md
+  chunks:
+  - &id082
+    id: oac-4781-12-03-01
+    file: chunks/oac-4781-12-03-01.md
+    heading: Ohio Adm.Code 4781-12-03 — Manufactured home park license, contents of.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-03
+    content_kind: regulation-section
+    section: '4781-12-03'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-03
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-03
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-04'
+  title: Application for manufactured home park license.
+  citation: Ohio Adm.Code 4781-12-04
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-04
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-04_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 1d067828b2ab003ca348605623e260e241456cb19d1149cb2c89dc6f9e6d5cf3
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-04.md
+  chunks:
+  - &id083
+    id: oac-4781-12-04-01
+    file: chunks/oac-4781-12-04-01.md
+    heading: Ohio Adm.Code 4781-12-04 — Application for manufactured home park license.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-04
+    content_kind: regulation-section
+    section: '4781-12-04'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-04
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-04
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-04.1
+  title: Manufactured home park inspection.
+  citation: Ohio Adm.Code 4781-12-04.1
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-04.1
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-04-1_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 1731c797cba1dd723455d775e05f1464dce2a299f68b1fa807d1cf9ed52aff4b
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-04-1.md
+  chunks:
+  - &id084
+    id: oac-4781-12-04-1-01
+    file: chunks/oac-4781-12-04-1-01.md
+    heading: Ohio Adm.Code 4781-12-04.1 — Manufactured home park inspection.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-04.1
+    content_kind: regulation-section
+    section: 4781-12-04.1
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-04.1
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-04.1
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-04.2
+  title: Manufactured home park license fee categories.
+  citation: Ohio Adm.Code 4781-12-04.2
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-04.2
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-04-2_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 44304ed95208e1cdc4615814164d82196499ec2f0b0d484d8208c5e0f8b19b22
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-04-2.md
+  chunks:
+  - &id085
+    id: oac-4781-12-04-2-01
+    file: chunks/oac-4781-12-04-2-01.md
+    heading: Ohio Adm.Code 4781-12-04.2 — Manufactured home park license fee categories.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-04.2
+    content_kind: regulation-section
+    section: 4781-12-04.2
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-04.2
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-04.2
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-05'
+  title: Development plan approval required.
+  citation: Ohio Adm.Code 4781-12-05
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-05_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: d8a16616db93e677ea2c41f734a70a36079813f428c417c1acbe7616d054144d
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-05.md
+  chunks:
+  - &id086
+    id: oac-4781-12-05-01
+    file: chunks/oac-4781-12-05-01.md
+    heading: Ohio Adm.Code 4781-12-05 — Development plan approval required.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-05
+    content_kind: regulation-section
+    section: '4781-12-05'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-05
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-05.1
+  title: Submission for review and approval of development plans.
+  citation: Ohio Adm.Code 4781-12-05.1
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05.1
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-05-1_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 8f4eb2a08b047da96351296c24aedeebd4254dd5b2d2e28bc9421c14080377e8
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-05-1.md
+  chunks:
+  - &id087
+    id: oac-4781-12-05-1-01
+    file: chunks/oac-4781-12-05-1-01.md
+    heading: Ohio Adm.Code 4781-12-05.1 — Submission for review and approval of development
+      plans. (A)–(D)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-05.1
+    content_kind: regulation-section
+    section: 4781-12-05.1
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-05.1
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05.1
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+  - &id088
+    id: oac-4781-12-05-1-02
+    file: chunks/oac-4781-12-05-1-02.md
+    heading: Ohio Adm.Code 4781-12-05.1 — Submission for review and approval of development
+      plans. (E)–(F)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-05.1
+    content_kind: regulation-section
+    section: 4781-12-05.1
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-05.1
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05.1
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-05.2
+  title: Compliance with approved plans, verification inspections.
+  citation: Ohio Adm.Code 4781-12-05.2
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05.2
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-05-2_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: a1c7b51ce86726358e5545a090fda10ecde3f9511bd3f59c962fcf591817191f
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-05-2.md
+  chunks:
+  - &id089
+    id: oac-4781-12-05-2-01
+    file: chunks/oac-4781-12-05-2-01.md
+    heading: Ohio Adm.Code 4781-12-05.2 — Compliance with approved plans, verification
+      inspections.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-05.2
+    content_kind: regulation-section
+    section: 4781-12-05.2
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-05.2
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-05.2
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-06'
+  title: Site.
+  citation: Ohio Adm.Code 4781-12-06
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-06
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-06_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: fe1ffd86529f88999dfb9258e4913b2e9c7fa9de10a14b1e256b024487e63db6
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-06.md
+  chunks:
+  - &id090
+    id: oac-4781-12-06-01
+    file: chunks/oac-4781-12-06-01.md
+    heading: Ohio Adm.Code 4781-12-06 — Site.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-06
+    content_kind: regulation-section
+    section: '4781-12-06'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-06
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-06
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-07'
+  title: Flood plain management - notification of flood events.
+  citation: Ohio Adm.Code 4781-12-07
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-07_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 109d5f57d4da0b72be05d294a8cade8ed830d43f82540be928fb0b366c9bb8a4
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-07.md
+  chunks:
+  - &id091
+    id: oac-4781-12-07-01
+    file: chunks/oac-4781-12-07-01.md
+    heading: Ohio Adm.Code 4781-12-07 — Flood plain management - notification of flood
+      events.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-07
+    content_kind: regulation-section
+    section: '4781-12-07'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-07
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-07.1
+  title: Flood plain management development permits.
+  citation: Ohio Adm.Code 4781-12-07.1
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07.1
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-07-1_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 6a162cb1cc0ad1c1fd26aa42227fb32fb471d8c561592a64166bc7202c43e9f7
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-07-1.md
+  chunks:
+  - &id092
+    id: oac-4781-12-07-1-01
+    file: chunks/oac-4781-12-07-1-01.md
+    heading: Ohio Adm.Code 4781-12-07.1 — Flood plain management development permits.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-07.1
+    content_kind: regulation-section
+    section: 4781-12-07.1
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-07.1
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07.1
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-07.2
+  title: Flood plain management permit inspections.
+  citation: Ohio Adm.Code 4781-12-07.2
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07.2
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-07-2_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 0e5c6662366cf23ff2badf05716350be0ad69052a7f575a756b860a3fa544e86
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-07-2.md
+  chunks:
+  - &id093
+    id: oac-4781-12-07-2-01
+    file: chunks/oac-4781-12-07-2-01.md
+    heading: Ohio Adm.Code 4781-12-07.2 — Flood plain management permit inspections.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-07.2
+    content_kind: regulation-section
+    section: 4781-12-07.2
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-07.2
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07.2
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-07.3
+  title: Flood plain management elevations; floodway regulations.
+  citation: Ohio Adm.Code 4781-12-07.3
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07.3
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-07-3_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 4d8a52c82ca730a7333e66deadeeb216e04d18d2595ef231f99c4ce31c31fc34
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-07-3.md
+  chunks:
+  - &id094
+    id: oac-4781-12-07-3-01
+    file: chunks/oac-4781-12-07-3-01.md
+    heading: Ohio Adm.Code 4781-12-07.3 — Flood plain management elevations; floodway
+      regulations.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-07.3
+    content_kind: regulation-section
+    section: 4781-12-07.3
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-07.3
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-07.3
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-08'
+  title: Manufactured home lots.
+  citation: Ohio Adm.Code 4781-12-08
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-08_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 862e5a70020782b1a4285fe3a02c0df6b6e90cb2b71738e8152e63a0dbf69da1
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-08.md
+  chunks:
+  - &id095
+    id: oac-4781-12-08-01
+    file: chunks/oac-4781-12-08-01.md
+    heading: Ohio Adm.Code 4781-12-08 — Manufactured home lots. (A)–(L)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-08
+    content_kind: regulation-section
+    section: '4781-12-08'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+  - &id096
+    id: oac-4781-12-08-02
+    file: chunks/oac-4781-12-08-02.md
+    heading: Ohio Adm.Code 4781-12-08 — Manufactured home lots. (M)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-08
+    content_kind: regulation-section
+    section: '4781-12-08'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-08
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-08.1
+  title: Freestanding auxiliary buildings.
+  citation: Ohio Adm.Code 4781-12-08.1
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08.1
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-08-1_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 3e1b8342a7177eee483262dda14113f96a2a42713bb921b86303f6b7f7ddffe8
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-08-1.md
+  chunks:
+  - &id097
+    id: oac-4781-12-08-1-01
+    file: chunks/oac-4781-12-08-1-01.md
+    heading: Ohio Adm.Code 4781-12-08.1 — Freestanding auxiliary buildings.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-08.1
+    content_kind: regulation-section
+    section: 4781-12-08.1
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-08.1
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08.1
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-08.2
+  title: Tiedowns; supports; blocking.
+  citation: Ohio Adm.Code 4781-12-08.2
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08.2
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-08-2_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 93f667c0fb2ac35c0f6dbcb2ca7f4dfa57654e38f7043c098906edd3e64d9a33
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-08-2.md
+  chunks:
+  - &id098
+    id: oac-4781-12-08-2-01
+    file: chunks/oac-4781-12-08-2-01.md
+    heading: Ohio Adm.Code 4781-12-08.2 — Tiedowns; supports; blocking.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-08.2
+    content_kind: regulation-section
+    section: 4781-12-08.2
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-08.2
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08.2
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: 4781-12-08.3
+  title: Placement notification.
+  citation: Ohio Adm.Code 4781-12-08.3
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08.3
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-08-3_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 8879f3f1c124e117279d6028145bf89e585a39ae0ad65372b6c6719339e7c1d4
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-08-3.md
+  chunks:
+  - &id099
+    id: oac-4781-12-08-3-01
+    file: chunks/oac-4781-12-08-3-01.md
+    heading: Ohio Adm.Code 4781-12-08.3 — Placement notification.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-08.3
+    content_kind: regulation-section
+    section: 4781-12-08.3
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-08.3
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-08.3
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-09'
+  title: Streets; walkways; auto parking.
+  citation: Ohio Adm.Code 4781-12-09
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-09
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-09_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 70f579b1a073f231c52c95c183a49723dc50ce37c4b3580a082c31d5292936ed
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-09.md
+  chunks:
+  - &id100
+    id: oac-4781-12-09-01
+    file: chunks/oac-4781-12-09-01.md
+    heading: Ohio Adm.Code 4781-12-09 — Streets; walkways; auto parking.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-09
+    content_kind: regulation-section
+    section: '4781-12-09'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-09
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-09
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-10'
+  title: Lighting.
+  citation: Ohio Adm.Code 4781-12-10
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-10
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-10_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 2aa674fddfffe2af7f267b43a27f992beeb29cce885378dfe38c5264fafd95dc
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-10.md
+  chunks:
+  - &id101
+    id: oac-4781-12-10-01
+    file: chunks/oac-4781-12-10-01.md
+    heading: Ohio Adm.Code 4781-12-10 — Lighting.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-10
+    content_kind: regulation-section
+    section: '4781-12-10'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-10
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-10
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-11'
+  title: Water systems.
+  citation: Ohio Adm.Code 4781-12-11
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-11
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-11_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: d879398456567f60fff697975827102845ac33f571ee83f7f0a8545e7b84d402
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-11.md
+  chunks:
+  - &id102
+    id: oac-4781-12-11-01
+    file: chunks/oac-4781-12-11-01.md
+    heading: Ohio Adm.Code 4781-12-11 — Water systems.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-11
+    content_kind: regulation-section
+    section: '4781-12-11'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-11
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-11
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-12'
+  title: Storm water systems.
+  citation: Ohio Adm.Code 4781-12-12
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-12
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-12_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: b0c9ea88a63e6feba811f70187eabd19454ba6b95ae68f113bb6becc652e697d
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-12.md
+  chunks:
+  - &id103
+    id: oac-4781-12-12-01
+    file: chunks/oac-4781-12-12-01.md
+    heading: Ohio Adm.Code 4781-12-12 — Storm water systems.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-12
+    content_kind: regulation-section
+    section: '4781-12-12'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-12
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-12
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-13'
+  title: Location of water and sewer lines.
+  citation: Ohio Adm.Code 4781-12-13
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-13
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-13_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: dc7ae44b242ae7d3b7597cd076e9a0f19d4929b6e0821b74c188582eac032d6a
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-13.md
+  chunks:
+  - &id104
+    id: oac-4781-12-13-01
+    file: chunks/oac-4781-12-13-01.md
+    heading: Ohio Adm.Code 4781-12-13 — Location of water and sewer lines.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-13
+    content_kind: regulation-section
+    section: '4781-12-13'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-13
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-13
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-14'
+  title: Park service building.
+  citation: Ohio Adm.Code 4781-12-14
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-14
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-14_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 105edd8c39b8b86ab9bdb22fd793a6c976381423c00bfcba032f4d98ac57523c
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-14.md
+  chunks:
+  - &id105
+    id: oac-4781-12-14-01
+    file: chunks/oac-4781-12-14-01.md
+    heading: Ohio Adm.Code 4781-12-14 — Park service building.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-14
+    content_kind: regulation-section
+    section: '4781-12-14'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-14
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-14
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-15'
+  title: Number of plumbing fixtures.
+  citation: Ohio Adm.Code 4781-12-15
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-15
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-15_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 9117949434d8ae2b11819ea874e71190837b7fa9215220ccfe85487591e004f6
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-15.md
+  chunks:
+  - &id106
+    id: oac-4781-12-15-01
+    file: chunks/oac-4781-12-15-01.md
+    heading: Ohio Adm.Code 4781-12-15 — Number of plumbing fixtures.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-15
+    content_kind: regulation-section
+    section: '4781-12-15'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-15
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-15
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-16'
+  title: Sewage.
+  citation: Ohio Adm.Code 4781-12-16
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-16
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-16_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 197062bb96ca68ea30480061c9c292f9166bae307107c86cfb37cc6565d463ac
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-16.md
+  chunks:
+  - &id107
+    id: oac-4781-12-16-01
+    file: chunks/oac-4781-12-16-01.md
+    heading: Ohio Adm.Code 4781-12-16 — Sewage.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-16
+    content_kind: regulation-section
+    section: '4781-12-16'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-16
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-16
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-17'
+  title: Manufactured home connections.
+  citation: Ohio Adm.Code 4781-12-17
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-17
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-17_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 52b6194c4d18f58a810f5efaa8529bb77754a3390c6436c5e90d69ee6f6a1a08
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-17.md
+  chunks:
+  - &id108
+    id: oac-4781-12-17-01
+    file: chunks/oac-4781-12-17-01.md
+    heading: Ohio Adm.Code 4781-12-17 — Manufactured home connections.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-17
+    content_kind: regulation-section
+    section: '4781-12-17'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-17
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-17
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-18'
+  title: Solid waste, collection and storage.
+  citation: Ohio Adm.Code 4781-12-18
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-18
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-18_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 59f6abbf1aae38cefaa3d927996bb552813a55dec4e7938146d2a22d86108075
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-18.md
+  chunks:
+  - &id109
+    id: oac-4781-12-18-01
+    file: chunks/oac-4781-12-18-01.md
+    heading: Ohio Adm.Code 4781-12-18 — Solid waste, collection and storage.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-18
+    content_kind: regulation-section
+    section: '4781-12-18'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-18
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-18
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-19'
+  title: Electrical systems.
+  citation: Ohio Adm.Code 4781-12-19
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-19
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-19_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: bb2dd43419660b113a036b78c552779296ca4cd1ef5ac2afc874b80132e66a80
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-19.md
+  chunks:
+  - &id110
+    id: oac-4781-12-19-01
+    file: chunks/oac-4781-12-19-01.md
+    heading: Ohio Adm.Code 4781-12-19 — Electrical systems.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-19
+    content_kind: regulation-section
+    section: '4781-12-19'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-19
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-19
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-20'
+  title: Fire protection.
+  citation: Ohio Adm.Code 4781-12-20
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-20
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-20_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 7be217e82607a151153b0fa433883528d8e5b33a8b5285c5bea70026003f2670
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-20.md
+  chunks:
+  - &id111
+    id: oac-4781-12-20-01
+    file: chunks/oac-4781-12-20-01.md
+    heading: Ohio Adm.Code 4781-12-20 — Fire protection.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-20
+    content_kind: regulation-section
+    section: '4781-12-20'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-20
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-20
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-21'
+  title: Recreation area and facilities.
+  citation: Ohio Adm.Code 4781-12-21
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-21
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-21_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: cd994d437a876bfa3d2a74f03f61d878b514871c5ce224ca2ec5413c44be4171
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-21.md
+  chunks:
+  - &id112
+    id: oac-4781-12-21-01
+    file: chunks/oac-4781-12-21-01.md
+    heading: Ohio Adm.Code 4781-12-21 — Recreation area and facilities.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-21
+    content_kind: regulation-section
+    section: '4781-12-21'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-21
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-21
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-22'
+  title: Maintenance.
+  citation: Ohio Adm.Code 4781-12-22
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-22
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-22_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 0806b9b093fa0813c9b0ef2f1d37f7c9ba016cddc75351f87556faec49dfe367
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-22.md
+  chunks:
+  - &id113
+    id: oac-4781-12-22-01
+    file: chunks/oac-4781-12-22-01.md
+    heading: Ohio Adm.Code 4781-12-22 — Maintenance.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-22
+    content_kind: regulation-section
+    section: '4781-12-22'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-22
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-22
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-23'
+  title: Rules.
+  citation: Ohio Adm.Code 4781-12-23
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-23
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-23_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: b6f8c0b589f13bd81d80a9ee500b7e7e1e452f8bc4ec217bba620c6833e80a10
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-23.md
+  chunks:
+  - &id114
+    id: oac-4781-12-23-01
+    file: chunks/oac-4781-12-23-01.md
+    heading: Ohio Adm.Code 4781-12-23 — Rules.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-23
+    content_kind: regulation-section
+    section: '4781-12-23'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-23
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-23
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-24'
+  title: On duty.
+  citation: Ohio Adm.Code 4781-12-24
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-24
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-24_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: da5a8c72606d7e53a19f9dabaa5dae1722b8365f68b7c5a583c0d01b818be58c
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-24.md
+  chunks:
+  - &id115
+    id: oac-4781-12-24-01
+    file: chunks/oac-4781-12-24-01.md
+    heading: Ohio Adm.Code 4781-12-24 — On duty.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-24
+    content_kind: regulation-section
+    section: '4781-12-24'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-24
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-24
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-25'
+  title: Records.
+  citation: Ohio Adm.Code 4781-12-25
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-25
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-25_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 6e1892c0453d6f833785abd00207994e98ce944a562441b2cfcf5dbca07bab26
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-25.md
+  chunks:
+  - &id116
+    id: oac-4781-12-25-01
+    file: chunks/oac-4781-12-25-01.md
+    heading: Ohio Adm.Code 4781-12-25 — Records.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-25
+    content_kind: regulation-section
+    section: '4781-12-25'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-25
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-25
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-26'
+  title: Maintenance of records.
+  citation: Ohio Adm.Code 4781-12-26
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-26
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-26_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 398b144bcbf32fcbe7ca0195e5b18e556ef4ea28a4b16d65c1da7e4d645bcf4d
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-26.md
+  chunks:
+  - &id117
+    id: oac-4781-12-26-01
+    file: chunks/oac-4781-12-26-01.md
+    heading: Ohio Adm.Code 4781-12-26 — Maintenance of records.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-26
+    content_kind: regulation-section
+    section: '4781-12-26'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-26
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-26
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-27'
+  title: Contracts for the division's annual inspections.
+  citation: Ohio Adm.Code 4781-12-27
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-27
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-27_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 11be05065ed0e180570472664321d1e2fd003856d61b8bde20006385b78423b2
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-27.md
+  chunks:
+  - &id118
+    id: oac-4781-12-27-01
+    file: chunks/oac-4781-12-27-01.md
+    heading: Ohio Adm.Code 4781-12-27 — Contracts for the division's annual inspections.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-27
+    content_kind: regulation-section
+    section: '4781-12-27'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-27
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-27
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-28'
+  title: Manufactured home parks; resident's remedies; retaliation prohibited.
+  citation: Ohio Adm.Code 4781-12-28
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-28
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-28_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: ab8fdfa786ee01c2a73d513e7883e2f0c5c7c89bac88fd26ac8cc3163e2dbe4a
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-28.md
+  chunks:
+  - &id119
+    id: oac-4781-12-28-01
+    file: chunks/oac-4781-12-28-01.md
+    heading: Ohio Adm.Code 4781-12-28 — Manufactured home parks; resident's remedies;
+      retaliation prohibited.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-28
+    content_kind: regulation-section
+    section: '4781-12-28'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-28
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-28
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-29'
+  title: Rental agreements; disclosures; rules; prohibited conditions.
+  citation: Ohio Adm.Code 4781-12-29
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-29
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-29_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 342b797a8e6f8569b2b883fdf0adc2122ca0ec9236cbc69f1765e35f5806e579
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-29.md
+  chunks:
+  - &id120
+    id: oac-4781-12-29-01
+    file: chunks/oac-4781-12-29-01.md
+    heading: Ohio Adm.Code 4781-12-29 — Rental agreements; disclosures; rules; prohibited
+      conditions. (A)–(I)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-29
+    content_kind: regulation-section
+    section: '4781-12-29'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-29
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-29
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+  - &id121
+    id: oac-4781-12-29-02
+    file: chunks/oac-4781-12-29-02.md
+    heading: Ohio Adm.Code 4781-12-29 — Rental agreements; disclosures; rules; prohibited
+      conditions. (I)–(O)
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-29
+    content_kind: regulation-section
+    section: '4781-12-29'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-29
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-29
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-30'
+  title: Resident's duties.
+  citation: Ohio Adm.Code 4781-12-30
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-30
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-30_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 0042429ad71575ed9a288e8cfff20be49c4834efd39cb96a7150d1e3d8595a10
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-30.md
+  chunks:
+  - &id122
+    id: oac-4781-12-30-01
+    file: chunks/oac-4781-12-30-01.md
+    heading: Ohio Adm.Code 4781-12-30 — Resident's duties.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-30
+    content_kind: regulation-section
+    section: '4781-12-30'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-30
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-30
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-31'
+  title: Intimidation prohibited.
+  citation: Ohio Adm.Code 4781-12-31
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-31
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-31_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: ed7a3c383549751ce5fa63009ee6cc72734e480936e532e7c771edd424b83fce
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-31.md
+  chunks:
+  - &id123
+    id: oac-4781-12-31-01
+    file: chunks/oac-4781-12-31-01.md
+    heading: Ohio Adm.Code 4781-12-31 — Intimidation prohibited.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-31
+    content_kind: regulation-section
+    section: '4781-12-31'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-31
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-31
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+- rule: '4781-12-32'
+  title: Security deposit limitations.
+  citation: Ohio Adm.Code 4781-12-32
+  url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-32
+  acquired_from_url: https://codes.ohio.gov/ohio-administrative-code/chapter-4781-12
+  authenticated_pdf_url: https://codes.ohio.gov/assets/laws/administrative-code/authenticated/4781/0/12/4781-12-32_20200120.pdf
+  effective_date: January 20, 2020
+  raw_html_sha256: 31cc8434ea491ee4f94a1edab51336b0cf73135592d2d1adaa061fc4bcd9ea47
+  normalized_text_sha256: 448ffa7b0035c70ea257236c427f3435a2fedd69d83e52b14c1ea0fa4e309545
+  fetched_at: '2026-11-17T21:44:25+00:00'
+  source_name: Ohio Administrative Code
+  publisher: Ohio Legislative Service Commission
+  jurisdiction: Ohio
+  content_kind: statute
+  scope_label: Manufactured home parks (implements R.C. 4781.26 to 4781.52)
+  record_path: sections/oac-4781-12-32.md
+  chunks:
+  - &id124
+    id: oac-4781-12-32-01
+    file: chunks/oac-4781-12-32-01.md
+    heading: Ohio Adm.Code 4781-12-32 — Security deposit limitations.
+    path:
+    - Ohio Administrative Code
+    - Chapter 4781-12
+    - Ohio Adm.Code 4781-12-32
+    content_kind: regulation-section
+    section: '4781-12-32'
+    chapter: Chapter 4781-12
+    citation: Ohio Adm.Code 4781-12-32
+    url: https://codes.ohio.gov/ohio-administrative-code/rule-4781-12-32
+    effective_date: January 20, 2020
+    retrieval_hints:
+    - manufactured home park
+    - mobile home park
+    - park operator
+    - lot rent
+chunks:
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026
+- *id027
+- *id028
+- *id029
+- *id030
+- *id031
+- *id032
+- *id033
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
+- *id043
+- *id044
+- *id045
+- *id046
+- *id047
+- *id048
+- *id049
+- *id050
+- *id051
+- *id052
+- *id053
+- *id054
+- *id055
+- *id056
+- *id057
+- *id058
+- *id059
+- *id060
+- *id061
+- *id062
+- *id063
+- *id064
+- *id065
+- *id066
+- *id067
+- *id068
+- *id069
+- *id070
+- *id071
+- *id072
+- *id073
+- *id074
+- *id075
+- *id076
+- *id077
+- *id078
+- *id079
+- *id080
+- *id081
+- *id082
+- *id083
+- *id084
+- *id085
+- *id086
+- *id087
+- *id088
+- *id089
+- *id090
+- *id091
+- *id092
+- *id093
+- *id094
+- *id095
+- *id096
+- *id097
+- *id098
+- *id099
+- *id100
+- *id101
+- *id102
+- *id103
+- *id104
+- *id105
+- *id106
+- *id107
+- *id108
+- *id109
+- *id110
+- *id111
+- *id112
+- *id113
+- *id114
+- *id115
+- *id116
+- *id117
+- *id118
+- *id119
+- *id120
+- *id121
+- *id122
+- *id123
+- *id124

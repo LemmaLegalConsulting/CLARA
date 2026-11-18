@@ -39,7 +39,9 @@ def workspace_to_dict(workspace, *, include_documents=True):
         "jurisdictionDetail": workspace.jurisdiction_detail,
         "courtRuleMode": workspace.court_rule_mode,
         "court": court_to_dict(workspace.court),
-        "enabledChecks": check_catalog.normalize_selection(workspace.enabled_checks),
+        "enabledChecks": check_catalog.normalize_selection(
+            workspace.enabled_checks, check_catalog.defaults_for(workspace.owner)
+        ),
         "checkSettings": workspace.check_settings,
         "checklist": checklist_to_dict(workspace.checklist) if workspace.checklist else None,
         "matterId": workspace.matter.external_id if workspace.matter else None,
@@ -100,6 +102,8 @@ def challenge_to_dict(challenge):
         "ordinal": challenge.ordinal,
         "category": challenge.category,
         "categoryLabel": challenge.get_category_display(),
+        "basis": challenge.basis,
+        "basisLabel": challenge.get_basis_display(),
         "target": challenge.target,
         "finding": challenge.finding,
         "reviewAction": challenge.review_action,
@@ -145,6 +149,8 @@ def run_to_dict(run, *, include_challenges=True):
         "checkResults": run.check_results,
         "ruleAudit": run.rule_audit,
         "checklistResults": run.checklist_results,
+        "applicability": run.applicability,
+        "webLookup": run.web_lookup,
         "configuration": run.configuration,
         "materials": run.materials,
         "researchTrace": run.research_trace,
@@ -162,7 +168,7 @@ def run_to_dict(run, *, include_challenges=True):
 
 def _coverage(run):
     """Research coverage is a property of the run; every challenge carries the same one."""
-    first = run.challenges.first()
+    first = run.challenges.filter(basis=GymChallenge.LIBRARY).first()
     coverage = (first.research_coverage or {}) if first else {}
     return {
         "queries": coverage.get("queries", []),

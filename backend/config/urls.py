@@ -136,6 +136,7 @@ urlpatterns = [
     path("api/drafts/<int:draft_id>/export/", drafting_views.export_draft, name="api_export_draft"),
     path("api/drafts/<int:draft_id>/stress-test/", gym_views.draft_stress_test, name="api_draft_stress_test"),
     path("api/argument-gym/checks/", gym_views.check_catalog_view, name="api_gym_checks"),
+    path("api/argument-gym/checks/defaults/", gym_views.check_defaults_view, name="api_gym_check_defaults"),
     path("api/argument-gym/checklists/", gym_views.checklists, name="api_gym_checklists"),
     path("api/argument-gym/checklists/<int:checklist_id>/", gym_views.checklist_detail, name="api_gym_checklist_detail"),
     path("api/argument-gym/courts/", gym_views.courts, name="api_gym_courts"),

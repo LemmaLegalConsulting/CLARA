@@ -321,6 +321,19 @@ class GymRun(models.Model):
         blank=True,
         help_text="The author's own checklist applied to this brief, with the lookups each item made.",
     )
+    applicability = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Each authority the brief relies on, read against its own scope text in the library.",
+    )
+    web_lookup = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text=(
+            "The web lookup check: the questions sent, what came back with each source's trust tier, and "
+            "what was withheld. Less reliable than the library and reported apart from it."
+        ),
+    )
     error = models.TextField(blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -337,6 +350,23 @@ class GymRun(models.Model):
 
     def __str__(self):
         return f"Gym run {self.pk} ({self.status})"
+
+
+class GymCheckDefaults(models.Model):
+    """The checks a person wants when a session has not chosen its own.
+
+    Covers every check in the catalog, not only some. ``catalog_at_save``
+    records which checks existed when the choice was made, so a check added
+    later is not mistaken for one the person turned off.
+    """
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="gym_check_defaults", on_delete=models.CASCADE)
+    enabled_checks = models.JSONField(default=list, blank=True)
+    catalog_at_save = models.JSONField(default=list, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Gym check defaults for {self.user}"
 
 
 class GymChallenge(models.Model):
@@ -371,7 +401,20 @@ class GymChallenge(models.Model):
     SEVERITY_CHOICES = [("high", "High"), ("medium", "Medium"), ("low", "Low")]
     CONFIDENCE_CHOICES = [("high", "High"), ("medium", "Medium"), ("low", "Low")]
 
+    LIBRARY = "library"
+    WEB = "web"
+    BASIS_CHOICES = [
+        (LIBRARY, "CLARA's library and the case record"),
+        (WEB, "Web search (less reliable)"),
+    ]
+
     run = models.ForeignKey(GymRun, related_name="challenges", on_delete=models.CASCADE)
+    basis = models.CharField(
+        max_length=20,
+        choices=BASIS_CHOICES,
+        default=LIBRARY,
+        help_text="What the challenge rests on. A web challenge is never mixed into the main verdict.",
+    )
     ordinal = models.PositiveIntegerField(default=0)
     category = models.CharField(max_length=40, choices=CATEGORY_CHOICES, default=LEGAL_AUTHORITY)
     fingerprint = models.CharField(

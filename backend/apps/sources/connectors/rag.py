@@ -41,7 +41,8 @@ SEMANTIC_GROUPS = {
 # UI source IDs deliberately map to logical content-library documents rather
 # than filesystem paths.  This preserves the content-provider boundary.
 RAG_SOURCE_DOCUMENTS = {
-    "ohio-statutes": {"ohio-revised-code"},
+    "ohio-statutes": {"ohio-revised-code", "ohio-administrative-code"},
+    "federal-housing-law": {"federal-housing-law"},
     "treatise": {"ohio-eviction-landlord-tenant-law-6e"},
     "hud-handbook": {"hud-4350-3-rev-1"},
     "green-book": {"green-book"},

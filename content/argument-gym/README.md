@@ -223,3 +223,26 @@ the subsequent language instructions and verification/strategy prose guard were
 added after this replay, with focused regression tests. Exact private requests,
 responses, reviewer outputs, and reports are in
 `cle_real_briefs/actionability-experiment/`; none are versioned here.
+
+## Seeded flaws
+
+`seeded-flaws.yaml` is a second, different suite: whole synthetic briefs, each
+carrying one known legal error, each with a control that differs only where the
+error is. It exists to compare ways of catching an error the gym once missed --
+a corpus, a rule profile, the applicability check, the web lookup -- against the
+same text, and to see a fix that also flags the correct brief as the false
+positive it is.
+
+```sh
+# Offline: deterministic checks only, no model calls.
+(cd backend && ../.venv/bin/python manage.py test apps.argument_gym.test_seeded_flaws)
+.venv/bin/python scripts/benchmark_seeded_flaws.py
+
+# Live, against the configured provider, with web search for the web arms.
+# Costs money: about a dozen model calls per brief, per arm, per run.
+.venv/bin/python scripts/benchmark_seeded_flaws.py --live --web --runs 3 --output /tmp/seeded.json
+```
+
+Detection is screened by the flaw's `detection_terms`; every matching challenge
+is written to the report so a person can confirm it is the flaw.
+

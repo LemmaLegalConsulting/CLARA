@@ -3,11 +3,11 @@
 sources:
   ohio-statutes:
     kind: rag
-    label: Ohio Statutes
+    label: Ohio Statutes and Administrative Code
     default: true
     default_reason: Primary-law baseline for general Ohio housing-law questions.
     when:
-      - terms: [statute, code, revised code, section, orc]
+      - terms: [statute, code, revised code, section, orc, administrative code, adm.code, o.a.c.]
         reason: The question asks for statutory text or a code section.
   treatise:
     kind: rag
@@ -73,6 +73,39 @@ sources:
     when:
       - terms: [public housing, housing authority, pha, homeownership, qhwra, turnkey]
         reason: The question concerns public housing programs covered by the Green Book.
+  federal-housing-law:
+    kind: rag
+    label: Federal housing law (U.S.C. and 24 C.F.R.)
+    default: false
+    when:
+      - terms:
+          - cares act
+          - "9058"
+          - covered dwelling
+          - covered property
+          - federally backed
+          - vawa
+          - violence against women
+          - c.f.r.
+          - cfr
+          - u.s.c.
+          - usc
+          - public housing
+          - housing authority
+          - section 8
+          - voucher
+          - project-based
+          - pbv
+          - hud
+          - subsid
+          - assisted housing
+          - lihtc
+          - tax credit
+          - 30-day notice
+          - thirty-day notice
+        reason: >-
+          The question concerns a federal tenant protection or federally assisted
+          housing; the statute or regulation decides who it covers.
   ohio-cases:
     kind: local_cases
     label: Ohio case law

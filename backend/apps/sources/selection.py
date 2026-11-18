@@ -107,7 +107,9 @@ def source_decision_with_counts(selection, results):
                 counts_by_id[item["id"]] += 1
             elif item["id"] == "user-resources" and result.source_kind == "user_resources":
                 counts_by_id[item["id"]] += 1
-            elif item["id"] == "ohio-statutes" and result.metadata.get("documentSlug") == "ohio-revised-code":
+            elif item["id"] == "ohio-statutes" and result.metadata.get("documentSlug") in {"ohio-revised-code", "ohio-administrative-code"}:
+                counts_by_id[item["id"]] += 1
+            elif item["id"] == "federal-housing-law" and result.metadata.get("documentSlug") == "federal-housing-law":
                 counts_by_id[item["id"]] += 1
             elif item["id"] == "treatise" and result.metadata.get("documentSlug") == "ohio-eviction-landlord-tenant-law-6e":
                 counts_by_id[item["id"]] += 1

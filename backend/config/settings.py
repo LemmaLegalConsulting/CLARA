@@ -267,6 +267,18 @@ ARGUMENT_GYM_BACKGROUND_RUNS = env_bool("ARGUMENT_GYM_BACKGROUND_RUNS", True)
 # A run whose worker died leaves a row claiming to be running forever.
 ARGUMENT_GYM_RUN_TIMEOUT_SECONDS = int(os.environ.get("ARGUMENT_GYM_RUN_TIMEOUT_SECONDS", "1800"))
 CASE_ACTION_MODEL = os.environ.get("CASE_ACTION_MODEL", OPENAI_MODEL)
+# Web search through the provider's Responses API `web_search` tool (OpenAI, or
+# Azure OpenAI's v1 endpoint). This is the installation's switch: the gym's web
+# lookup check is on by default in every session, but cannot run until this is
+# true. On Azure the search runs on Grounding with Bing, outside the Azure data
+# boundary and the Microsoft DPA, so only de-identified legal questions are ever
+# sent -- never brief text or client facts. The search policy and trust tiers are
+# in content/web-research/trusted-domains.yaml.
+AI_WEB_SEARCH_ENABLED = env_bool("AI_WEB_SEARCH_ENABLED", False)
+# Blank uses the prompt's default model (on Azure, a deployment name).
+AI_WEB_SEARCH_MODEL = os.environ.get("AI_WEB_SEARCH_MODEL", "")
+# "web_search" is current on OpenAI and Azure; "web_search_preview" for older deployments.
+AI_WEB_SEARCH_TOOL = os.environ.get("AI_WEB_SEARCH_TOOL", "web_search")
 PROMPT_CATALOG_DIR = Path(os.environ.get("PROMPT_CATALOG_DIR", REPO_DIR / "prompts"))
 CONTENT_LIBRARY_DIR = Path(os.environ.get("CONTENT_LIBRARY_DIR", REPO_DIR / "content"))
 if not CONTENT_LIBRARY_DIR.is_absolute():

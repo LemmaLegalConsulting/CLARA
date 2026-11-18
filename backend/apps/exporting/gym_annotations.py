@@ -33,6 +33,8 @@ def _quote(challenge, brief):
 def _note(challenge, run):
     parts = [f"Argument Gym · run {run.pk} · challenge {challenge.pk}",
              f"{challenge.get_category_display()} · {challenge.severity} · {challenge.disposition}"]
+    if challenge.basis == "web":
+        parts.append("FROM WEB SEARCH — less reliable than CLARA's library. Confirm every source before relying on it.")
     for label, value in (
         ("Finding", challenge.finding),
         ("What to do", challenge.coaching_recommendation),
@@ -46,7 +48,8 @@ def _note(challenge, run):
         if value:
             parts.append(f"{label}: {value}")
     for source in challenge.legal_sources or []:
-        parts.append("Authority (verify before filing): " + " — ".join(str(source[k]) for k in ("title", "citation", "url") if source.get(k)))
+        label = f"Web source, {source.get('sourceLabel', 'web search')}" if source.get("basis") == "web" else "Authority (verify before filing)"
+        parts.append(f"{label}: " + " — ".join(str(source[k]) for k in ("title", "citation", "url") if source.get(k)))
     parts.append("AI-assisted review; verify facts and current law. This copy does not apply suggested edits.")
     return "\n\n".join(parts)
 

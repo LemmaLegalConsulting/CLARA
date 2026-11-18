@@ -143,10 +143,77 @@ def _federal_code(match):
     )
 
 
+def _statutory_cross_reference(match):
+    """``section 12491(a) of title 34`` -- how the U.S. Code cites itself.
+
+    The subdivision is a refinement, not part of the requirement: the section's
+    own text prints its number once, in its heading, and the subdivision
+    separately as ``(a)``.
+    """
+    title = match.group("title")
+    section = match.group("section").replace("\u2013", "-").replace("\u2014", "-")
+    subdivision = (match.group("subdivision") or "").replace(" ", "")
+    normalized = f"{title} U.S.C. {section}"
+    return Citation(
+        kind="federal_code",
+        normalized=normalized,
+        matched_text=match.group(0).strip(),
+        subdivision=subdivision,
+        refinements=_unique([f"{normalized}{subdivision}", subdivision]) if subdivision else (),
+        variants=_unique([
+            normalized,
+            f"{title} U.S.C. § {section}",
+            f"{title} U.S.C. §{section}",
+            f"{title} USC {section}",
+            f"section {section} of title {title}",
+        ]),
+    )
+
+
+def _administrative_code(match):
+    """``Ohio Adm.Code 4112-5-07`` and the spellings briefs and agencies use for it."""
+    rule = match.group("rule")
+    subdivision = (match.group("subdivision") or "").replace(" ", "")
+    normalized = f"Ohio Adm.Code {rule}"
+    return Citation(
+        kind="administrative_code",
+        normalized=normalized,
+        matched_text=match.group(0).strip(),
+        subdivision=subdivision,
+        refinements=_unique([f"{normalized}{subdivision}", subdivision]) if subdivision else (),
+        variants=_unique([
+            normalized,
+            f"Ohio Adm. Code {rule}",
+            f"Ohio Administrative Code {rule}",
+            f"O.A.C. {rule}",
+            f"OAC {rule}",
+            f"rule {rule}",
+            rule,
+        ]),
+    )
+
+
 # Ordered most specific first: a public-domain cite contains a bare year, and a
 # reporter cite contains a bare volume number, so the loose patterns must not
 # see the text first.
 _PATTERNS = (
+    (
+        re.compile(
+            r"\b(?:ohio\s+adm(?:in(?:istrative)?)?\.?\s*code|o\.\s?a\.\s?c\.|oac|adm\.\s*code)\s*(?:§+\s*)?"
+            r"(?P<rule>\d{1,4}(?::\d{1,2})?-\d{1,2}(?:\.\d+)?-\d{1,3}(?:\.\d+)?)"
+            r"(?P<subdivision>(?:\s*\([A-Za-z0-9]{1,3}\))*)",
+            re.I,
+        ),
+        _administrative_code,
+    ),
+    (
+        re.compile(
+            r"\bsection\s+(?P<section>\d+[a-z]{0,2}(?:[-\u2013\u2014]\d+[a-z]?)?)"
+            r"(?P<subdivision>(?:\([A-Za-z0-9]{1,3}\))*)\s+of\s+title\s+(?P<title>\d{1,2})\b",
+            re.I,
+        ),
+        _statutory_cross_reference,
+    ),
     (re.compile(r"\b(?P<year>(?:19|20)\d{2})[-\s]ohio[-\s](?P<number>\d{1,6})\b", re.I), _ohio_public_domain),
     (
         re.compile(

@@ -1,0 +1,113 @@
+# Seeded-flaw briefs: synthetic briefs carrying one known legal error, each with
+# a control that differs only where the error is.
+#
+# A flaw the gym once missed becomes an entry here, so that every way of
+# catching it -- a corpus, a rule profile, a web lookup -- can be measured
+# against the same text, and a fix that also flags the correct brief is seen
+# to be a false positive rather than a success.
+#
+# These are not real filings, parties, or properties. The legal premise of each
+# flaw is stated in `premise` with the authority it rests on, and is only as
+# good as that authority; an attorney should confirm it before the suite is
+# used to compare models in anything published.
+#
+# Run offline (rule profiles only, no model):
+#   (cd backend && ../.venv/bin/python manage.py test apps.argument_gym.test_seeded_flaws)
+# Run every arm live (corpus, rule profile, web lookup) against a provider:
+#   .venv/bin/python scripts/benchmark_seeded_flaws.py --runs 3
+schema_version: 1
+synthetic: true
+
+flaws:
+  - id: cares-act-not-a-covered-property
+    premise: >-
+      15 U.S.C. 9058(c) requires a 30-day notice to vacate only for a "covered
+      dwelling", which must be on a "covered property" (§ 9058(a)(2)): one in a
+      covered housing program listed in 34 U.S.C. 12491(a)(3), the rural
+      housing voucher program, or with a federally backed mortgage. Housing
+      owned by a housing authority's affiliate that takes no federal
+      assistance and carries a private mortgage is none of those. Public
+      housing and every form of Section 8, including project-based vouchers,
+      are covered (§ 12491(a)(3)(H)).
+    rule_slug: cares-4024-notice
+    element_id: covered_property
+    # Words an output must contain (any one, case-insensitive) to count as
+    # having found the flaw rather than some other problem with the brief.
+    detection_terms: ["covered property", "covered dwelling", "covered housing program", "federally backed", "does not apply", "not covered", "12491"]
+    variants:
+      - id: explicit
+        expect_flagged: true
+        # The brief says outright that the building has no federal assistance.
+        # A contradiction pattern on the rule profile catches this without a model.
+        offline_flagged: true
+        brief: |
+          DEFENDANT'S MOTION TO DISMISS
+
+          I. FACTS
+
+          Defendant Jordan Avery rents Unit 4B at 1200 Larch Street. The
+          building is owned by Lakeview Community Housing Corp., a nonprofit
+          affiliate of the Lakeview Metropolitan Housing Authority. The unit is a
+          market-rate unit: the building receives no federal subsidy, does not
+          participate in any HUD program, and is financed by a privately held
+          mortgage from a local bank.
+
+          On March 2, 2026, Plaintiff served a three-day notice to leave the
+          premises for nonpayment of rent and filed this action on March 6, 2026.
+
+          II. ARGUMENT
+
+          The CARES Act, 15 U.S.C. 9058(c), forbids a lessor from requiring a
+          tenant to vacate until 30 days after a notice to vacate. Because the
+          building is owned by an affiliate of a public housing authority, it is
+          public housing to which the CARES Act applies. Plaintiff gave three
+          days' notice. The complaint must be dismissed.
+      - id: implicit
+        expect_flagged: true
+        # The same flaw without the giveaway words. Nothing deterministic can
+        # see it; catching it takes reading the coverage definition.
+        offline_flagged: false
+        brief: |
+          DEFENDANT'S MOTION TO DISMISS
+
+          I. FACTS
+
+          Defendant Jordan Avery rents Unit 4B at 1200 Larch Street, part of the
+          Lakeview Metropolitan Housing Authority's workforce housing portfolio,
+          which the Authority's nonprofit affiliate owns and finances through a
+          conventional bank loan.
+
+          On March 2, 2026, Plaintiff served a three-day notice to leave the
+          premises for nonpayment of rent and filed this action on March 6, 2026.
+
+          II. ARGUMENT
+
+          The CARES Act, 15 U.S.C. 9058(c), forbids a lessor from requiring a
+          tenant to vacate until 30 days after a notice to vacate. Because the
+          housing authority's affiliate owns the building, the CARES Act applies.
+          Plaintiff gave three days' notice. The complaint must be dismissed.
+      - id: control-pbv
+        expect_flagged: false
+        offline_flagged: false
+        brief: |
+          DEFENDANT'S MOTION TO DISMISS
+
+          I. FACTS
+
+          Defendant Jordan Avery rents Unit 4B at 1200 Larch Street. The unit is
+          assisted under a Section 8 project-based voucher (PBV) housing
+          assistance payments contract between the owner and the Lakeview
+          Metropolitan Housing Authority under 42 U.S.C. 1437f(o)(13).
+
+          On March 2, 2026, Plaintiff served a three-day notice to leave the
+          premises for nonpayment of rent and filed this action on March 6, 2026.
+
+          II. ARGUMENT
+
+          The CARES Act, 15 U.S.C. 9058(c), forbids the lessor of a covered
+          dwelling from requiring a tenant to vacate until 30 days after a notice
+          to vacate. A property participating in a covered housing program is a
+          covered property, 15 U.S.C. 9058(a)(2)(A)(i), and the Section 8
+          programs under 42 U.S.C. 1437f are covered housing programs, 34 U.S.C.
+          12491(a)(3)(H). Plaintiff gave three days' notice. The complaint must
+          be dismissed.
