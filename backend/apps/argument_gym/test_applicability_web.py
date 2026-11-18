@@ -401,3 +401,61 @@ class PipelineWebLookupTests(TestCase):
         self.assertEqual(run.status, GymRun.COMPLETE)
         self.assertEqual(run.applicability["status"], "could_not_run")
         self.assertIn("index unreadable", run.applicability["summary"])
+
+
+class WebLookupDemoBriefTests(TestCase):
+    """content/argument-gym/demo-briefs/hud-30-day-notice-web-lookup.md opens a web question.
+
+    The demo is only useful if the library leaves something open for the web to
+    answer and the privacy guard still keeps the brief's facts at home. Both are
+    deterministic; what the search then finds is not, and is not tested here.
+    """
+
+    def setUp(self):
+        self.brief = content_path("argument-gym", "demo-briefs", "hud-30-day-notice-web-lookup.md").read_text(
+            encoding="utf-8"
+        )
+
+    def test_the_regulation_is_held_and_the_federal_register_rule_is_not(self):
+        argument_map = [
+            {
+                "proposition": "HUD reaffirmed the thirty-day notice requirement in 2026.",
+                "citedAuthority": ["24 C.F.R. 966.4(l)(3)(i)(A)", "91 Fed. Reg. 9453"],
+            }
+        ]
+        inventory = {entry["authority"]: entry["held"] for entry in applicability.authority_inventory(self.brief, argument_map)}
+        self.assertTrue(inventory["24 C.F.R. 966.4(l)(3)(i)(A)"])
+        self.assertIs(inventory["91 Fed. Reg. 9453"], False)
+        report = {"authorities": applicability.authority_inventory(self.brief, argument_map), "assessments": []}
+        self.assertIn("91 Fed. Reg. 9453", [item["authority"] for item in web_lookup.open_questions(report)])
+
+    def test_a_status_question_may_be_sent_and_the_facts_may_not(self):
+        blocked = web_lookup.identifying_phrases(self.brief, {})
+
+        def check(question):
+            return web_lookup.privacy_check(question, blocked_phrases=blocked, brief_text=self.brief)
+
+        self.assertEqual(
+            check(
+                "What did HUD's February 2026 rule at 91 Fed. Reg. 9453 do to the 30-day nonpayment notice in "
+                "24 C.F.R. 966.4(l)(3)(i)(A), and is that change currently in effect?"
+            ),
+            "",
+        )
+        for question in [
+            "Was the notice to Morgan Quillen valid?",
+            "Is 410 Ferncliff Avenue public housing?",
+            "Was a notice delivered September 3, 2026 too short?",
+            "Can Riverbend Metropolitan Housing Authority give fourteen days?",
+        ]:
+            with self.subTest(question=question):
+                self.assertTrue(check(question))
+
+    def test_a_party_named_only_in_the_capitalized_caption_is_still_a_name(self):
+        blocked = web_lookup.identifying_phrases(self.brief, {})
+        self.assertIn("Riverbend", blocked)
+        self.assertNotIn("Hud", blocked)
+        brief = "SMITH v. JONES\n\nThe CARES Act and HUD rules apply."
+        blocked = web_lookup.identifying_phrases(brief, {})
+        self.assertNotIn("CARES", blocked)
+        self.assertNotIn("HUD", blocked)
