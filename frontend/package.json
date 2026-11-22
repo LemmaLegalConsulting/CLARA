@@ -23,7 +23,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.65.0",
+    "@playwright/test": "^1.65.1",
     "@vitejs/plugin-react": "^6.3.0",
     "sass": "^1.108.2",
     "vite": "^8.3.8"
